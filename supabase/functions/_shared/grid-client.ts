@@ -123,3 +123,22 @@ function isClientError(error: unknown): boolean {
 export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * Extract error information from various error types
+ */
+export function extractErrorInfo(error: unknown): { message: string; code?: string } {
+  if (error instanceof Error) {
+    return { message: error.message };
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const err = error as { message?: string; code?: string };
+    return {
+      message: err.message ?? 'Unknown error',
+      code: err.code,
+    };
+  }
+
+  return { message: String(error) };
+}
