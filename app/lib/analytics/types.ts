@@ -85,6 +85,7 @@ export interface PlayerFilters {
 export interface AnalyticsFilters {
   teamId: string;
   seriesIds: string[];
+  mapName?: string;
 }
 
 // =============================================================================
@@ -180,4 +181,40 @@ export interface MapFilters {
   teamId: string;
   seriesIds: string[];
   mapName: string;
+}
+
+// =============================================================================
+// TEAM STRATEGY ANALYTICS TYPES (STRAT-01 to STRAT-07)
+// =============================================================================
+
+// Pistol round patterns (STRAT-01, STRAT-02)
+export interface PistolPattern {
+  strategy_type: string; // 'fast_execute' | 'default' | 'no_plant'
+  round_count: number;
+  success_rate: number;
+  avg_plant_time_ms: number | null;
+}
+
+// Economy management patterns (STRAT-03, STRAT-04)
+export interface EconomyPattern {
+  economy_type: string; // 'pistol' | 'eco' | 'half_buy' | 'force_buy' | 'full_buy'
+  round_count: number;
+  win_rate: number;
+  avg_loadout: number;
+}
+
+// Site attack preferences (STRAT-05, STRAT-06)
+export interface SitePreference {
+  map_name: string;
+  site: string; // 'A' | 'B' | 'C'
+  plant_count: number;
+  plant_pct: number;
+  success_rate: number;
+}
+
+// Combined team strategies summary (STRAT-07)
+export interface TeamStrategiesSummary {
+  pistol_patterns: PistolPattern[];
+  economy_patterns: EconomyPattern[];
+  site_preferences: Record<string, SitePreference[]>; // Grouped by map_name
 }
