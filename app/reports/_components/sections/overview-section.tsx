@@ -41,19 +41,22 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
     ? Math.round(players.reduce((sum, p) => sum + p.kast_pct, 0) / players.length)
     : 0;
 
-  // Map performance
-  const totalGames = maps.reduce((sum, m) => sum + m.games_played, 0);
-  const totalWins = maps.reduce((sum, m) => sum + m.wins, 0);
+  // Map performance - with null checks
+  const totalGames = maps.reduce((sum, m) => sum + (m.games_played ?? 0), 0);
+  const totalWins = maps.reduce((sum, m) => sum + (m.wins ?? 0), 0);
+  const totalLosses = totalGames - totalWins;
   const overallWinRate = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0;
 
-  // Best map
-  const bestMap = maps.length > 0
-    ? [...maps].sort((a, b) => b.win_rate - a.win_rate)[0]
+  // Best map - filter out invalid data
+  const validMaps = maps.filter(m => m.map_name && m.games_played > 0);
+  const bestMap = validMaps.length > 0
+    ? [...validMaps].sort((a, b) => (b.win_rate ?? 0) - (a.win_rate ?? 0))[0]
     : null;
 
-  // Most used composition
-  const mostUsedComp = compositions.length > 0
-    ? [...compositions].sort((a, b) => b.usage_count - a.usage_count)[0]
+  // Most used composition - use correct field names (composition, games_played)
+  const validComps = compositions.filter(c => c.composition && c.composition.length > 0 && (c.games_played ?? 0) > 0);
+  const mostUsedComp = validComps.length > 0
+    ? [...validComps].sort((a, b) => (b.games_played ?? 0) - (a.games_played ?? 0))[0]
     : null;
 
   // Top player
@@ -112,7 +115,7 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
           <StatCard
             title="Overall Win Rate"
             value={`${overallWinRate}%`}
-            description={`${totalWins}W - ${totalGames - totalWins}L`}
+            description={`${totalWins}W - ${totalLosses}L`}
           />
         </div>
       </div>
@@ -166,10 +169,10 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
             </CardHeader>
             <CardContent>
               <div className="text-sm font-bold mb-1">
-                {mostUsedComp.agents?.join(', ') ?? 'Unknown'}
+                {mostUsedComp.composition?.join(', ') ?? 'Unknown'}
               </div>
               <div className="text-xs text-muted-foreground">
-                Used {mostUsedComp.usage_count ?? 0}x • {mostUsedComp.win_rate ?? 0}% WR
+                Used {mostUsedComp.games_played ?? 0}x • {Math.round(mostUsedComp.win_rate ?? 0)}% WR
               </div>
             </CardContent>
           </Card>

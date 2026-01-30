@@ -20,13 +20,13 @@ export function MapsSection({ maps }: MapsSectionProps) {
   }
 
   // Sort by win rate for analysis
-  const sortedMaps = [...maps].sort((a, b) => b.win_rate - a.win_rate);
+  const sortedMaps = [...maps].sort((a, b) => (b.win_rate ?? 0) - (a.win_rate ?? 0));
 
   // Identify strengths and weaknesses
-  const strengths = sortedMaps.filter((m) => m.win_rate >= 60);
-  const weaknesses = sortedMaps.filter((m) => m.win_rate < 40);
+  const strengths = sortedMaps.filter((m) => (m.win_rate ?? 0) >= 60);
+  const weaknesses = sortedMaps.filter((m) => (m.win_rate ?? 0) < 40);
 
-  // Overall stats
+  // Overall stats with comprehensive null checks
   const totalGames = maps.reduce((sum, m) => sum + (m.games_played ?? 0), 0);
   const totalWins = maps.reduce((sum, m) => sum + (m.wins ?? 0), 0);
   const avgRoundsWon = totalGames > 0
@@ -139,10 +139,10 @@ function MapStrengthRow({
       <span className="font-medium">{map.map_name}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">
-          {map.wins}W - {map.losses}L
+          {map.wins ?? 0}W - {map.losses ?? 0}L
         </span>
         <Badge variant={type === 'strength' ? 'default' : 'destructive'}>
-          {map.win_rate}%
+          {map.win_rate ?? 0}%
         </Badge>
       </div>
     </div>
@@ -150,10 +150,11 @@ function MapStrengthRow({
 }
 
 function MapDetailCard({ map }: { map: MapWinRate }) {
+  const winRate = map.win_rate ?? 0;
   const winRateColor =
-    map.win_rate >= 60
+    winRate >= 60
       ? 'text-green-600'
-      : map.win_rate < 40
+      : winRate < 40
       ? 'text-red-500'
       : '';
 
@@ -164,14 +165,14 @@ function MapDetailCard({ map }: { map: MapWinRate }) {
           <CardTitle className="text-base">{map.map_name}</CardTitle>
           <Badge
             variant={
-              map.win_rate >= 60
+              winRate >= 60
                 ? 'default'
-                : map.win_rate < 40
+                : winRate < 40
                 ? 'destructive'
                 : 'secondary'
             }
           >
-            {map.win_rate}% WR
+            {winRate}% WR
           </Badge>
         </div>
       </CardHeader>
@@ -180,12 +181,12 @@ function MapDetailCard({ map }: { map: MapWinRate }) {
           <div>
             <div className="text-muted-foreground">Record</div>
             <div className="font-semibold">
-              {map.wins}W - {map.losses}L
+              {map.wins ?? 0}W - {map.losses ?? 0}L
             </div>
           </div>
           <div>
             <div className="text-muted-foreground">Games</div>
-            <div className="font-semibold">{map.games_played}</div>
+            <div className="font-semibold">{map.games_played ?? 0}</div>
           </div>
           <div>
             <div className="text-muted-foreground">Avg Rounds Won</div>

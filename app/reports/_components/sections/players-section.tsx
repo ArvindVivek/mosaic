@@ -15,9 +15,9 @@ interface PlayersSectionProps {
 function generateTeamPerformanceData(players: TeamPlayerSummary[]): TrendSeries[] {
   if (players.length === 0) return [];
 
-  // Calculate team averages
-  const avgACS = players.reduce((sum, p) => sum + p.acs, 0) / players.length;
-  const avgKAST = players.reduce((sum, p) => sum + p.kast_pct, 0) / players.length;
+  // Calculate team averages with null checks
+  const avgACS = players.reduce((sum, p) => sum + (p.acs ?? 0), 0) / players.length;
+  const avgKAST = players.reduce((sum, p) => sum + (p.kast_pct ?? 0), 0) / players.length;
 
   // Create current snapshot point
   // Future enhancement: Replace with actual time-series data from match history
@@ -48,13 +48,13 @@ export function PlayersSection({ players }: PlayersSectionProps) {
     );
   }
 
-  // Sort players by ACS descending
-  const sortedPlayers = [...players].sort((a, b) => b.acs - a.acs);
+  // Sort players by ACS descending with null checks
+  const sortedPlayers = [...players].sort((a, b) => (b.acs ?? 0) - (a.acs ?? 0));
 
-  // Calculate team averages for comparison
-  const avgACS = players.reduce((sum, p) => sum + p.acs, 0) / players.length;
-  const avgKD = players.reduce((sum, p) => sum + p.kd_ratio, 0) / players.length;
-  const avgKAST = players.reduce((sum, p) => sum + p.kast_pct, 0) / players.length;
+  // Calculate team averages for comparison with null checks
+  const avgACS = players.reduce((sum, p) => sum + (p.acs ?? 0), 0) / players.length;
+  const avgKD = players.reduce((sum, p) => sum + (p.kd_ratio ?? 0), 0) / players.length;
+  const avgKAST = players.reduce((sum, p) => sum + (p.kast_pct ?? 0), 0) / players.length;
 
   return (
     <div className="space-y-6">
@@ -86,14 +86,14 @@ export function PlayersSection({ players }: PlayersSectionProps) {
                   </td>
                   <td className="text-right py-3 px-4">
                     <StatValue
-                      value={Math.round(player.acs)}
+                      value={Math.round(player.acs ?? 0)}
                       average={avgACS}
                       higherIsBetter={true}
                     />
                   </td>
                   <td className="text-right py-3 px-4">
                     <StatValue
-                      value={player.kd_ratio}
+                      value={player.kd_ratio ?? 0}
                       average={avgKD}
                       higherIsBetter={true}
                       decimals={2}
@@ -101,7 +101,7 @@ export function PlayersSection({ players }: PlayersSectionProps) {
                   </td>
                   <td className="text-right py-3 px-4">
                     <StatValue
-                      value={player.kast_pct}
+                      value={player.kast_pct ?? 0}
                       average={avgKAST}
                       higherIsBetter={true}
                       suffix="%"
@@ -109,7 +109,7 @@ export function PlayersSection({ players }: PlayersSectionProps) {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex gap-1 flex-wrap">
-                      {player.top_agents.slice(0, 3).map((agent) => (
+                      {(player.top_agents ?? []).slice(0, 3).map((agent) => (
                         <Badge key={agent} variant="outline" className="text-xs">
                           {agent}
                         </Badge>
@@ -161,9 +161,13 @@ interface PlayerCardProps {
 }
 
 function PlayerCard({ player, avgACS, avgKD, avgKAST }: PlayerCardProps) {
-  const acsComparison = ((player.acs - avgACS) / avgACS) * 100;
-  const kdComparison = ((player.kd_ratio - avgKD) / avgKD) * 100;
-  const kastComparison = ((player.kast_pct - avgKAST) / avgKAST) * 100;
+  const acs = player.acs ?? 0;
+  const kd = player.kd_ratio ?? 0;
+  const kast = player.kast_pct ?? 0;
+
+  const acsComparison = avgACS > 0 ? ((acs - avgACS) / avgACS) * 100 : 0;
+  const kdComparison = avgKD > 0 ? ((kd - avgKD) / avgKD) * 100 : 0;
+  const kastComparison = avgKAST > 0 ? ((kast - avgKAST) / avgKAST) * 100 : 0;
 
   return (
     <Card>
@@ -179,17 +183,17 @@ function PlayerCard({ player, avgACS, avgKD, avgKAST }: PlayerCardProps) {
         {/* Core Stats */}
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
-            <div className="text-2xl font-bold">{Math.round(player.acs)}</div>
+            <div className="text-2xl font-bold">{Math.round(acs)}</div>
             <div className="text-xs text-muted-foreground">ACS</div>
             <ComparisonBadge value={acsComparison} />
           </div>
           <div>
-            <div className="text-2xl font-bold">{player.kd_ratio.toFixed(2)}</div>
+            <div className="text-2xl font-bold">{kd.toFixed(2)}</div>
             <div className="text-xs text-muted-foreground">K/D</div>
             <ComparisonBadge value={kdComparison} />
           </div>
           <div>
-            <div className="text-2xl font-bold">{Math.round(player.kast_pct)}%</div>
+            <div className="text-2xl font-bold">{Math.round(kast)}%</div>
             <div className="text-xs text-muted-foreground">KAST</div>
             <ComparisonBadge value={kastComparison} />
           </div>
@@ -199,7 +203,7 @@ function PlayerCard({ player, avgACS, avgKD, avgKAST }: PlayerCardProps) {
         <div>
           <div className="text-xs text-muted-foreground mb-2">Agent Pool</div>
           <div className="flex gap-1 flex-wrap">
-            {player.top_agents.map((agent, index) => (
+            {(player.top_agents ?? []).map((agent, index) => (
               <Badge
                 key={agent}
                 variant={index === 0 ? 'default' : 'outline'}

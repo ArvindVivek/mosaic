@@ -18,8 +18,8 @@ export function CompositionsSection({ compositions }: CompositionsSectionProps) 
     );
   }
 
-  // Sort by usage (games_played) descending
-  const sortedComps = [...compositions].sort((a, b) => b.games_played - a.games_played);
+  // Sort by usage (games_played) descending with null checks
+  const sortedComps = [...compositions].sort((a, b) => (b.games_played ?? 0) - (a.games_played ?? 0));
 
   return (
     <div className="space-y-8">
@@ -45,10 +45,16 @@ interface CompositionCardProps {
 }
 
 function CompositionCard({ comp, rank }: CompositionCardProps) {
+  const winRate = comp.win_rate ?? 0;
+  const gamesPlayed = comp.games_played ?? 0;
+  const winCount = comp.win_count ?? 0;
+  const composition = comp.composition ?? [];
+  const mapsPlayed = comp.maps_played ?? [];
+
   const winRateColor =
-    comp.win_rate >= 60
+    winRate >= 60
       ? 'text-green-600'
-      : comp.win_rate < 40
+      : winRate < 40
       ? 'text-red-500'
       : '';
 
@@ -57,15 +63,15 @@ function CompositionCard({ comp, rank }: CompositionCardProps) {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Composition #{rank}</CardTitle>
-          <Badge variant={comp.win_rate >= 50 ? 'default' : 'secondary'}>
-            {comp.win_rate}% WR
+          <Badge variant={winRate >= 50 ? 'default' : 'secondary'}>
+            {winRate}% WR
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Agent List */}
         <div className="flex flex-wrap gap-1">
-          {comp.composition.map((agent) => (
+          {composition.map((agent) => (
             <Badge key={agent} variant="outline" className="text-xs">
               {agent}
             </Badge>
@@ -75,25 +81,25 @@ function CompositionCard({ comp, rank }: CompositionCardProps) {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2 text-center text-sm">
           <div>
-            <div className="font-semibold">{comp.games_played}</div>
+            <div className="font-semibold">{gamesPlayed}</div>
             <div className="text-xs text-muted-foreground">Games</div>
           </div>
           <div>
-            <div className={`font-semibold ${winRateColor}`}>{comp.win_count}</div>
+            <div className={`font-semibold ${winRateColor}`}>{winCount}</div>
             <div className="text-xs text-muted-foreground">Wins</div>
           </div>
           <div>
-            <div className="font-semibold">{comp.games_played - comp.win_count}</div>
+            <div className="font-semibold">{gamesPlayed - winCount}</div>
             <div className="text-xs text-muted-foreground">Losses</div>
           </div>
         </div>
 
         {/* Maps Played */}
-        {comp.maps_played.length > 0 && (
+        {mapsPlayed.length > 0 && (
           <div>
             <div className="text-xs text-muted-foreground mb-1">Maps Played</div>
             <div className="flex flex-wrap gap-1">
-              {comp.maps_played.map((map) => (
+              {mapsPlayed.map((map) => (
                 <Badge key={map} variant="secondary" className="text-xs">
                   {map}
                 </Badge>

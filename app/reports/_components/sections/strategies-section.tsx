@@ -51,8 +51,12 @@ export function StrategiesSection({ strategies }: StrategiesSectionProps) {
 
 function PistolPatternCard({ pattern }: { pattern: PistolPattern }) {
   const label = pistolLabels[pattern.pattern_type] ?? pattern.pattern_type;
-  const isHighWinRate = pattern.win_rate >= 55;
-  const isLowWinRate = pattern.win_rate < 40;
+  const winRate = pattern.win_rate ?? 0;
+  const occurrences = pattern.occurrences ?? 0;
+  const avgPlantTime = pattern.avg_plant_time;
+
+  const isHighWinRate = winRate >= 55;
+  const isLowWinRate = winRate < 40;
 
   return (
     <Card>
@@ -62,7 +66,7 @@ function PistolPatternCard({ pattern }: { pattern: PistolPattern }) {
           <Badge
             variant={isHighWinRate ? 'default' : isLowWinRate ? 'destructive' : 'secondary'}
           >
-            {pattern.win_rate}%
+            {winRate}%
           </Badge>
         </div>
       </CardHeader>
@@ -70,12 +74,12 @@ function PistolPatternCard({ pattern }: { pattern: PistolPattern }) {
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Occurrences</span>
-            <span className="font-medium">{pattern.occurrences}</span>
+            <span className="font-medium">{occurrences}</span>
           </div>
-          {pattern.avg_plant_time !== null && (
+          {avgPlantTime !== null && avgPlantTime !== undefined && (
             <div className="flex justify-between">
               <span className="text-muted-foreground">Avg Plant Time</span>
-              <span className="font-medium">{pattern.avg_plant_time.toFixed(1)}s</span>
+              <span className="font-medium">{avgPlantTime.toFixed(1)}s</span>
             </div>
           )}
         </div>
