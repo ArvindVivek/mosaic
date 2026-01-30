@@ -10,6 +10,7 @@ import { CompositionsSection } from './sections/compositions-section';
 import { MapsSection } from './sections/maps-section';
 import { CounterStrategiesSection } from './sections/counter-strategies-section';
 import { DataFreshness } from './visualizations/data-freshness';
+import { ShareButton } from './share-button';
 
 // Must match TAB_VALUES from report-tabs.tsx
 const TAB_VALUES = ['strategies', 'players', 'compositions', 'maps', 'counters'] as const;
@@ -20,9 +21,11 @@ interface ReportDisplayProps {
     generatedAt: string;
     seriesCount: number;
   };
+  seriesIds?: string[];
+  isSnapshot?: boolean;
 }
 
-export function ReportDisplay({ report, metadata }: ReportDisplayProps) {
+export function ReportDisplay({ report, metadata, seriesIds, isSnapshot }: ReportDisplayProps) {
   const [tab] = useQueryState(
     'tab',
     parseAsStringLiteral(TAB_VALUES).withDefault('strategies')
@@ -35,7 +38,12 @@ export function ReportDisplay({ report, metadata }: ReportDisplayProps) {
   return (
     <div className="min-h-[400px] mt-6 space-y-6">
       {/* Executive Summary - Always visible above tabs */}
-      <ExecutiveSummary report={report} />
+      <div className="flex items-start justify-between gap-4">
+        <ExecutiveSummary report={report} />
+        {!isSnapshot && seriesIds && seriesIds.length > 0 && (
+          <ShareButton report={report} seriesIds={seriesIds} />
+        )}
+      </div>
 
       {/* Tab Content */}
       {/* Strategies Tab */}
