@@ -4,9 +4,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { User } from 'lucide-react';
 import type { TeamPlayerSummary } from '@/app/lib/analytics/types';
+import { TrendChart, TrendSeries } from '../visualizations/trend-chart';
 
 interface PlayersSectionProps {
   players: TeamPlayerSummary[];
+}
+
+// Generate performance visualization for team
+// Shows current team snapshot - infrastructure ready for time-series when data available
+function generateTeamPerformanceData(players: TeamPlayerSummary[]): TrendSeries[] {
+  if (players.length === 0) return [];
+
+  // Calculate team averages
+  const avgACS = players.reduce((sum, p) => sum + p.acs, 0) / players.length;
+  const avgKAST = players.reduce((sum, p) => sum + p.kast_pct, 0) / players.length;
+
+  // Create current snapshot point
+  // Future enhancement: Replace with actual time-series data from match history
+  const today = new Date().toISOString().split('T')[0];
+
+  return [
+    {
+      id: 'acs',
+      name: 'Team Avg ACS',
+      data: [{ date: today, value: Math.round(avgACS) }],
+      yAxisId: 'left',
+    },
+    {
+      id: 'kast',
+      name: 'Team Avg KAST %',
+      data: [{ date: today, value: Math.round(avgKAST) }],
+      yAxisId: 'right',
+    },
+  ];
 }
 
 export function PlayersSection({ players }: PlayersSectionProps) {
@@ -107,6 +137,17 @@ export function PlayersSection({ players }: PlayersSectionProps) {
             />
           ))}
         </div>
+      </div>
+
+      {/* Team Performance Overview */}
+      <div className="mt-8">
+        <TrendChart
+          title="Team Performance Overview"
+          description="Current team performance metrics. Time-series trends available when match history data is included in report generation."
+          series={generateTeamPerformanceData(players)}
+          leftAxisLabel="ACS"
+          rightAxisLabel="KAST %"
+        />
       </div>
     </div>
   );
