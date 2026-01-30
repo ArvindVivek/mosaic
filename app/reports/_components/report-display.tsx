@@ -3,15 +3,25 @@
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import { TabsContent } from '@/components/ui/tabs';
 import type { ScoutingReport, ReportSection } from '@/app/lib/orchestration/types';
+import { ExecutiveSummary } from './sections/executive-summary';
+import { StrategiesSection } from './sections/strategies-section';
+import { PlayersSection } from './sections/players-section';
+import { CompositionsSection } from './sections/compositions-section';
+import { MapsSection } from './sections/maps-section';
+import { DataFreshness } from './visualizations/data-freshness';
 
 // Must match TAB_VALUES from report-tabs.tsx
 const TAB_VALUES = ['strategies', 'players', 'compositions', 'maps', 'counters'] as const;
 
 interface ReportDisplayProps {
   report: ScoutingReport | null;
+  metadata?: {
+    generatedAt: string;
+    seriesCount: number;
+  };
 }
 
-export function ReportDisplay({ report }: ReportDisplayProps) {
+export function ReportDisplay({ report, metadata }: ReportDisplayProps) {
   const [tab] = useQueryState(
     'tab',
     parseAsStringLiteral(TAB_VALUES).withDefault('strategies')
@@ -22,33 +32,16 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
   }
 
   return (
-    <div className="min-h-[400px] mt-6">
+    <div className="min-h-[400px] mt-6 space-y-6">
+      {/* Executive Summary - Always visible above tabs */}
+      <ExecutiveSummary report={report} />
+
+      {/* Tab Content */}
       {/* Strategies Tab */}
       <TabsContent value="strategies" className="space-y-4">
         <h2 className="text-2xl font-bold">Team Strategies</h2>
         <SectionContent section={report.strategies}>
-          {(data) => (
-            <div className="border rounded-lg p-6 bg-white space-y-4">
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Pistol Patterns</h3>
-                <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                  {JSON.stringify(data.pistol_patterns, null, 2)}
-                </pre>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Economy Patterns</h3>
-                <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                  {JSON.stringify(data.economy_patterns, null, 2)}
-                </pre>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Site Preferences</h3>
-                <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                  {JSON.stringify(data.site_preferences, null, 2)}
-                </pre>
-              </div>
-            </div>
-          )}
+          {(data) => <StrategiesSection strategies={data} />}
         </SectionContent>
       </TabsContent>
 
@@ -56,18 +49,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
       <TabsContent value="players" className="space-y-4">
         <h2 className="text-2xl font-bold">Player Performance</h2>
         <SectionContent section={report.players}>
-          {(data) => (
-            <div className="space-y-4">
-              {data.map((player, idx) => (
-                <div key={idx} className="border rounded-lg p-6 bg-white space-y-3">
-                  <h3 className="text-lg font-semibold">{player.player_name || 'Unknown Player'}</h3>
-                  <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                    {JSON.stringify(player, null, 2)}
-                  </pre>
-                </div>
-              ))}
-            </div>
-          )}
+          {(data) => <PlayersSection players={data} />}
         </SectionContent>
       </TabsContent>
 
@@ -75,20 +57,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
       <TabsContent value="compositions" className="space-y-4">
         <h2 className="text-2xl font-bold">Team Compositions</h2>
         <SectionContent section={report.compositions}>
-          {(data) => (
-            <div className="space-y-4">
-              {data.map((comp, idx) => (
-                <div key={idx} className="border rounded-lg p-6 bg-white">
-                  <h3 className="text-lg font-semibold mb-3">
-                    Composition {idx + 1}
-                  </h3>
-                  <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                    {JSON.stringify(comp, null, 2)}
-                  </pre>
-                </div>
-              ))}
-            </div>
-          )}
+          {(data) => <CompositionsSection compositions={data} />}
         </SectionContent>
       </TabsContent>
 
@@ -96,32 +65,27 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
       <TabsContent value="maps" className="space-y-4">
         <h2 className="text-2xl font-bold">Map Performance</h2>
         <SectionContent section={report.maps}>
-          {(data) => (
-            <div className="space-y-4">
-              {data.map((map, idx) => (
-                <div key={idx} className="border rounded-lg p-6 bg-white">
-                  <h3 className="text-lg font-semibold mb-3">
-                    {map.map_name || 'Unknown Map'}
-                  </h3>
-                  <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                    {JSON.stringify(map, null, 2)}
-                  </pre>
-                </div>
-              ))}
-            </div>
-          )}
+          {(data) => <MapsSection maps={data} />}
         </SectionContent>
       </TabsContent>
 
       {/* Counter-Strategies Tab */}
       <TabsContent value="counters" className="space-y-4">
         <h2 className="text-2xl font-bold">Counter-Strategies</h2>
-        <div className="border rounded-lg p-8 bg-gray-50 text-center">
-          <p className="text-gray-500 text-lg">
+        <div className="border rounded-lg p-8 bg-muted/10 text-center">
+          <p className="text-muted-foreground text-lg">
             Counter-strategies coming in Phase 6
           </p>
         </div>
       </TabsContent>
+
+      {/* Data Freshness Footer */}
+      {metadata && (
+        <DataFreshness
+          matchCount={metadata.seriesCount}
+          lastUpdated={metadata.generatedAt}
+        />
+      )}
     </div>
   );
 }
@@ -144,8 +108,8 @@ function SectionContent<T>({ section, children }: SectionContentProps<T>) {
 
   if (section.status === 'skipped' || !section.data) {
     return (
-      <div className="border rounded-lg p-6 bg-gray-50">
-        <p className="text-gray-500">No data available</p>
+      <div className="border rounded-lg p-6 bg-muted/10">
+        <p className="text-muted-foreground">No data available</p>
       </div>
     );
   }
