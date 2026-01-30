@@ -1,7 +1,6 @@
 'use client';
 
-import { useQueryState, parseAsStringLiteral } from 'nuqs';
-import { TabsContent } from '@/components/ui/tabs';
+import { useEffect, useState } from 'react';
 import type { ScoutingReport, ReportSection } from '@/app/lib/orchestration/types';
 import { ExecutiveSummary } from './sections/executive-summary';
 import { StrategiesSection } from './sections/strategies-section';
@@ -11,9 +10,9 @@ import { MapsSection } from './sections/maps-section';
 import { CounterStrategiesSection } from './sections/counter-strategies-section';
 import { DataFreshness } from './visualizations/data-freshness';
 import { ShareButton } from './share-button';
+import { OverviewSection } from './sections/overview-section';
 
-// Must match TAB_VALUES from report-tabs.tsx
-const TAB_VALUES = ['strategies', 'players', 'compositions', 'maps', 'counters'] as const;
+type TabValue = 'overview' | 'strategies' | 'players' | 'compositions' | 'maps' | 'counters';
 
 interface ReportDisplayProps {
   report: ScoutingReport | null;
@@ -23,74 +22,111 @@ interface ReportDisplayProps {
   };
   seriesIds?: string[];
   isSnapshot?: boolean;
+  tab: TabValue;
 }
 
-export function ReportDisplay({ report, metadata, seriesIds, isSnapshot }: ReportDisplayProps) {
-  const [tab] = useQueryState(
-    'tab',
-    parseAsStringLiteral(TAB_VALUES).withDefault('strategies')
-  );
+export function ReportDisplay({ report, metadata, seriesIds, isSnapshot, tab }: ReportDisplayProps) {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [currentTab, setCurrentTab] = useState(tab);
+
+  // Handle tab transitions with fade animation
+  useEffect(() => {
+    if (currentTab !== tab) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => {
+        setCurrentTab(tab);
+        setIsAnimating(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [tab, currentTab]);
 
   if (!report) {
     return null;
   }
 
   return (
-    <div className="min-h-[400px] mt-6 space-y-6">
-      {/* Executive Summary - Always visible above tabs */}
-      <div className="flex items-start justify-between gap-4">
-        <ExecutiveSummary report={report} />
-        {!isSnapshot && seriesIds && seriesIds.length > 0 && (
+    <div className="min-h-[600px]">
+      {/* Share Button - Fixed Position */}
+      {!isSnapshot && seriesIds && seriesIds.length > 0 && (
+        <div className="flex justify-end mb-4 animate-fade-in">
           <ShareButton report={report} seriesIds={seriesIds} />
+        </div>
+      )}
+
+      {/* Tab Content - Self-contained with CSS animations */}
+      <div
+        className={`space-y-6 transition-all duration-200 ${
+          isAnimating ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
+        }`}
+      >
+        {currentTab === 'overview' && (
+          <OverviewSection report={report} metadata={metadata} />
+        )}
+
+        {currentTab === 'strategies' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Team Strategies</h2>
+            </div>
+            <SectionContent section={report.strategies}>
+              {(data) => <StrategiesSection strategies={data} />}
+            </SectionContent>
+          </div>
+        )}
+
+        {currentTab === 'players' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Player Performance</h2>
+            </div>
+            <SectionContent section={report.players}>
+              {(data) => <PlayersSection players={data} />}
+            </SectionContent>
+          </div>
+        )}
+
+        {currentTab === 'compositions' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Team Compositions</h2>
+            </div>
+            <SectionContent section={report.compositions}>
+              {(data) => <CompositionsSection compositions={data} />}
+            </SectionContent>
+          </div>
+        )}
+
+        {currentTab === 'maps' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Map Performance</h2>
+            </div>
+            <SectionContent section={report.maps}>
+              {(data) => <MapsSection maps={data} />}
+            </SectionContent>
+          </div>
+        )}
+
+        {currentTab === 'counters' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Counter-Strategies</h2>
+            </div>
+            <CounterStrategiesSection report={report} />
+          </div>
+        )}
+
+        {/* Data Freshness Footer - Only show on non-overview tabs */}
+        {currentTab !== 'overview' && metadata && (
+          <div className="pt-6 border-t">
+            <DataFreshness
+              matchCount={metadata.seriesCount}
+              lastUpdated={metadata.generatedAt}
+            />
+          </div>
         )}
       </div>
-
-      {/* Tab Content */}
-      {/* Strategies Tab */}
-      <TabsContent value="strategies" className="space-y-4">
-        <h2 className="text-2xl font-bold">Team Strategies</h2>
-        <SectionContent section={report.strategies}>
-          {(data) => <StrategiesSection strategies={data} />}
-        </SectionContent>
-      </TabsContent>
-
-      {/* Players Tab */}
-      <TabsContent value="players" className="space-y-4">
-        <h2 className="text-2xl font-bold">Player Performance</h2>
-        <SectionContent section={report.players}>
-          {(data) => <PlayersSection players={data} />}
-        </SectionContent>
-      </TabsContent>
-
-      {/* Compositions Tab */}
-      <TabsContent value="compositions" className="space-y-4">
-        <h2 className="text-2xl font-bold">Team Compositions</h2>
-        <SectionContent section={report.compositions}>
-          {(data) => <CompositionsSection compositions={data} />}
-        </SectionContent>
-      </TabsContent>
-
-      {/* Maps Tab */}
-      <TabsContent value="maps" className="space-y-4">
-        <h2 className="text-2xl font-bold">Map Performance</h2>
-        <SectionContent section={report.maps}>
-          {(data) => <MapsSection maps={data} />}
-        </SectionContent>
-      </TabsContent>
-
-      {/* Counter-Strategies Tab */}
-      <TabsContent value="counters" className="space-y-4">
-        <h2 className="text-2xl font-bold">Counter-Strategies</h2>
-        <CounterStrategiesSection report={report} />
-      </TabsContent>
-
-      {/* Data Freshness Footer */}
-      {metadata && (
-        <DataFreshness
-          matchCount={metadata.seriesCount}
-          lastUpdated={metadata.generatedAt}
-        />
-      )}
     </div>
   );
 }

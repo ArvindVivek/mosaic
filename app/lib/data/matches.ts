@@ -3,7 +3,7 @@
 // Lumina schema: series -> games -> rounds
 
 import { unstable_cache as cache } from 'next/cache'
-import { createServerClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 const CACHE_TTL = 86400 // 24 hours in seconds
 
@@ -61,7 +61,7 @@ export interface GameFilters {
  */
 export const getSeries = cache(
   async (filters: SeriesFilters = {}): Promise<{ series: Series[]; total: number }> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     let query = supabase
       .from('series')
@@ -110,7 +110,7 @@ export const getSeries = cache(
  */
 export const getSeriesForTeam = cache(
   async (teamId: string, limit: number = 20): Promise<Series[]> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     const { data, error } = await supabase
       .from('series')
@@ -138,7 +138,7 @@ export const getSeriesForTeam = cache(
  */
 export const getSeriesById = cache(
   async (seriesId: string): Promise<Series | null> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     const { data, error } = await supabase
       .from('series')
@@ -165,7 +165,7 @@ export const getSeriesById = cache(
  */
 export const getGamesForSeries = cache(
   async (seriesId: string): Promise<Game[]> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     const { data, error } = await supabase
       .from('games')
@@ -192,7 +192,7 @@ export const getGamesForSeries = cache(
  */
 export const getGames = cache(
   async (filters: GameFilters = {}): Promise<Game[]> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     let query = supabase
       .from('games')
@@ -231,7 +231,7 @@ export const getGames = cache(
  */
 export const getTournaments = cache(
   async (): Promise<Tournament[]> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     const { data, error } = await supabase
       .from('tournaments')
@@ -257,7 +257,7 @@ export const getTournaments = cache(
  */
 export const getMaps = cache(
   async (): Promise<string[]> => {
-    const supabase = await createServerClient()
+    const supabase = createServiceClient()
 
     const { data, error } = await supabase
       .from('games')

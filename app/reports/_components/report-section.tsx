@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useQueryState, parseAsInteger } from 'nuqs';
+import { useQueryState, parseAsInteger, parseAsStringLiteral } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { loadSnapshot } from '@/app/actions/snapshots';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -11,6 +11,9 @@ import { ReportTabs } from './report-tabs';
 import { ReportDisplay } from './report-display';
 import type { ScoutingReport } from '@/app/lib/orchestration/types';
 
+const TAB_VALUES = ['overview', 'strategies', 'players', 'compositions', 'maps', 'counters'] as const;
+type TabValue = typeof TAB_VALUES[number];
+
 interface ReportSectionProps {
   teamId: string;
   teamName: string;
@@ -18,10 +21,12 @@ interface ReportSectionProps {
 
 export function ReportSection({ teamId, teamName }: ReportSectionProps) {
   const [report, setReport] = useState<ScoutingReport | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
 
   // Read matchCount from URL for display (0 = All)
   const [matchCount] = useQueryState('matchCount', parseAsInteger.withDefault(10));
+
+  // Tab state - managed here and passed to children
+  const [tab, setTab] = useQueryState('tab', parseAsStringLiteral(TAB_VALUES).withDefault('overview'));
 
   // Snapshot loading state
   const searchParams = useSearchParams();
@@ -50,15 +55,10 @@ export function ReportSection({ teamId, teamName }: ReportSectionProps) {
 
   const handleComplete = (generatedReport: ScoutingReport) => {
     setReport(generatedReport);
-    setIsGenerating(false);
   };
 
   const handleError = () => {
-    setIsGenerating(false);
-  };
-
-  const handleGenerate = () => {
-    setIsGenerating(true);
+    // Error is handled by ReportGenerator
   };
 
   // If viewing a snapshot, show snapshot content
@@ -93,8 +93,8 @@ export function ReportSection({ teamId, teamName }: ReportSectionProps) {
               {snapshotMeta?.createdAt && ` (created ${new Date(snapshotMeta.createdAt).toLocaleDateString()})`}
             </AlertDescription>
           </Alert>
-          <ReportTabs report={snapshotData} loading={false} />
-          <ReportDisplay report={snapshotData} isSnapshot={true} />
+          <ReportTabs report={snapshotData} loading={false} tab={tab} onTabChange={(v) => setTab(v as TabValue)} />
+          <ReportDisplay report={snapshotData} isSnapshot={true} tab={tab} />
         </div>
       );
     }
@@ -102,23 +102,30 @@ export function ReportSection({ teamId, teamName }: ReportSectionProps) {
 
   // Live report generation
   return (
-    <div className="space-y-6">
-      {/* Report Generator with Button */}
-      <div onClick={handleGenerate}>
+    <div className="space-y-4">
+      {/* Header with Generate Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">{teamName}</h2>
+          <p className="text-sm text-muted-foreground">
+            {matchCount === 0 ? 'All matches' : `Last ${matchCount} matches`}
+          </p>
+        </div>
         <ReportGenerator
           teamId={teamId}
           teamName={teamName}
           matchCount={matchCount === 0 ? undefined : matchCount}
           onComplete={handleComplete}
           onError={handleError}
+          hasReport={!!report}
         />
       </div>
 
       {/* Report Tabs and Display */}
       {report && (
         <div className="space-y-4">
-          <ReportTabs report={report} loading={isGenerating} />
-          <ReportDisplay report={report} isSnapshot={false} seriesIds={report.seriesIds ?? []} />
+          <ReportTabs report={report} loading={false} tab={tab} onTabChange={(v) => setTab(v as TabValue)} />
+          <ReportDisplay report={report} isSnapshot={false} seriesIds={report.seriesIds ?? []} tab={tab} />
         </div>
       )}
     </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Loader2, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
 import type { ProgressUpdate, ScoutingReport, ProgressStage } from '@/app/lib/orchestration/types';
 
 interface ReportGeneratorProps {
@@ -10,6 +12,7 @@ interface ReportGeneratorProps {
   matchCount?: number;
   onComplete?: (report: ScoutingReport) => void;
   onError?: (error: string) => void;
+  hasReport?: boolean;
 }
 
 export function ReportGenerator({
@@ -19,6 +22,7 @@ export function ReportGenerator({
   matchCount,
   onComplete,
   onError,
+  hasReport = false,
 }: ReportGeneratorProps) {
   const [stage, setStage] = useState<ProgressStage | null>(null);
   const [message, setMessage] = useState<string>('');
@@ -79,32 +83,56 @@ export function ReportGenerator({
   }, [teamId, teamName, seriesIds, matchCount, onComplete, onError]);
 
   return (
-    <div className="space-y-4">
-      <button
+    <div className="flex items-center gap-4">
+      <Button
         onClick={generateReport}
         disabled={isGenerating}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        size="lg"
+        className={`
+          gap-2 font-semibold shadow-lg transition-all duration-300
+          ${!hasReport && !isGenerating
+            ? 'animate-pulse bg-primary hover:bg-primary/90 hover:scale-105'
+            : 'hover:scale-102'
+          }
+          ${isGenerating ? 'opacity-80' : ''}
+        `}
       >
-        {isGenerating ? 'Generating...' : 'Generate Report'}
-      </button>
+        {isGenerating ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Generating...
+          </>
+        ) : hasReport ? (
+          <>
+            <Sparkles className="h-4 w-4" />
+            Regenerate
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4" />
+            Generate Report
+          </>
+        )}
+      </Button>
 
+      {/* Status indicators */}
       {isGenerating && (
-        <div className="flex items-center gap-3">
-          {/* Animated spinner */}
-          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          <span className="text-gray-600 animate-pulse">{message}</span>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground animate-fade-in">
+          <span className="animate-pulse">{message}</span>
         </div>
       )}
 
       {error && (
-        <div className="p-3 bg-red-50 text-red-700 rounded-md">
-          {error}
+        <div className="flex items-center gap-2 text-sm text-destructive animate-fade-in">
+          <AlertCircle className="h-4 w-4" />
+          <span>{error}</span>
         </div>
       )}
 
-      {stage === 'complete' && !error && (
-        <div className="p-3 bg-green-50 text-green-700 rounded-md">
-          Report generated successfully!
+      {stage === 'complete' && !error && !isGenerating && (
+        <div className="flex items-center gap-2 text-sm text-green-600 animate-fade-in">
+          <CheckCircle2 className="h-4 w-4" />
+          <span>Report ready</span>
         </div>
       )}
     </div>

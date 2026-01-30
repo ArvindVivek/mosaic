@@ -27,10 +27,14 @@ export function MapsSection({ maps }: MapsSectionProps) {
   const weaknesses = sortedMaps.filter((m) => m.win_rate < 40);
 
   // Overall stats
-  const totalGames = maps.reduce((sum, m) => sum + m.games_played, 0);
-  const totalWins = maps.reduce((sum, m) => sum + m.wins, 0);
-  const avgRoundsWon = maps.reduce((sum, m) => sum + m.avg_rounds_won * m.games_played, 0) / totalGames;
-  const avgRoundsLost = maps.reduce((sum, m) => sum + m.avg_rounds_lost * m.games_played, 0) / totalGames;
+  const totalGames = maps.reduce((sum, m) => sum + (m.games_played ?? 0), 0);
+  const totalWins = maps.reduce((sum, m) => sum + (m.wins ?? 0), 0);
+  const avgRoundsWon = totalGames > 0
+    ? maps.reduce((sum, m) => sum + (m.avg_rounds_won ?? 0) * (m.games_played ?? 0), 0) / totalGames
+    : 0;
+  const avgRoundsLost = totalGames > 0
+    ? maps.reduce((sum, m) => sum + (m.avg_rounds_lost ?? 0) * (m.games_played ?? 0), 0) / totalGames
+    : 0;
 
   return (
     <div className="space-y-8">
@@ -185,11 +189,11 @@ function MapDetailCard({ map }: { map: MapWinRate }) {
           </div>
           <div>
             <div className="text-muted-foreground">Avg Rounds Won</div>
-            <div className="font-semibold">{map.avg_rounds_won.toFixed(1)}</div>
+            <div className="font-semibold">{(map.avg_rounds_won ?? 0).toFixed(1)}</div>
           </div>
           <div>
             <div className="text-muted-foreground">Avg Rounds Lost</div>
-            <div className="font-semibold">{map.avg_rounds_lost.toFixed(1)}</div>
+            <div className="font-semibold">{(map.avg_rounds_lost ?? 0).toFixed(1)}</div>
           </div>
         </div>
       </CardContent>

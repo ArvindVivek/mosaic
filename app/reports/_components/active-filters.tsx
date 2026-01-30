@@ -62,8 +62,7 @@ export function ActiveFilters({ teams, tournaments }: ActiveFiltersProps) {
   ].filter(Boolean).length
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-sm text-gray-600">Active filters:</span>
+    <div className="flex flex-wrap items-center gap-2 mt-2 pt-2 border-t border-dashed">
 
       {filters.team && selectedTeam && (
         <Badge variant="secondary" className="gap-1">

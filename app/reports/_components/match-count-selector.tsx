@@ -12,25 +12,18 @@ export function MatchCountSelector() {
   )
 
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-gray-700">Match Count</label>
-      <div className="flex gap-2">
-        {MATCH_COUNT_OPTIONS.map((count) => (
-          <Button
-            key={count}
-            variant={matchCount === count ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setMatchCount(count)}
-          >
-            {count === 0 ? 'All' : count}
-          </Button>
-        ))}
-      </div>
-      <p className="text-xs text-gray-500">
-        {matchCount === 0
-          ? 'Analyze all available matches'
-          : `Analyze last ${matchCount} matches`}
-      </p>
+    <div className="flex gap-1">
+      {MATCH_COUNT_OPTIONS.map((count) => (
+        <Button
+          key={count}
+          variant={matchCount === count ? 'default' : 'outline'}
+          size="sm"
+          className="h-9 px-2.5 text-xs"
+          onClick={() => setMatchCount(count)}
+        >
+          {count === 0 ? 'All' : count}
+        </Button>
+      ))}
     </div>
   )
 }
