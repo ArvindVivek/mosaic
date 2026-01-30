@@ -21,7 +21,21 @@ export interface BatchExecutionOptions {
 // =============================================================================
 
 /**
- * Execute async functions in parallel using Promise.allSettled
+ * Execute async functions in parallel using Promise.allSettled (heterogeneous types)
+ * Enables graceful degradation - failed functions don't abort entire batch
+ * Supports functions returning different types using tuple inference
+ *
+ * @param functions - Tuple of async functions to execute
+ * @param options - Optional callbacks for batch lifecycle
+ * @returns Tuple of results with status for each function
+ */
+export async function executeBatch<T extends Array<() => Promise<any>>>(
+  functions: T,
+  options?: BatchExecutionOptions
+): Promise<{ [K in keyof T]: BatchResult<Awaited<ReturnType<T[K]>>> }>;
+
+/**
+ * Execute async functions in parallel using Promise.allSettled (homogeneous types)
  * Enables graceful degradation - failed functions don't abort entire batch
  *
  * @param functions - Array of async functions to execute
@@ -31,7 +45,13 @@ export interface BatchExecutionOptions {
 export async function executeBatch<T>(
   functions: Array<() => Promise<T>>,
   options?: BatchExecutionOptions
-): Promise<BatchResult<T>[]> {
+): Promise<BatchResult<T>[]>;
+
+// Implementation
+export async function executeBatch(
+  functions: Array<() => Promise<any>>,
+  options?: BatchExecutionOptions
+): Promise<BatchResult<any>[]> {
   // Notify batch start
   options?.onBatchStart?.(0, 1);
 

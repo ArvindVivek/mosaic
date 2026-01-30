@@ -1,5 +1,5 @@
 // Team strategy analytics query helpers
-// Invokes database functions via supabase.rpc() for team strategy analysis
+// Invokes database functions via (supabase.rpc as any)() for team strategy analysis
 
 import { createServiceClient } from '@/app/lib/supabase/server';
 import type {
@@ -21,7 +21,7 @@ export async function getTeamAttackPistolPatterns(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<PistolPattern[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_team_attack_pistol_patterns', {
+  const { data, error } = await (supabase.rpc as any)('get_team_attack_pistol_patterns', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });
@@ -44,7 +44,7 @@ export async function getTeamEconomyPatterns(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<EconomyPattern[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_team_economy_patterns', {
+  const { data, error } = await (supabase.rpc as any)('get_team_economy_patterns', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });
@@ -67,7 +67,7 @@ export async function getTeamSitePreferences(
   filters: AnalyticsFilters
 ): Promise<SitePreference[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_team_site_preferences', {
+  const { data, error } = await (supabase.rpc as any)('get_team_site_preferences', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
     p_map_name: filters.mapName ?? null,
@@ -91,7 +91,7 @@ export async function getTeamStrategiesSummary(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<TeamStrategiesSummary> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_team_strategies_summary', {
+  const { data, error } = await (supabase.rpc as any)('get_team_strategies_summary', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });

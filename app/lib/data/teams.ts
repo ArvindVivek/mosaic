@@ -2,7 +2,7 @@
 // Uses shared VALORANT data from lumina ETL (public schema)
 
 import { unstable_cache as cache } from 'next/cache'
-import { createServerClient } from '@/lib/supabase/server'
+import { createServerClient } from '@/app/lib/supabase/server'
 
 const CACHE_TTL = 86400 // 24 hours in seconds
 

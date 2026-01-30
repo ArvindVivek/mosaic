@@ -17,6 +17,12 @@ import type {
   ScoutingReport,
   ReportSection,
 } from '@/app/lib/orchestration/types';
+import type {
+  TeamStrategiesSummary,
+  TeamPlayerSummary,
+  CompositionStats,
+  MapWinRate,
+} from '@/app/lib/analytics/types';
 
 // =============================================================================
 // Configuration
@@ -176,27 +182,27 @@ async function executeReportGeneration(
 
   const [strategiesResult, playersResult, compositionsResult, mapsResult] = batchResults;
 
-  const strategies: ReportSection<typeof strategiesResult.value> = {
+  const strategies: ReportSection<TeamStrategiesSummary> = {
     status: strategiesResult.status === 'fulfilled' ? 'success' : 'failed',
-    data: strategiesResult.status === 'fulfilled' ? strategiesResult.value ?? null : null,
+    data: strategiesResult.status === 'fulfilled' ? ((strategiesResult.value as TeamStrategiesSummary) ?? null) : null,
     error: strategiesResult.status === 'rejected' ? strategiesResult.reason?.message : undefined,
   };
 
-  const players: ReportSection<typeof playersResult.value> = {
+  const players: ReportSection<TeamPlayerSummary[]> = {
     status: playersResult.status === 'fulfilled' ? 'success' : 'failed',
-    data: playersResult.status === 'fulfilled' ? playersResult.value ?? null : null,
+    data: playersResult.status === 'fulfilled' ? ((playersResult.value as TeamPlayerSummary[]) ?? null) : null,
     error: playersResult.status === 'rejected' ? playersResult.reason?.message : undefined,
   };
 
-  const compositions: ReportSection<typeof compositionsResult.value> = {
+  const compositions: ReportSection<CompositionStats[]> = {
     status: compositionsResult.status === 'fulfilled' ? 'success' : 'failed',
-    data: compositionsResult.status === 'fulfilled' ? compositionsResult.value ?? null : null,
+    data: compositionsResult.status === 'fulfilled' ? ((compositionsResult.value as CompositionStats[]) ?? null) : null,
     error: compositionsResult.status === 'rejected' ? compositionsResult.reason?.message : undefined,
   };
 
-  const maps: ReportSection<typeof mapsResult.value> = {
+  const maps: ReportSection<MapWinRate[]> = {
     status: mapsResult.status === 'fulfilled' ? 'success' : 'failed',
-    data: mapsResult.status === 'fulfilled' ? mapsResult.value ?? null : null,
+    data: mapsResult.status === 'fulfilled' ? ((mapsResult.value as MapWinRate[]) ?? null) : null,
     error: mapsResult.status === 'rejected' ? mapsResult.reason?.message : undefined,
   };
 

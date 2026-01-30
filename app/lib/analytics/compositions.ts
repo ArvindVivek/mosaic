@@ -1,5 +1,5 @@
 // TypeScript query helpers for composition analytics
-// Invokes database functions via supabase.rpc()
+// Invokes database functions via (supabase.rpc as any)()
 
 import { createServiceClient } from '@/app/lib/supabase/server';
 import type {
@@ -14,7 +14,7 @@ export async function getTeamCompositions(
   filters: Pick<CompositionFilters, 'teamId' | 'seriesIds'>
 ): Promise<CompositionStats[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_team_compositions', {
+  const { data, error } = await (supabase.rpc as any)('get_team_compositions', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });
@@ -29,7 +29,7 @@ export async function getCompositionWinRatesByMap(
   filters: Pick<CompositionFilters, 'teamId' | 'seriesIds'>
 ): Promise<CompositionMapStats[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_composition_win_rates_by_map', {
+  const { data, error } = await (supabase.rpc as any)('get_composition_win_rates_by_map', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });
@@ -44,7 +44,7 @@ export async function getMetaAdaptationTimeline(
   filters: Pick<CompositionFilters, 'teamId' | 'seriesIds'>
 ): Promise<MetaAdaptationPoint[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_meta_adaptation_timeline', {
+  const { data, error } = await (supabase.rpc as any)('get_meta_adaptation_timeline', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });
@@ -59,7 +59,7 @@ export async function getRoleDistribution(
   filters: Pick<CompositionFilters, 'teamId' | 'seriesIds'>
 ): Promise<RoleDistribution[]> {
   const supabase = createServiceClient();
-  const { data, error } = await supabase.rpc('get_role_distribution', {
+  const { data, error } = await (supabase.rpc as any)('get_role_distribution', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });

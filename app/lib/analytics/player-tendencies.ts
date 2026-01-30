@@ -1,5 +1,5 @@
 // TypeScript query helpers for player analytics database functions
-// Invokes PostgreSQL functions via supabase.rpc() from Next.js Server Components
+// Invokes PostgreSQL functions via (supabase.rpc as any)() from Next.js Server Components
 
 import { createServiceClient } from '@/app/lib/supabase/server';
 import type {
@@ -21,7 +21,7 @@ export async function getPlayerCoreStats(
 ): Promise<PlayerCoreStats | null> {
   const supabase = createServiceClient();
 
-  const { data, error } = await supabase.rpc('get_player_core_stats', {
+  const { data, error } = await (supabase.rpc as any)('get_player_core_stats', {
     p_player_id: filters.playerId,
     p_series_ids: filters.seriesIds,
   });
@@ -42,7 +42,7 @@ export async function getPlayerAgentPool(
 ): Promise<PlayerAgentStats[]> {
   const supabase = createServiceClient();
 
-  const { data, error } = await supabase.rpc('get_player_agent_pool', {
+  const { data, error } = await (supabase.rpc as any)('get_player_agent_pool', {
     p_player_id: filters.playerId,
     p_series_ids: filters.seriesIds,
   });
@@ -62,7 +62,7 @@ export async function getPlayerFirstBloodStats(
 ): Promise<FirstBloodStats | null> {
   const supabase = createServiceClient();
 
-  const { data, error } = await supabase.rpc('get_player_first_blood_stats', {
+  const { data, error } = await (supabase.rpc as any)('get_player_first_blood_stats', {
     p_player_id: filters.playerId,
     p_series_ids: filters.seriesIds,
   });
@@ -83,7 +83,7 @@ export async function getPlayerClutchStats(
 ): Promise<ClutchStats | null> {
   const supabase = createServiceClient();
 
-  const { data, error } = await supabase.rpc('get_player_clutch_stats', {
+  const { data, error } = await (supabase.rpc as any)('get_player_clutch_stats', {
     p_player_id: filters.playerId,
     p_series_ids: filters.seriesIds,
   });
@@ -104,7 +104,7 @@ export async function getPlayerPerformanceTrend(
 ): Promise<PerformanceTrendPoint[]> {
   const supabase = createServiceClient();
 
-  const { data, error } = await supabase.rpc('get_player_performance_trend', {
+  const { data, error } = await (supabase.rpc as any)('get_player_performance_trend', {
     p_player_id: filters.playerId,
     p_series_ids: filters.seriesIds,
   });
@@ -128,7 +128,7 @@ export async function getTeamPlayersSummary(
     throw new Error('teamId is required for team players summary');
   }
 
-  const { data, error } = await supabase.rpc('get_team_players_summary', {
+  const { data, error } = await (supabase.rpc as any)('get_team_players_summary', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
   });
