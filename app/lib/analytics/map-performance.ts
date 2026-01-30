@@ -1,7 +1,7 @@
 // TypeScript query helpers for map analytics
 // Invokes database functions via supabase.rpc()
 
-import { createServerClient } from '@/app/lib/supabase/server';
+import { createServiceClient } from '@/app/lib/supabase/server';
 import type {
   MapWinRate,
   MapCompositionPreference,
@@ -14,7 +14,7 @@ import type {
 export async function getMapWinRates(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<MapWinRate[]> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_map_win_rates', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
@@ -26,7 +26,7 @@ export async function getMapWinRates(
 export async function getMapCompositionPreferences(
   filters: MapFilters
 ): Promise<MapCompositionPreference[]> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_map_composition_preferences', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
@@ -42,7 +42,7 @@ export async function getMapCompositionPreferences(
 export async function getMapSitePatterns(
   filters: MapFilters
 ): Promise<MapSitePattern[]> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_map_site_patterns', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
@@ -55,7 +55,7 @@ export async function getMapSitePatterns(
 export async function getMapPoolAnalysis(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<MapPoolAnalysis> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_map_pool_analysis', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,

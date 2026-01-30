@@ -1,7 +1,7 @@
 // Team strategy analytics query helpers
 // Invokes database functions via supabase.rpc() for team strategy analysis
 
-import { createServerClient } from '@/app/lib/supabase/server';
+import { createServiceClient } from '@/app/lib/supabase/server';
 import type {
   PistolPattern,
   EconomyPattern,
@@ -20,7 +20,7 @@ import type {
 export async function getTeamAttackPistolPatterns(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<PistolPattern[]> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_team_attack_pistol_patterns', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
@@ -43,7 +43,7 @@ export async function getTeamAttackPistolPatterns(
 export async function getTeamEconomyPatterns(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<EconomyPattern[]> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_team_economy_patterns', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
@@ -66,7 +66,7 @@ export async function getTeamEconomyPatterns(
 export async function getTeamSitePreferences(
   filters: AnalyticsFilters
 ): Promise<SitePreference[]> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_team_site_preferences', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,
@@ -90,7 +90,7 @@ export async function getTeamSitePreferences(
 export async function getTeamStrategiesSummary(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<TeamStrategiesSummary> {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data, error } = await supabase.rpc('get_team_strategies_summary', {
     p_team_id: filters.teamId,
     p_series_ids: filters.seriesIds,

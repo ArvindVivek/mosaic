@@ -2,6 +2,7 @@
 // Uses service role key for full database access (server-side only)
 
 import { createServerClient as createClient, type CookieOptions } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 export async function createServerClient() {
@@ -37,7 +38,14 @@ export async function createServerClient() {
 }
 
 // Service client for Server Actions (no cookies needed)
+// Creates a singleton client for analytics operations
+let serviceClientInstance: ReturnType<typeof createSupabaseClient> | null = null
+
 export function createServiceClient() {
+  if (serviceClientInstance) {
+    return serviceClientInstance
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -45,12 +53,25 @@ export function createServiceClient() {
     throw new Error('Missing Supabase service role key')
   }
 
-  // Import directly for service operations
-  const { createClient } = require('@supabase/supabase-js')
-  return createClient(supabaseUrl, supabaseKey, {
+  serviceClientInstance = createSupabaseClient(supabaseUrl, supabaseKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
     },
+    global: {
+      fetch: async (...args) => {
+        try {
+          console.log('[Service Client] Fetch request to:', args[0]);
+          const response = await fetch(...args);
+          console.log('[Service Client] Fetch response:', response.status, response.statusText);
+          return response;
+        } catch (error) {
+          console.error('[Service Client] Fetch error:', error);
+          throw error;
+        }
+      },
+    },
   })
+
+  return serviceClientInstance
 }
