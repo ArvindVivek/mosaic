@@ -218,3 +218,69 @@ export interface TeamStrategiesSummary {
   economy_patterns: EconomyPattern[];
   site_preferences: SitePreference[];  // Flat array from SQL (jsonb_agg)
 }
+
+// =============================================================================
+// COUNTER-STRATEGY TYPES (COUNTER-01 to COUNTER-05)
+// =============================================================================
+
+/**
+ * Confidence level based on sample size and recency
+ * HIGH: N >= 30, MEDIUM: N >= 10, LOW: N < 10
+ */
+export type ConfidenceLevel = 'HIGH' | 'MEDIUM' | 'LOW';
+
+/**
+ * Pattern types for counter-strategy recommendations
+ */
+export type CounterPatternType = 'timing' | 'site_preference' | 'economy' | 'composition';
+
+/**
+ * Exploitable pattern with low win rate (COUNTER-01)
+ */
+export interface ExploitablePattern {
+  scenario: string;
+  win_rate: number;
+  sample_size: number;
+  confidence: ConfidenceLevel;
+  counter_recommendation: string;
+  pattern_type: CounterPatternType;
+}
+
+/**
+ * Timing-based pattern (COUNTER-04)
+ */
+export interface TimingPattern {
+  trigger: string;
+  behavior: string;
+  frequency: number; // Percentage (0-100)
+  sample_size: number;
+  confidence: ConfidenceLevel;
+  counter_recommendation: string;
+}
+
+/**
+ * Complete counter-strategy recommendation
+ */
+export interface CounterStrategy {
+  title: string;
+  description: string;
+  data_backing: string;
+  confidence: ConfidenceLevel;
+  sample_size: number;
+  pattern_type: CounterPatternType;
+  recency_score: number; // 0-1, higher = more recent data
+}
+
+/**
+ * Counter-strategies summary for report
+ */
+export interface CounterStrategiesSummary {
+  exploitable_patterns: ExploitablePattern[];
+  timing_patterns: TimingPattern[];
+  recommendations: CounterStrategy[];
+  data_quality: {
+    total_rounds_analyzed: number;
+    avg_recency_score: number;
+    has_sufficient_data: boolean; // true if any pattern has HIGH confidence
+  };
+}
