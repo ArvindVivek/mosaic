@@ -8,6 +8,7 @@ import { StrategiesSection } from './sections/strategies-section';
 import { PlayersSection } from './sections/players-section';
 import { CompositionsSection } from './sections/compositions-section';
 import { MapsSection } from './sections/maps-section';
+import { CounterStrategiesSection } from './sections/counter-strategies-section';
 import { DataFreshness } from './visualizations/data-freshness';
 
 // Must match TAB_VALUES from report-tabs.tsx
@@ -72,11 +73,7 @@ export function ReportDisplay({ report, metadata }: ReportDisplayProps) {
       {/* Counter-Strategies Tab */}
       <TabsContent value="counters" className="space-y-4">
         <h2 className="text-2xl font-bold">Counter-Strategies</h2>
-        <div className="border rounded-lg p-8 bg-muted/10 text-center">
-          <p className="text-muted-foreground text-lg">
-            Counter-strategies coming in Phase 6
-          </p>
-        </div>
+        <CounterStrategiesSection report={report} />
       </TabsContent>
 
       {/* Data Freshness Footer */}
