@@ -94,7 +94,7 @@ export interface AnalyticsFilters {
 
 // Team composition with usage stats (COMP-01, COMP-02)
 export interface CompositionStats {
-  composition: string[]; // Sorted array of agent names
+  composition: string[];  // JSONB array of agent names, sorted alphabetically
   games_played: number;
   win_count: number;
   win_rate: number;
@@ -103,7 +103,7 @@ export interface CompositionStats {
 
 // Composition performance by map (COMP-03)
 export interface CompositionMapStats {
-  composition: string[];
+  composition: string[];  // JSONB array of agent names
   map_name: string;
   games: number;
   wins: number;
@@ -114,7 +114,7 @@ export interface CompositionMapStats {
 export interface MetaAdaptationPoint {
   series_date: string;
   series_id: string;
-  composition: string[];
+  composition: string[];  // JSONB array of agent names
   is_new_comp: boolean;
   consecutive_uses: number;
 }
@@ -156,7 +156,7 @@ export interface MapWinRate {
 
 // Map composition preference (MAP-02)
 export interface MapCompositionPreference {
-  composition: string[];
+  composition: string[];  // JSONB array of agent names
   times_used: number;
   win_rate: number;
 }
@@ -189,32 +189,32 @@ export interface MapFilters {
 
 // Pistol round patterns (STRAT-01, STRAT-02)
 export interface PistolPattern {
-  strategy_type: string; // 'fast_execute' | 'default' | 'no_plant'
-  round_count: number;
-  success_rate: number;
-  avg_plant_time_ms: number | null;
+  pattern_type: string; // 'fast_execute' | 'default' | 'no_plant'
+  occurrences: number;  // BIGINT from SQL
+  win_rate: number;
+  avg_plant_time: number | null;
 }
 
 // Economy management patterns (STRAT-03, STRAT-04)
 export interface EconomyPattern {
-  economy_type: string; // 'pistol' | 'eco' | 'half_buy' | 'force_buy' | 'full_buy'
-  round_count: number;
+  economy_type: string; // 'eco' | 'half_buy' | 'force_buy' | 'full_buy'
+  occurrences: number;  // BIGINT from SQL
   win_rate: number;
-  avg_loadout: number;
+  avg_loadout_value: number;
 }
 
 // Site attack preferences (STRAT-05, STRAT-06)
 export interface SitePreference {
   map_name: string;
   site: string; // 'A' | 'B' | 'C'
-  plant_count: number;
-  plant_pct: number;
-  success_rate: number;
+  attacks: number;       // BIGINT from SQL
+  win_rate: number;
+  preference_pct: number;
 }
 
 // Combined team strategies summary (STRAT-07)
 export interface TeamStrategiesSummary {
   pistol_patterns: PistolPattern[];
   economy_patterns: EconomyPattern[];
-  site_preferences: Record<string, SitePreference[]>; // Grouped by map_name
+  site_preferences: SitePreference[];  // Flat array from SQL (jsonb_agg)
 }
