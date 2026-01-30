@@ -213,6 +213,7 @@ async function executeReportGeneration(
   const report: ScoutingReport = {
     teamId: params.teamId,
     teamName,
+    seriesIds: params.seriesIds ?? [],
     strategies,
     players,
     compositions,

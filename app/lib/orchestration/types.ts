@@ -55,6 +55,8 @@ export interface ScoutingReport {
   teamId: string;
   /** Team name */
   teamName: string;
+  /** Series IDs that were analyzed for this report */
+  seriesIds: string[];
   /** Team strategies (pistol, economy, site preferences) */
   strategies: ReportSection<TeamStrategiesSummary>;
   /** Player performance summary */

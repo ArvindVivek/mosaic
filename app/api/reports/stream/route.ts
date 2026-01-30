@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
         const report: ScoutingReport = {
           teamId: params.teamId,
           teamName: params.teamName ?? params.teamId,
+          seriesIds: params.seriesIds ?? [],
           strategies: strategiesResult,
           players: playersResult,
           compositions: compositionsResult,
