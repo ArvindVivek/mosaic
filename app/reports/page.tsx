@@ -1,11 +1,20 @@
 import { Suspense } from 'react'
 import { getTeams } from '@/app/lib/data/teams'
+import { getTournaments, getMaps } from '@/app/lib/data/matches'
 import { TeamSelector } from './_components/team-selector'
 import { MatchCountSelector } from './_components/match-count-selector'
+import { FilterDateRange } from './_components/filter-date-range'
+import { FilterTournament } from './_components/filter-tournament'
+import { FilterMap } from './_components/filter-map'
+import { ActiveFilters } from './_components/active-filters'
 import { ReportFiltersSkeleton } from './_components/report-skeleton'
 
 export default async function ReportsPage() {
-  const teams = await getTeams()
+  const [teams, tournaments, maps] = await Promise.all([
+    getTeams(),
+    getTournaments(),
+    getMaps(),
+  ])
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -28,23 +37,41 @@ export default async function ReportsPage() {
             <h2 className="text-lg font-semibold">Configure Report</h2>
 
             <Suspense fallback={<ReportFiltersSkeleton />}>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Select Team
-                  </label>
-                  <TeamSelector teams={teams} />
+              <div className="space-y-6">
+                {/* Team and Match Count */}
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      Select Team
+                    </label>
+                    <TeamSelector teams={teams} />
+                  </div>
+
+                  <MatchCountSelector />
                 </div>
 
-                <MatchCountSelector />
+                {/* Filters Section */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-gray-700">
+                    Filter Matches
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <FilterDateRange />
+                    <FilterTournament tournaments={tournaments} />
+                    <FilterMap maps={maps} />
+                  </div>
+                </div>
+
+                {/* Active Filters */}
+                <ActiveFilters teams={teams} tournaments={tournaments} />
               </div>
             </Suspense>
           </div>
 
-          {/* TODO: Generate Report Button - Will be implemented in 04-03 */}
+          {/* TODO: Generate Report Button - Will be implemented in next plan */}
           <div className="pt-4 border-t">
             <p className="text-sm text-gray-500">
-              Select a team and match count to generate a report
+              Select a team and configure filters to generate a report
             </p>
           </div>
         </div>
