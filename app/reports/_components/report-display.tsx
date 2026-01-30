@@ -30,21 +30,21 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
           {(data) => (
             <div className="border rounded-lg p-6 bg-white space-y-4">
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Pistol Round Strategy</h3>
+                <h3 className="text-lg font-semibold">Pistol Patterns</h3>
                 <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                  {JSON.stringify(data.pistolRound, null, 2)}
+                  {JSON.stringify(data.pistol_patterns, null, 2)}
                 </pre>
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Economy Management</h3>
+                <h3 className="text-lg font-semibold">Economy Patterns</h3>
                 <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                  {JSON.stringify(data.economyManagement, null, 2)}
+                  {JSON.stringify(data.economy_patterns, null, 2)}
                 </pre>
               </div>
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">Site Preferences</h3>
                 <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
-                  {JSON.stringify(data.sitePreferences, null, 2)}
+                  {JSON.stringify(data.site_preferences, null, 2)}
                 </pre>
               </div>
             </div>
@@ -60,7 +60,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
             <div className="space-y-4">
               {data.map((player, idx) => (
                 <div key={idx} className="border rounded-lg p-6 bg-white space-y-3">
-                  <h3 className="text-lg font-semibold">{player.playerName || 'Unknown Player'}</h3>
+                  <h3 className="text-lg font-semibold">{player.player_name || 'Unknown Player'}</h3>
                   <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
                     {JSON.stringify(player, null, 2)}
                   </pre>
@@ -101,7 +101,7 @@ export function ReportDisplay({ report }: ReportDisplayProps) {
               {data.map((map, idx) => (
                 <div key={idx} className="border rounded-lg p-6 bg-white">
                   <h3 className="text-lg font-semibold mb-3">
-                    {map.mapName || 'Unknown Map'}
+                    {map.map_name || 'Unknown Map'}
                   </h3>
                   <pre className="bg-gray-50 p-4 rounded overflow-x-auto text-sm">
                     {JSON.stringify(map, null, 2)}

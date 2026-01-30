@@ -7,6 +7,7 @@ interface ReportGeneratorProps {
   teamId: string;
   teamName: string;
   seriesIds?: string[];
+  matchCount?: number;
   onComplete?: (report: ScoutingReport) => void;
   onError?: (error: string) => void;
 }
@@ -15,6 +16,7 @@ export function ReportGenerator({
   teamId,
   teamName,
   seriesIds = [],
+  matchCount,
   onComplete,
   onError,
 }: ReportGeneratorProps) {
@@ -33,7 +35,7 @@ export function ReportGenerator({
       const response = await fetch('/api/reports/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ teamId, teamName, seriesIds }),
+        body: JSON.stringify({ teamId, teamName, seriesIds, matchCount }),
       });
 
       if (!response.ok || !response.body) {
@@ -74,7 +76,7 @@ export function ReportGenerator({
     } finally {
       setIsGenerating(false);
     }
-  }, [teamId, teamName, seriesIds, onComplete, onError]);
+  }, [teamId, teamName, seriesIds, matchCount, onComplete, onError]);
 
   return (
     <div className="space-y-4">
