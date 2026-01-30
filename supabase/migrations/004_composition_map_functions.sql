@@ -398,22 +398,19 @@ AS $$
   )
   SELECT jsonb_build_object(
     'strengths', (
-      SELECT COALESCE(jsonb_agg(jsonb_build_object('map', map_name, 'win_rate', win_rate)), '[]'::jsonb)
+      SELECT COALESCE(jsonb_agg(jsonb_build_object('map', map_name, 'win_rate', win_rate) ORDER BY win_rate DESC), '[]'::jsonb)
       FROM map_stats
       WHERE win_rate > 60
-      ORDER BY win_rate DESC
     ),
     'weaknesses', (
-      SELECT COALESCE(jsonb_agg(jsonb_build_object('map', map_name, 'win_rate', win_rate)), '[]'::jsonb)
+      SELECT COALESCE(jsonb_agg(jsonb_build_object('map', map_name, 'win_rate', win_rate) ORDER BY win_rate ASC), '[]'::jsonb)
       FROM map_stats
       WHERE win_rate < 40
-      ORDER BY win_rate ASC
     ),
     'neutral', (
-      SELECT COALESCE(jsonb_agg(jsonb_build_object('map', map_name, 'win_rate', win_rate)), '[]'::jsonb)
+      SELECT COALESCE(jsonb_agg(jsonb_build_object('map', map_name, 'win_rate', win_rate) ORDER BY map_name), '[]'::jsonb)
       FROM map_stats
       WHERE win_rate >= 40 AND win_rate <= 60
-      ORDER BY map_name
     )
   );
 $$;

@@ -293,7 +293,7 @@ AS $$
   WITH series_performance AS (
     SELECT
       s.id AS series_id,
-      s.start_time AS series_date,
+      s.start_time::TIMESTAMP WITH TIME ZONE AS series_date,
       ROUND(
         SUM(prs.damage_dealt)::NUMERIC /
         NULLIF(COUNT(DISTINCT prs.round_id), 0),
