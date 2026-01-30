@@ -1,68 +1,84 @@
-// Data fetching functions for matches with 24-hour caching
-// Supports filtering by team, tournament, map, and date range
+// Data fetching functions for matches/series
+// Uses shared VALORANT data from lumina ETL (public schema)
+// Lumina schema: series -> games -> rounds
 
 import { unstable_cache as cache } from 'next/cache'
 import { createServerClient } from '@/lib/supabase/server'
-import type { Match } from '@/lib/grid/types'
 
 const CACHE_TTL = 86400 // 24 hours in seconds
 
-export interface MatchFilters {
+// Series = a match (can be bo1, bo3, bo5)
+export interface Series {
+  id: string
+  tournamentId: string | null
+  startTime: string | null
+  format: string | null
+  teamAId: string | null
+  teamBId: string | null
+  winnerId: string | null
+  processed: boolean
+  createdAt: string
+}
+
+// Game = individual map within a series
+export interface Game {
+  id: string
+  seriesId: string | null
+  sequenceNumber: number | null
+  mapName: string | null
+  teamAScore: number | null
+  teamBScore: number | null
+  winnerId: string | null
+  durationMs: number | null
+  createdAt: string
+}
+
+// Tournament info
+export interface Tournament {
+  id: string
+  name: string | null
+  startDate: string | null
+  endDate: string | null
+  parentId: string | null
+  createdAt: string
+}
+
+export interface SeriesFilters {
   teamId?: string
   tournamentId?: string
-  mapName?: string
-  dateFrom?: string
-  dateTo?: string
   limit?: number
   offset?: number
 }
 
-/**
- * Get matches with optional filters
- * Cached based on filter parameters
- */
-export async function getMatches(filters: MatchFilters = {}): Promise<{
-  matches: Match[]
-  total: number
-}> {
-  // Generate cache key from filters
-  const cacheKey = generateMatchesCacheKey(filters)
-
-  return getCachedMatches(cacheKey, filters)
+export interface GameFilters {
+  seriesId?: string
+  mapName?: string
+  limit?: number
 }
 
-const getCachedMatches = cache(
-  async (cacheKey: string, filters: MatchFilters): Promise<{ matches: Match[]; total: number }> => {
+/**
+ * Get series (matches) with optional filters
+ */
+export const getSeries = cache(
+  async (filters: SeriesFilters = {}): Promise<{ series: Series[]; total: number }> => {
     const supabase = await createServerClient()
 
     let query = supabase
-      .from('matches')
+      .from('series')
       .select('*', { count: 'exact' })
 
-    // Apply filters
+    // Filter by team (either side)
     if (filters.teamId) {
-      query = query.or(`team_home_id.eq.${filters.teamId},team_away_id.eq.${filters.teamId}`)
+      query = query.or(`team_a_id.eq.${filters.teamId},team_b_id.eq.${filters.teamId}`)
     }
 
     if (filters.tournamentId) {
       query = query.eq('tournament_id', filters.tournamentId)
     }
 
-    if (filters.mapName) {
-      query = query.eq('map_name', filters.mapName)
-    }
-
-    if (filters.dateFrom) {
-      query = query.gte('match_date', filters.dateFrom)
-    }
-
-    if (filters.dateTo) {
-      query = query.lte('match_date', filters.dateTo)
-    }
-
-    // Ordering and pagination
+    // Order by start time descending
     query = query
-      .order('match_date', { ascending: false })
+      .order('start_time', { ascending: false, nullsFirst: false })
       .limit(filters.limit ?? 20)
 
     if (filters.offset) {
@@ -72,123 +88,179 @@ const getCachedMatches = cache(
     const { data, error, count } = await query
 
     if (error) {
-      console.error('Error fetching matches:', error)
-      throw new Error(`Failed to fetch matches: ${error.message}`)
+      console.error('Error fetching series:', error)
+      throw new Error(`Failed to fetch series: ${error.message}`)
     }
 
     return {
-      matches: data?.map(transformMatchFromDb) ?? [],
+      series: data?.map(transformSeriesFromDb) ?? [],
       total: count ?? 0,
     }
   },
-  ['matches-list'],
+  ['series-list'],
   {
     revalidate: CACHE_TTL,
-    tags: ['matches'],
+    tags: ['series'],
   }
 )
 
 /**
- * Get single match by ID with full event data
+ * Get series for a specific team
+ * Used for scouting reports
  */
-export const getMatchById = cache(
-  async (matchId: string): Promise<Match | null> => {
+export const getSeriesForTeam = cache(
+  async (teamId: string, limit: number = 20): Promise<Series[]> => {
     const supabase = await createServerClient()
 
     const { data, error } = await supabase
-      .from('matches')
+      .from('series')
       .select('*')
-      .eq('id', matchId)
-      .single()
-
-    if (error || !data) {
-      console.error('Error fetching match:', error)
-      return null
-    }
-
-    return transformMatchFromDb(data)
-  },
-  ['match-by-id'],
-  {
-    revalidate: CACHE_TTL,
-    tags: ['matches'],
-  }
-)
-
-/**
- * Get matches for a specific team
- * Commonly used for scouting reports
- */
-export const getMatchesForTeam = cache(
-  async (teamId: string, limit: number = 20): Promise<Match[]> => {
-    const supabase = await createServerClient()
-
-    const { data, error } = await supabase
-      .from('matches')
-      .select('*')
-      .or(`team_home_id.eq.${teamId},team_away_id.eq.${teamId}`)
-      .order('match_date', { ascending: false })
+      .or(`team_a_id.eq.${teamId},team_b_id.eq.${teamId}`)
+      .order('start_time', { ascending: false, nullsFirst: false })
       .limit(limit)
 
     if (error) {
-      console.error('Error fetching team matches:', error)
+      console.error('Error fetching team series:', error)
       return []
     }
 
-    return data?.map(transformMatchFromDb) ?? []
+    return data?.map(transformSeriesFromDb) ?? []
   },
-  ['matches-for-team'],
+  ['series-for-team'],
   {
     revalidate: CACHE_TTL,
-    tags: ['matches'],
+    tags: ['series'],
   }
 )
 
 /**
- * Get distinct tournaments from matches
- * Used for filter dropdowns
+ * Get single series by ID
  */
-export const getTournaments = cache(
-  async (): Promise<Array<{ id: string; name: string }>> => {
+export const getSeriesById = cache(
+  async (seriesId: string): Promise<Series | null> => {
     const supabase = await createServerClient()
 
     const { data, error } = await supabase
-      .from('matches')
-      .select('tournament_id, tournament_name')
-      .not('tournament_name', 'is', null)
+      .from('series')
+      .select('*')
+      .eq('id', seriesId)
+      .single()
+
+    if (error || !data) {
+      console.error('Error fetching series:', error)
+      return null
+    }
+
+    return transformSeriesFromDb(data)
+  },
+  ['series-by-id'],
+  {
+    revalidate: CACHE_TTL,
+    tags: ['series'],
+  }
+)
+
+/**
+ * Get games (maps) for a series
+ */
+export const getGamesForSeries = cache(
+  async (seriesId: string): Promise<Game[]> => {
+    const supabase = await createServerClient()
+
+    const { data, error } = await supabase
+      .from('games')
+      .select('*')
+      .eq('series_id', seriesId)
+      .order('sequence_number', { ascending: true })
+
+    if (error) {
+      console.error('Error fetching games:', error)
+      return []
+    }
+
+    return data?.map(transformGameFromDb) ?? []
+  },
+  ['games-for-series'],
+  {
+    revalidate: CACHE_TTL,
+    tags: ['games'],
+  }
+)
+
+/**
+ * Get all games with optional filters
+ */
+export const getGames = cache(
+  async (filters: GameFilters = {}): Promise<Game[]> => {
+    const supabase = await createServerClient()
+
+    let query = supabase
+      .from('games')
+      .select('*')
+
+    if (filters.seriesId) {
+      query = query.eq('series_id', filters.seriesId)
+    }
+
+    if (filters.mapName) {
+      query = query.eq('map_name', filters.mapName)
+    }
+
+    query = query
+      .order('created_at', { ascending: false })
+      .limit(filters.limit ?? 50)
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Error fetching games:', error)
+      return []
+    }
+
+    return data?.map(transformGameFromDb) ?? []
+  },
+  ['games-list'],
+  {
+    revalidate: CACHE_TTL,
+    tags: ['games'],
+  }
+)
+
+/**
+ * Get all tournaments
+ */
+export const getTournaments = cache(
+  async (): Promise<Tournament[]> => {
+    const supabase = await createServerClient()
+
+    const { data, error } = await supabase
+      .from('tournaments')
+      .select('*')
+      .order('start_date', { ascending: false, nullsFirst: false })
 
     if (error) {
       console.error('Error fetching tournaments:', error)
       return []
     }
 
-    // Deduplicate
-    const tournamentsMap = new Map<string, string>()
-    data?.forEach((row) => {
-      if (row.tournament_id && row.tournament_name) {
-        tournamentsMap.set(row.tournament_id, row.tournament_name)
-      }
-    })
-
-    return Array.from(tournamentsMap.entries()).map(([id, name]) => ({ id, name }))
+    return data?.map(transformTournamentFromDb) ?? []
   },
   ['tournaments-list'],
   {
     revalidate: CACHE_TTL,
-    tags: ['matches'],
+    tags: ['tournaments'],
   }
 )
 
 /**
- * Get distinct maps from matches
- * Used for filter dropdowns
+ * Get distinct maps from games
  */
 export const getMaps = cache(
   async (): Promise<string[]> => {
     const supabase = await createServerClient()
 
     const { data, error } = await supabase
-      .from('matches')
+      .from('games')
       .select('map_name')
       .not('map_name', 'is', null)
 
@@ -210,32 +282,46 @@ export const getMaps = cache(
   ['maps-list'],
   {
     revalidate: CACHE_TTL,
-    tags: ['matches'],
+    tags: ['games'],
   }
 )
 
-// Helper to generate cache key from filters
-function generateMatchesCacheKey(filters: MatchFilters): string {
-  return JSON.stringify(filters)
+// Database row transformers
+function transformSeriesFromDb(row: Record<string, unknown>): Series {
+  return {
+    id: row.id as string,
+    tournamentId: row.tournament_id as string | null,
+    startTime: row.start_time as string | null,
+    format: row.format as string | null,
+    teamAId: row.team_a_id as string | null,
+    teamBId: row.team_b_id as string | null,
+    winnerId: row.winner_id as string | null,
+    processed: row.processed as boolean,
+    createdAt: row.created_at as string,
+  }
 }
 
-// Database row to TypeScript type transformer
-function transformMatchFromDb(row: any): Match {
+function transformGameFromDb(row: Record<string, unknown>): Game {
   return {
-    id: row.id,
-    gridMatchId: row.grid_match_id,
-    gridSeriesId: row.grid_series_id,
-    tournamentId: row.tournament_id,
-    tournamentName: row.tournament_name,
-    teamHomeId: row.team_home_id,
-    teamAwayId: row.team_away_id,
-    teamHomeScore: row.team_home_score,
-    teamAwayScore: row.team_away_score,
-    mapName: row.map_name,
-    matchDate: row.match_date,
-    eventData: row.event_data,
-    fetchedAt: row.fetched_at,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    id: row.id as string,
+    seriesId: row.series_id as string | null,
+    sequenceNumber: row.sequence_number as number | null,
+    mapName: row.map_name as string | null,
+    teamAScore: row.team_a_score as number | null,
+    teamBScore: row.team_b_score as number | null,
+    winnerId: row.winner_id as string | null,
+    durationMs: row.duration_ms as number | null,
+    createdAt: row.created_at as string,
+  }
+}
+
+function transformTournamentFromDb(row: Record<string, unknown>): Tournament {
+  return {
+    id: row.id as string,
+    name: row.name as string | null,
+    startDate: row.start_date as string | null,
+    endDate: row.end_date as string | null,
+    parentId: row.parent_id as string | null,
+    createdAt: row.created_at as string,
   }
 }

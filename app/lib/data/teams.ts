@@ -1,15 +1,26 @@
-// Data fetching functions for teams with 24-hour caching
-// Uses Next.js cache with tag-based invalidation
+// Data fetching functions for teams
+// Uses shared VALORANT data from lumina ETL (public schema)
 
 import { unstable_cache as cache } from 'next/cache'
 import { createServerClient } from '@/lib/supabase/server'
-import type { Team, Player } from '@/lib/grid/types'
 
 const CACHE_TTL = 86400 // 24 hours in seconds
 
+export interface Team {
+  id: string
+  name: string
+  createdAt: string
+}
+
+export interface Player {
+  id: string
+  name: string
+  teamId: string | null
+  createdAt: string
+}
+
 /**
- * Get all VCT Americas teams
- * Cached for 24 hours with 'teams' tag for invalidation
+ * Get all teams from shared VALORANT data
  */
 export const getTeams = cache(
   async (): Promise<Team[]> => {
@@ -18,7 +29,6 @@ export const getTeams = cache(
     const { data, error } = await supabase
       .from('teams')
       .select('*')
-      .eq('region', 'Americas')
       .order('name')
 
     if (error) {
@@ -37,7 +47,6 @@ export const getTeams = cache(
 
 /**
  * Get single team by ID with roster
- * Cached per team ID
  */
 export const getTeamById = cache(
   async (teamId: string): Promise<{ team: Team; players: Player[] } | null> => {
@@ -79,32 +88,6 @@ export const getTeamById = cache(
 )
 
 /**
- * Get team by GRID ID (for linking)
- */
-export const getTeamByGridId = cache(
-  async (gridTeamId: string): Promise<Team | null> => {
-    const supabase = await createServerClient()
-
-    const { data, error } = await supabase
-      .from('teams')
-      .select('*')
-      .eq('grid_team_id', gridTeamId)
-      .single()
-
-    if (error || !data) {
-      return null
-    }
-
-    return transformTeamFromDb(data)
-  },
-  ['team-by-grid-id'],
-  {
-    revalidate: CACHE_TTL,
-    tags: ['teams'],
-  }
-)
-
-/**
  * Search teams by name
  */
 export const searchTeams = cache(
@@ -114,7 +97,6 @@ export const searchTeams = cache(
     const { data, error } = await supabase
       .from('teams')
       .select('*')
-      .eq('region', 'Americas')
       .ilike('name', `%${query}%`)
       .order('name')
       .limit(10)
@@ -133,29 +115,47 @@ export const searchTeams = cache(
   }
 )
 
+/**
+ * Get players for a team
+ */
+export const getPlayersByTeam = cache(
+  async (teamId: string): Promise<Player[]> => {
+    const supabase = await createServerClient()
+
+    const { data, error } = await supabase
+      .from('players')
+      .select('*')
+      .eq('team_id', teamId)
+      .order('name')
+
+    if (error) {
+      console.error('Error fetching players:', error)
+      return []
+    }
+
+    return data?.map(transformPlayerFromDb) ?? []
+  },
+  ['players-by-team'],
+  {
+    revalidate: CACHE_TTL,
+    tags: ['teams'],
+  }
+)
+
 // Database row to TypeScript type transformers
-function transformTeamFromDb(row: any): Team {
+function transformTeamFromDb(row: Record<string, unknown>): Team {
   return {
-    id: row.id,
-    gridTeamId: row.grid_team_id,
-    name: row.name,
-    shortName: row.short_name,
-    logoUrl: row.logo_url,
-    region: row.region,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    id: row.id as string,
+    name: row.name as string,
+    createdAt: row.created_at as string,
   }
 }
 
-function transformPlayerFromDb(row: any): Player {
+function transformPlayerFromDb(row: Record<string, unknown>): Player {
   return {
-    id: row.id,
-    gridPlayerId: row.grid_player_id,
-    name: row.name,
-    realName: row.real_name,
-    teamId: row.team_id,
-    role: row.role,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    id: row.id as string,
+    name: row.name as string,
+    teamId: row.team_id as string | null,
+    createdAt: row.created_at as string,
   }
 }

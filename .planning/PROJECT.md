@@ -76,14 +76,37 @@ Reduce pre-match scouting from 8+ hours of manual VOD review to under 90 seconds
 - Social media sentiment — different data source
 - Third-party coaching platform integration — post-hackathon
 
+## UI/Design Requirements
+
+**Component Library:** shadcn/ui
+- Modern, accessible React components
+- Tailwind CSS integration
+- Customizable with CSS variables
+
+**Design Principles:**
+- Clean, modern aesthetic
+- Professional color scheme
+- Consistent spacing and typography
+- Icons (Lucide)
+- Smooth animations and transitions
+- Responsive design
+
+**Animation Standards:**
+- Page transitions with Framer Motion
+- Micro-interactions on buttons/cards
+- Loading states with skeleton screens
+- Chart animations on data load
+- Toast notifications for actions
+
 ## Context
 
 **Hackathon:** Cloud9 x JetBrains "Sky's The Limit" — Category 2: Automated Scouting Report Generator
 
-**Data source:** GRID API ecosystem
-- Central Data API (GraphQL) — tournaments, teams, rosters, match metadata
-- Series State API (GraphQL) — round-by-round events, kills, economy, abilities
-- API credentials ready
+**Data source:** Shared VALORANT data from lumina ETL
+- Pre-ingested data in public schema (teams, players, series, games, rounds, kill_events, etc.)
+- No runtime GRID API calls needed
+- Same local Supabase instance shared across hackathon projects
+- Data populated via lumina/scripts/etl/
 
 **Tournament scope:** VCT Americas (past two years)
 - VCT Americas League (regular season)
@@ -105,16 +128,18 @@ Reduce pre-match scouting from 8+ hours of manual VOD review to under 90 seconds
 - **Statistical significance**: Minimum 5 matches required for pattern detection
 - **Performance**: Report generation must complete in <60 seconds
 - **Timeline**: ~2 weeks to hackathon deadline
-- **Deployment**: Vercel (frontend) + Supabase (database + functions)
+- **Deployment**: Vercel (Next.js app + API routes) + Supabase (shared database)
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Vercel + Supabase over FastAPI | Simpler deployment, single ecosystem, serverless scaling | — Pending |
-| Supabase Functions for analytics | Direct PostgreSQL access, Deno runtime, no cold start issues | — Pending |
-| TypeScript throughout | Type safety for complex data models, better tooling | — Pending |
-| Skip PDF export for MVP | Focus on core web experience, PDF adds complexity | — Pending |
+| Vercel + Supabase | Simpler deployment, single ecosystem, serverless scaling | Adopted |
+| Next.js API routes over Edge Functions | Simpler architecture, no Deno/Node split, same codebase | Adopted |
+| Shared data from lumina ETL | One-time data ingestion, no runtime GRID API calls, faster | Adopted |
+| shadcn/ui for components | Modern design, Tailwind integration, accessible | Adopted |
+| TypeScript throughout | Type safety for complex data models, better tooling | Adopted |
+| Skip PDF export for MVP | Focus on core web experience, PDF adds complexity | Adopted |
 
 ---
 *Last updated: 2026-01-28 after initialization*
