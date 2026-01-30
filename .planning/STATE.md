@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Reduce pre-match scouting from 8+ hours of manual VOD review to under 90 seconds of automated, data-driven analysis — while increasing depth and consistency.
-**Current focus:** Phase 4 - Report Interface & Team Selection
+**Current focus:** Phase 5 - Report Visualization & Output
 
 ## Current Position
 
-Phase: 4 of 6 (Report Interface & Team Selection)
-Plan: 04-04 of 4 in phase (COMPLETE)
-Status: Phase complete
-Last activity: 2026-01-30 — Completed 04-04-PLAN.md (Tabbed report interface)
+Phase: 5 of 6 (Report Visualization & Output)
+Plan: 05-02 of 5 in phase (COMPLETE)
+Status: In progress
+Last activity: 2026-01-30 — Completed 05-02-PLAN.md (Bar chart visualizations)
 
-Progress: [███████████████████████████] 100% (19/19 plans)
+Progress: [█████████████████████████████] 100% (21/21 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 4.7 min
+- Total plans completed: 21
+- Average duration: 4.3 min
 - Total execution time: 1.5 hours
 
 **By Phase:**
@@ -31,10 +31,11 @@ Progress: [███████████████████████
 | 02-analytics-engine-aggregation | 7 | 37min | 5min |
 | 03-report-generation-orchestration | 4 | 15min | 3.75min |
 | 04-report-interface-team-selection | 4 | 15min | 3.75min |
+| 05-report-visualization-output | 2 | 5min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 5min, 9min, 0min, 2min, 4min
-- Trend: Excellent (averaging 4.7min, UI work remains efficient)
+- Last 5 plans: 0min, 2min, 4min, 3min, 2min
+- Trend: Excellent (averaging 2.2min over last 5, UI work extremely efficient)
 
 *Updated after each plan completion*
 
@@ -121,6 +122,14 @@ Recent decisions affecting current work:
 - **04-04**: Raw JSON display for Phase 4 - visualizations deferred to Phase 5
 - **04-04**: Counter-strategies tab placeholder - structure in place for Phase 6 content
 - **04-04**: Fixed snake_case property names (Rule 1) - analytics types use pistol_patterns, player_name, map_name (not camelCase)
+- **05-01**: Recharts via shadcn chart components - declarative API, accessible, themeable with CSS variables
+- **05-01**: StatCard with invertTrend prop for metrics where lower is better (deaths, losses)
+- **05-01**: DataFreshness handles both Date objects and ISO strings for flexibility
+- **05-02**: Y-axis domain [0, 100] for percentage charts to avoid truncation (per RESEARCH.md pitfalls)
+- **05-02**: Configurable maxAgents/maxComps to prevent chart clutter (default 5)
+- **05-02**: Dual Y-axis pattern for mixed scale metrics (CompositionFrequencyChart: games_played left, win_rate right)
+- **05-02**: Composition legend below chart (agent names too long for X-axis labels)
+- **05-02**: Empty state pattern for all charts (flex center, border, bg-muted/10, text-muted-foreground)
 
 ### Pending Todos
 
@@ -154,16 +163,22 @@ None yet.
 - 04-04: Tabbed report interface - 5 tabs with URL-synced navigation, section status handling, full generation workflow
 - Complete report interface: filters -> generate -> tabs -> display
 - All state persisted in URL: team, matchCount, tournament, map, from, to, tab
-- Ready for Phase 5 (Report Visualizations)
 
-None critical. Phases 1-4 complete. Ready to begin Phase 5.
+**Phase 5 In Progress (2026-01-30):**
+- 05-01: Chart foundation - shadcn chart components (ChartContainer, ChartTooltip, ChartLegend), StatCard, DataFreshness
+- 05-02: Bar chart visualizations - AgentPickRateChart, SitePreferenceChart, CompositionFrequencyChart
+- Recharts installed as chart library
+- Bar chart pattern established (accessibilityLayer, empty state handling, Y-axis domain configuration)
+- Ready for map performance, player performance, and strategy pattern visualizations
+
+None critical. Phases 1-4 complete. Phase 5 in progress (2/5 plans complete).
 
 ## Session Continuity
 
 Last session: 2026-01-30 (plan execution)
-Stopped at: Completed 04-04-PLAN.md - Tabbed report interface (Phase 4 COMPLETE)
+Stopped at: Completed 05-02-PLAN.md - Bar chart visualizations (Phase 5 in progress)
 Resume file: None
 
 ---
 *State initialized: 2026-01-28*
-*Last updated: 2026-01-30 (Phase 4 complete - 04-04)*
+*Last updated: 2026-01-30 (Phase 5 in progress - 05-02)*
