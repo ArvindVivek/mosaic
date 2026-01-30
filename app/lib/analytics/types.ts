@@ -83,7 +83,7 @@ export interface PlayerFilters {
 }
 
 export interface AnalyticsFilters {
-  teamId?: string;
+  teamId: string;
   seriesIds: string[];
 }
 
