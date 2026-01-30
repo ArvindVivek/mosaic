@@ -118,7 +118,7 @@ export function ReportSection({ teamId, teamName }: ReportSectionProps) {
       {report && (
         <div className="space-y-4">
           <ReportTabs report={report} loading={isGenerating} />
-          <ReportDisplay report={report} isSnapshot={false} seriesIds={[]} />
+          <ReportDisplay report={report} isSnapshot={false} seriesIds={report.seriesIds ?? []} />
         </div>
       )}
     </div>
