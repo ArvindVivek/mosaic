@@ -219,11 +219,11 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
                   </span>
                 </div>
               )}
-              {strategies.attacking_tactics && strategies.attacking_tactics.length > 0 && (
+              {strategies.pistol_patterns && strategies.pistol_patterns.length > 0 && (
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Preferred Tactic</span>
+                  <span className="text-sm text-muted-foreground">Best Pistol Pattern</span>
                   <span className="text-sm font-medium">
-                    {strategies.attacking_tactics[0].tactic}
+                    {strategies.pistol_patterns.sort((a, b) => b.win_rate - a.win_rate)[0].pattern_type}
                   </span>
                 </div>
               )}

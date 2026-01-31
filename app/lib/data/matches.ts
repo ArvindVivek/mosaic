@@ -271,7 +271,7 @@ export const getMaps = cache(
 
     // Deduplicate
     const maps = new Set<string>()
-    data?.forEach((row) => {
+    ;(data as { map_name: string | null }[] | null)?.forEach((row) => {
       if (row.map_name) {
         maps.add(row.map_name)
       }
