@@ -91,6 +91,27 @@
   --valorant-dark: oklch(0.12 0.015 264);
   --valorant-darker: oklch(0.08 0.015 264);
   --valorant-accent: oklch(0.50 0.15 200);
+
+  /* Role-specific colors - Valorant themed */
+  --role-duelist: oklch(0.50 0.20 15); /* Aggressive red */
+  --role-duelist-light: oklch(0.60 0.18 15);
+  --role-duelist-dark: oklch(0.40 0.22 15);
+  --role-duelist-glow: rgba(255, 70, 85, 0.4);
+
+  --role-controller: oklch(0.55 0.18 240); /* Strategic blue */
+  --role-controller-light: oklch(0.65 0.16 240);
+  --role-controller-dark: oklch(0.45 0.20 240);
+  --role-controller-glow: rgba(70, 130, 255, 0.4);
+
+  --role-initiator: oklch(0.65 0.18 140); /* Info green */
+  --role-initiator-light: oklch(0.75 0.16 140);
+  --role-initiator-dark: oklch(0.55 0.20 140);
+  --role-initiator-glow: rgba(85, 255, 140, 0.4);
+
+  --role-sentinel: oklch(0.70 0.16 80); /* Defensive gold */
+  --role-sentinel-light: oklch(0.80 0.14 80);
+  --role-sentinel-dark: oklch(0.60 0.18 80);
+  --role-sentinel-glow: rgba(255, 200, 85, 0.4);
 }
 
 .dark {
@@ -136,6 +157,27 @@
   --valorant-dark: oklch(0.12 0.015 264);
   --valorant-darker: oklch(0.08 0.015 264);
   --valorant-accent: oklch(0.60 0.18 200);
+
+  /* Role-specific colors - Brighter for dark mode */
+  --role-duelist: oklch(0.60 0.22 15); /* Bright aggressive red */
+  --role-duelist-light: oklch(0.70 0.20 15);
+  --role-duelist-dark: oklch(0.50 0.24 15);
+  --role-duelist-glow: rgba(255, 70, 85, 0.5);
+
+  --role-controller: oklch(0.65 0.20 240); /* Bright strategic blue */
+  --role-controller-light: oklch(0.75 0.18 240);
+  --role-controller-dark: oklch(0.55 0.22 240);
+  --role-controller-glow: rgba(70, 130, 255, 0.5);
+
+  --role-initiator: oklch(0.70 0.20 140); /* Bright info green */
+  --role-initiator-light: oklch(0.80 0.18 140);
+  --role-initiator-dark: oklch(0.60 0.22 140);
+  --role-initiator-glow: rgba(85, 255, 140, 0.5);
+
+  --role-sentinel: oklch(0.75 0.18 80); /* Bright defensive gold */
+  --role-sentinel-light: oklch(0.85 0.16 80);
+  --role-sentinel-dark: oklch(0.65 0.20 80);
+  --role-sentinel-glow: rgba(255, 200, 85, 0.5);
 }
 
 @layer base {
@@ -180,6 +222,22 @@
   .bg-valorant-darker {
     background-color: var(--valorant-darker);
   }
+
+  /* Role-based utility classes */
+  .text-role-duelist { color: var(--role-duelist); }
+  .text-role-controller { color: var(--role-controller); }
+  .text-role-initiator { color: var(--role-initiator); }
+  .text-role-sentinel { color: var(--role-sentinel); }
+
+  .bg-role-duelist { background-color: var(--role-duelist); }
+  .bg-role-controller { background-color: var(--role-controller); }
+  .bg-role-initiator { background-color: var(--role-initiator); }
+  .bg-role-sentinel { background-color: var(--role-sentinel); }
+
+  .border-role-duelist { border-color: var(--role-duelist); }
+  .border-role-controller { border-color: var(--role-controller); }
+  .border-role-initiator { border-color: var(--role-initiator); }
+  .border-role-sentinel { border-color: var(--role-sentinel); }
 
   /* Smooth fade-in animation */
   @keyframes fadeIn {
@@ -305,5 +363,189 @@
     background: linear-gradient(to right, transparent 0%, var(--valorant-red) 50%, transparent 100%);
     background-size: 1000px 100%;
     animation: shimmer 2s infinite;
+  }
+
+  /* Role-based glow effects */
+  .glow-duelist {
+    box-shadow: 0 0 20px var(--role-duelist-glow), 0 0 40px var(--role-duelist-glow);
+  }
+
+  .glow-controller {
+    box-shadow: 0 0 20px var(--role-controller-glow), 0 0 40px var(--role-controller-glow);
+  }
+
+  .glow-initiator {
+    box-shadow: 0 0 20px var(--role-initiator-glow), 0 0 40px var(--role-initiator-glow);
+  }
+
+  .glow-sentinel {
+    box-shadow: 0 0 20px var(--role-sentinel-glow), 0 0 40px var(--role-sentinel-glow);
+  }
+
+  /* Hover glow animations */
+  .hover-glow-duelist {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow-duelist:hover {
+    box-shadow: 0 0 25px var(--role-duelist-glow), 0 0 50px var(--role-duelist-glow), inset 0 0 20px var(--role-duelist-glow);
+  }
+
+  .hover-glow-controller {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow-controller:hover {
+    box-shadow: 0 0 25px var(--role-controller-glow), 0 0 50px var(--role-controller-glow), inset 0 0 20px var(--role-controller-glow);
+  }
+
+  .hover-glow-initiator {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow-initiator:hover {
+    box-shadow: 0 0 25px var(--role-initiator-glow), 0 0 50px var(--role-initiator-glow), inset 0 0 20px var(--role-initiator-glow);
+  }
+
+  .hover-glow-sentinel {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow-sentinel:hover {
+    box-shadow: 0 0 25px var(--role-sentinel-glow), 0 0 50px var(--role-sentinel-glow), inset 0 0 20px var(--role-sentinel-glow);
+  }
+
+  /* Spotlight effect for important stats */
+  @keyframes spotlight {
+    0%, 100% {
+      box-shadow: 0 0 30px var(--valorant-red-light), inset 0 0 30px rgba(255, 70, 85, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 50px var(--valorant-red-light), inset 0 0 50px rgba(255, 70, 85, 0.2);
+    }
+  }
+
+  .spotlight {
+    animation: spotlight 3s ease-in-out infinite;
+  }
+
+  /* Gaming-style underline */
+  .gaming-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .gaming-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--role-duelist), var(--role-sentinel));
+    transition: width 0.3s ease;
+  }
+
+  .gaming-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Hexagon clip path for gaming aesthetic */
+  .hexagon-clip {
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  }
+
+  /* Energy bar animation */
+  @keyframes energyPulse {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleX(1.02);
+    }
+  }
+
+  .energy-bar {
+    animation: energyPulse 2s ease-in-out infinite;
+  }
+
+  /* Scan line effect */
+  @keyframes scanline {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  .scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scanline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--valorant-red), transparent);
+    animation: scanline 3s linear infinite;
+    opacity: 0.3;
+  }
+
+  /* Glitch effect for emphasis */
+  @keyframes glitch {
+    0%, 100% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      transform: translate(-2px, -2px);
+    }
+    60% {
+      transform: translate(2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  .glitch {
+    animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Corner accents - gaming UI detail */
+  .corner-accents {
+    position: relative;
+  }
+
+  .corner-accents::before,
+  .corner-accents::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--valorant-red);
+  }
+
+  .corner-accents::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .corner-accents::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
   }
 }

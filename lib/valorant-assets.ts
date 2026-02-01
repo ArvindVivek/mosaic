@@ -109,10 +109,10 @@ export function getAgentRole(agentName: string): string {
  */
 export function getRoleColor(role: string): string {
   const colors: Record<string, string> = {
-    'Duelist': 'text-valorant-red border-valorant-red',
-    'Initiator': 'text-valorant-gold border-valorant-gold',
-    'Controller': 'text-blue-500 border-blue-500',
-    'Sentinel': 'text-green-500 border-green-500',
+    'Duelist': 'text-role-duelist border-role-duelist',
+    'Initiator': 'text-role-initiator border-role-initiator',
+    'Controller': 'text-role-controller border-role-controller',
+    'Sentinel': 'text-role-sentinel border-role-sentinel',
   };
 
   return colors[role] || 'text-muted-foreground border-muted';
@@ -123,13 +123,27 @@ export function getRoleColor(role: string): string {
  */
 export function getRoleBgColor(role: string): string {
   const colors: Record<string, string> = {
-    'Duelist': 'bg-valorant-red/10 border-valorant-red/30',
-    'Initiator': 'bg-valorant-gold/10 border-valorant-gold/30',
-    'Controller': 'bg-blue-500/10 border-blue-500/30',
-    'Sentinel': 'bg-green-500/10 border-green-500/30',
+    'Duelist': 'bg-role-duelist/10 border-role-duelist/30',
+    'Initiator': 'bg-role-initiator/10 border-role-initiator/30',
+    'Controller': 'bg-role-controller/10 border-role-controller/30',
+    'Sentinel': 'bg-role-sentinel/10 border-role-sentinel/30',
   };
 
   return colors[role] || 'bg-muted border-border';
+}
+
+/**
+ * Get role description for tooltips
+ */
+export function getRoleDescription(role: string): string {
+  const descriptions: Record<string, string> = {
+    'Duelist': 'Aggressive entry fraggers who lead the charge',
+    'Initiator': 'Setup plays and gather info for the team',
+    'Controller': 'Block vision and control map territory',
+    'Sentinel': 'Defensive anchors who hold sites and flank',
+  };
+
+  return descriptions[role] || 'Unknown role';
 }
 
 /**
