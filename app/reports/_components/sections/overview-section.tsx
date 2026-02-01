@@ -7,6 +7,7 @@ import { StatCard } from '../visualizations/stat-card';
 import { DataFreshness } from '../visualizations/data-freshness';
 import type { ScoutingReport } from '@/app/lib/orchestration/types';
 import { formatMapName, formatAgentName, formatEconomyType, formatPistolPattern } from '@/lib/format';
+import { AgentGrid } from '../agent-icon';
 
 interface OverviewSectionProps {
   report: ScoutingReport;
@@ -169,19 +170,13 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-1 mb-2">
-                {mostUsedComp.composition?.slice(0, 3).map((agent, idx) => (
-                  <Badge key={idx} variant="secondary" className="text-xs">
-                    {formatAgentName(agent)}
-                  </Badge>
-                ))}
-                {(mostUsedComp.composition?.length ?? 0) > 3 && (
-                  <Badge variant="outline" className="text-xs">
-                    +{(mostUsedComp.composition?.length ?? 0) - 3}
-                  </Badge>
-                )}
-              </div>
-              <div className="text-xs text-muted-foreground">
+              <AgentGrid
+                agents={mostUsedComp.composition ?? []}
+                maxDisplay={5}
+                size="md"
+                showGlow
+              />
+              <div className="text-xs text-muted-foreground mt-3">
                 Used {mostUsedComp.games_played ?? 0}x • {Math.round(mostUsedComp.win_rate ?? 0)}% WR
               </div>
             </CardContent>

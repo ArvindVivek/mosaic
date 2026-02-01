@@ -189,80 +189,76 @@ function MapDetailCard({ map }: { map: MapWinRate }) {
   const hasImage = hasMapImage(map.map_name);
   const gradientClass = getMapGradient(map.map_name);
 
+  // Determine border color based on win rate
+  const borderColor = winRate >= 60 ? 'border-green-500/50' : winRate < 40 ? 'border-red-500/50' : 'border-border';
+
   return (
-    <Card className="card-hover overflow-hidden group relative">
-      {/* Map Image/Background */}
-      <div className="relative h-32 w-full overflow-hidden bg-gradient-to-br from-valorant-dark to-valorant-darker">
+    <Card className={`card-hover overflow-hidden group relative border-2 ${borderColor}`}>
+      {/* Full-size Map Image Background */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden">
         {hasImage && mapImage ? (
           <>
             <Image
               src={mapImage}
               alt={formatMapName(map.map_name)}
               fill
-              className="object-cover opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20"></div>
           </>
         ) : (
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass}`}></div>
         )}
 
-        {/* Map Name Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-xl font-bold text-white drop-shadow-lg">
-            {formatMapName(map.map_name)}
-          </h3>
-        </div>
+        {/* Content overlaid on image */}
+        <div className="absolute inset-0 flex flex-col justify-between p-4">
+          {/* Top: Win Rate Badge */}
+          <div className="flex justify-between items-start">
+            <Badge
+              variant="outline"
+              className="bg-black/60 border-white/20 text-white backdrop-blur-sm text-xs"
+            >
+              {gamesPlayed} games
+            </Badge>
+            <Badge
+              className={`${
+                winRate >= 60
+                  ? 'bg-green-500 hover:bg-green-600'
+                  : winRate < 40
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : 'bg-yellow-500 hover:bg-yellow-600'
+              } text-white font-bold shadow-lg text-sm px-3`}
+            >
+              {winRate}%
+            </Badge>
+          </div>
 
-        {/* Win Rate Badge */}
-        <div className="absolute top-3 right-3">
-          <Badge
-            variant={
-              winRate >= 60
-                ? 'default'
-                : winRate < 40
-                ? 'destructive'
-                : 'secondary'
-            }
-            className={`${
-              winRate >= 60 ? 'bg-valorant-red hover:bg-valorant-red/90' : ''
-            } font-bold shadow-lg`}
-          >
-            {winRate}% WR
-          </Badge>
+          {/* Bottom: Map name and stats */}
+          <div className="space-y-2">
+            <h3 className="text-2xl font-bold text-white drop-shadow-lg tracking-tight">
+              {formatMapName(map.map_name)}
+            </h3>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-md px-3 py-1.5">
+                <span className="text-green-400 font-bold text-lg">{wins}W</span>
+                <span className="text-white/50">-</span>
+                <span className="text-red-400 font-bold text-lg">{losses}L</span>
+              </div>
+              {(map.avg_rounds_won ?? 0) > 0 && (
+                <div className="text-white/80 text-sm bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
+                  <span className="text-white/60">Avg: </span>
+                  <span className="font-semibold">{(map.avg_rounds_won ?? 0).toFixed(1)}</span>
+                  <span className="text-white/60"> - </span>
+                  <span className="font-semibold">{(map.avg_rounds_lost ?? 0).toFixed(1)}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Stats Content */}
-      <CardContent className="pt-4">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="space-y-1">
-            <div className="text-muted-foreground text-xs">Record</div>
-            <div className="font-bold text-lg">
-              <span className="text-valorant-red">{wins}</span>
-              <span className="text-muted-foreground mx-1">-</span>
-              <span className="text-muted-foreground">{losses}</span>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-muted-foreground text-xs">Games</div>
-            <div className="font-bold text-lg">{gamesPlayed}</div>
-          </div>
-          {(map.avg_rounds_won ?? 0) > 0 && (
-            <div className="space-y-1">
-              <div className="text-muted-foreground text-xs">Avg Rounds Won</div>
-              <div className="font-semibold">{(map.avg_rounds_won ?? 0).toFixed(1)}</div>
-            </div>
-          )}
-          {(map.avg_rounds_lost ?? 0) > 0 && (
-            <div className="space-y-1">
-              <div className="text-muted-foreground text-xs">Avg Rounds Lost</div>
-              <div className="font-semibold">{(map.avg_rounds_lost ?? 0).toFixed(1)}</div>
-            </div>
-          )}
-        </div>
-      </CardContent>
     </Card>
   );
 }

@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, TrendingUp, TrendingDown } from 'lucide-react';
 import { StatCard } from '../visualizations/stat-card';
+import { AgentGrid } from '../agent-icon';
+import { formatMapName } from '@/lib/format';
 import type { CompositionStats } from '@/app/lib/analytics/types';
 
 interface CompositionsSectionProps {
@@ -133,29 +135,25 @@ function CompositionCard({ comp, tier }: CompositionCardProps) {
     : 'border-l-gray-300';
 
   return (
-    <Card className={`border-l-4 ${borderColor}`}>
+    <Card className={`border-l-4 ${borderColor} card-hover`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <Badge
             variant={tier === 'strong' ? 'default' : tier === 'weak' ? 'destructive' : 'secondary'}
-            className="text-sm"
+            className={`text-sm ${tier === 'strong' ? 'bg-green-500 hover:bg-green-600' : ''}`}
           >
             {winRate}% WR
           </Badge>
-          <span className="text-sm text-muted-foreground">
-            {winCount}W - {gamesPlayed - winCount}L
+          <span className="text-sm text-muted-foreground font-mono">
+            <span className="text-green-500">{winCount}W</span>
+            <span className="mx-1">-</span>
+            <span className="text-red-400">{gamesPlayed - winCount}L</span>
           </span>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {/* Agent List */}
-        <div className="flex flex-wrap gap-1">
-          {composition.map((agent) => (
-            <Badge key={agent} variant="outline" className="text-xs">
-              {agent}
-            </Badge>
-          ))}
-        </div>
+        {/* Agent Icons Grid */}
+        <AgentGrid agents={composition} maxDisplay={5} size="sm" showGlow />
 
         {/* Stats Row */}
         <div className="flex items-center justify-between text-sm">
@@ -164,12 +162,12 @@ function CompositionCard({ comp, tier }: CompositionCardProps) {
 
         {/* Maps Played */}
         {mapsPlayed.length > 0 && (
-          <div className="pt-2 border-t">
+          <div className="pt-2 border-t border-border/50">
             <div className="text-xs text-muted-foreground mb-1">Maps</div>
             <div className="flex flex-wrap gap-1">
               {mapsPlayed.map((map) => (
-                <Badge key={map} variant="secondary" className="text-xs capitalize">
-                  {map}
+                <Badge key={map} variant="secondary" className="text-xs">
+                  {formatMapName(map)}
                 </Badge>
               ))}
             </div>

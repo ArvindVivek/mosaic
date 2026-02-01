@@ -151,14 +151,13 @@ export function AgentGrid({ agents, maxDisplay = 5, size = 'md', showGlow = fals
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {displayAgents.map((agent, idx) => (
-        <AgentIcon
-          key={idx}
-          agentName={agent}
-          size={size}
-          showGlow={showGlow}
-          className="animate-fade-in"
-          style={{ animationDelay: `${idx * 50}ms` }}
-        />
+        <div key={idx} className="animate-fade-in" style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'backwards' }}>
+          <AgentIcon
+            agentName={agent}
+            size={size}
+            showGlow={showGlow}
+          />
+        </div>
       ))}
       {remainingCount > 0 && (
         <div className={cn(
