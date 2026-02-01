@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, TrendingUp, Target, Trophy, Crosshair, Sparkles } from 'lucide-react';
+import { AlertCircle, TrendingUp, Target, Trophy, Crosshair } from 'lucide-react';
 import { StatCard } from '../visualizations/stat-card';
 import { DataFreshness } from '../visualizations/data-freshness';
 import type { ScoutingReport } from '@/app/lib/orchestration/types';
@@ -69,27 +69,15 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
 
   return (
     <div className="space-y-6">
-      {/* Executive Summary Header */}
-      <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/5 via-primary/3 to-transparent border p-6 animate-fade-in">
-        <div className="relative z-10">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div>
-              <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                <Sparkles className="h-6 w-6 text-primary" />
-                Executive Summary
-              </h2>
-              <p className="text-muted-foreground">
-                Comprehensive analysis of team performance and strategic patterns
-              </p>
-            </div>
-            {metadata && (
-              <DataFreshness
-                matchCount={metadata.seriesCount}
-                lastUpdated={metadata.generatedAt}
-              />
-            )}
-          </div>
-        </div>
+      {/* Overview Header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Overview</h2>
+        {metadata && (
+          <DataFreshness
+            matchCount={metadata.seriesCount}
+            lastUpdated={metadata.generatedAt}
+          />
+        )}
       </div>
 
       {/* Key Performance Metrics */}

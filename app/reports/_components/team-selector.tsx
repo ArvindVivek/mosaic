@@ -37,13 +37,13 @@ export function TeamSelector({ teams }: TeamSelectorProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[300px] justify-between"
+          className="w-full justify-between overflow-hidden"
         >
-          {selectedTeam ? selectedTeam.name : 'Search VCT Americas teams...'}
+          <span className="truncate">{selectedTeam ? selectedTeam.name : 'Search VCT Americas teams...'}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
+      <PopoverContent className="w-[240px] p-0">
         <Command>
           <CommandInput placeholder="Search teams..." />
           <CommandList>

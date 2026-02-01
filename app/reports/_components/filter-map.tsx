@@ -34,13 +34,13 @@ export function FilterMap({ maps }: FilterMapProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[180px] justify-between"
+          className="w-full justify-between overflow-hidden"
         >
-          {mapName ?? 'Map'}
+          <span className="truncate">{mapName ?? 'Map'}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[180px] p-0">
+      <PopoverContent className="w-[240px] p-0">
         <Command>
           <CommandInput placeholder="Search maps..." />
           <CommandList>
