@@ -3,18 +3,14 @@
 import { useState, useEffect } from 'react'
 import { parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs'
 import { useSearchParams } from 'next/navigation'
-import { FileSearch, Share2, Sparkles, Loader2 } from 'lucide-react'
+import { FileSearch, Share2, Sparkles, Loader2, MessageCircle } from 'lucide-react'
 import { loadSnapshot } from '@/app/actions/snapshots'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { TeamSelector } from './team-selector'
-import { FilterTournament } from './filter-tournament'
-import { FilterMap } from './filter-map'
 import { ReportTabs } from './report-tabs'
 import { ReportDisplay } from './report-display'
 import type { Team } from '@/app/lib/data/teams'
-import type { Tournament } from '@/app/lib/data/matches'
 import type { ScoutingReport } from '@/app/lib/orchestration/types'
 import { FloatingChat } from './chat/floating-chat'
 
@@ -23,15 +19,10 @@ type TabValue = typeof TAB_VALUES[number]
 
 interface FilterBarProps {
   teams: Team[]
-  tournaments: Tournament[]
-  maps: string[]
 }
 
-export function FilterBar({ teams, tournaments, maps }: FilterBarProps) {
+export function FilterBar({ teams }: FilterBarProps) {
   const [teamId] = useQueryState('team', parseAsString)
-  const matchCount = 0 // Always use all available data
-  const [mapFilter] = useQueryState('map', parseAsString)
-  const [tournamentFilter] = useQueryState('tournament', parseAsString)
   const [tab, setTab] = useQueryState('tab', parseAsStringLiteral(TAB_VALUES).withDefault('overview'))
   const [report, setReport] = useState<ScoutingReport | null>(null)
 
@@ -41,7 +32,6 @@ export function FilterBar({ teams, tournaments, maps }: FilterBarProps) {
   const [reportGeneratedAt, setReportGeneratedAt] = useState<number | undefined>(undefined)
 
   const selectedTeam = teamId ? teams.find(t => t.id === teamId) : null
-  const selectedTournament = tournamentFilter ? tournaments.find(t => t.id === tournamentFilter) : null
 
   // Snapshot loading
   const searchParams = useSearchParams()
@@ -86,7 +76,6 @@ export function FilterBar({ teams, tournaments, maps }: FilterBarProps) {
         body: JSON.stringify({
           teamId: selectedTeam.id,
           teamName: selectedTeam.name,
-          matchCount: matchCount === 0 ? undefined : matchCount,
         }),
       })
 
@@ -134,29 +123,13 @@ export function FilterBar({ teams, tournaments, maps }: FilterBarProps) {
           {/* Team Selection */}
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Team
+              Select Team
             </label>
             <TeamSelector teams={teams} />
           </div>
 
-          {/* Tournament Filter */}
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Tournament
-            </label>
-            <FilterTournament tournaments={tournaments} />
-          </div>
-
-          {/* Map Filter */}
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Map
-            </label>
-            <FilterMap maps={maps} />
-          </div>
-
-          {/* Divider */}
-          <div className="border-t pt-4">
+          {/* Generate Button */}
+          <div className="pt-2">
             {/* Generate Button - Always visible */}
             <Button
               onClick={handleGenerateReport}
@@ -202,35 +175,18 @@ export function FilterBar({ teams, tournaments, maps }: FilterBarProps) {
             )}
           </div>
 
-          {/* Active Filters Summary */}
-          {(selectedTeam || mapFilter || tournamentFilter) && (
-            <Card className="bg-muted/30 border-0 shadow-none">
-              <CardContent className="p-3 space-y-2 text-sm">
-                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Active Filters
-                </div>
-                {selectedTeam && (
-                  <div>
-                    <div className="text-xs text-muted-foreground">Team</div>
-                    <div className="font-medium break-words">{selectedTeam.name}</div>
-                  </div>
-                )}
-                {selectedTournament && (
-                  <div>
-                    <div className="text-xs text-muted-foreground">Tournament</div>
-                    <div className="font-medium break-words">{selectedTournament.name}</div>
-                  </div>
-                )}
-                {mapFilter && (
-                  <div>
-                    <div className="text-xs text-muted-foreground">Map</div>
-                    <div className="font-medium capitalize break-words">{mapFilter}</div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          {/* Chat Hint */}
+          {selectedTeam && report && (
+            <div className="mt-6 p-3 bg-orange-50 rounded-lg border border-orange-100">
+              <div className="flex items-center gap-2 text-orange-700 text-sm font-medium mb-1">
+                <MessageCircle className="h-4 w-4" />
+                Ask the Assistant
+              </div>
+              <p className="text-xs text-orange-600/80">
+                Filter by map, tournament, or recent matches. Ask about first bloods, clutches, head-to-head records, and more.
+              </p>
+            </div>
           )}
-
         </div>
       </aside>
 

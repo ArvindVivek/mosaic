@@ -1,15 +1,10 @@
 import { Suspense } from 'react'
 import { getTeams } from '@/app/lib/data/teams'
-import { getTournaments, getMaps } from '@/app/lib/data/matches'
 import { FilterBar } from './_components/filter-bar'
 import { ReportFiltersSkeleton } from './_components/report-skeleton'
 
 export default async function ReportsPage() {
-  const [teams, tournaments, maps] = await Promise.all([
-    getTeams(),
-    getTournaments(),
-    getMaps(),
-  ])
+  const teams = await getTeams()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50/50">
@@ -29,7 +24,7 @@ export default async function ReportsPage() {
 
       {/* Unified Filter Bar + Content */}
       <Suspense fallback={<ReportFiltersSkeleton />}>
-        <FilterBar teams={teams} tournaments={tournaments} maps={maps} />
+        <FilterBar teams={teams} />
       </Suspense>
     </div>
   )
