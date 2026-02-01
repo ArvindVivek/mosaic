@@ -2,8 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Target, DollarSign, Crosshair } from 'lucide-react';
-import type { TeamStrategiesSummary, PistolPattern, EconomyPattern, SitePreference } from '@/app/lib/analytics/types';
+import { DollarSign, Crosshair } from 'lucide-react';
+import type { TeamStrategiesSummary, PistolPattern, EconomyPattern } from '@/app/lib/analytics/types';
 
 interface StrategiesSectionProps {
   strategies: TeamStrategiesSummary;
@@ -25,20 +25,7 @@ const economyLabels: Record<string, string> = {
 };
 
 export function StrategiesSection({ strategies }: StrategiesSectionProps) {
-  const { pistol_patterns, economy_patterns, site_preferences } = strategies;
-
-  // Filter out "unknown" site values and invalid data
-  const validSitePrefs = site_preferences.filter(
-    (s) => s.site && s.site.toLowerCase() !== 'unknown' && s.attacks > 0
-  );
-
-  // Group site preferences by map
-  const sitesByMap = validSitePrefs.reduce((acc, pref) => {
-    const map = pref.map_name;
-    if (!acc[map]) acc[map] = [];
-    acc[map].push(pref);
-    return acc;
-  }, {} as Record<string, SitePreference[]>);
+  const { pistol_patterns, economy_patterns } = strategies;
 
   return (
     <div className="space-y-8">
@@ -59,7 +46,7 @@ export function StrategiesSection({ strategies }: StrategiesSectionProps) {
         )}
       </div>
 
-      {/* Economy Management - Table format instead of bar graph */}
+      {/* Economy Management - Table format */}
       <div>
         <div className="flex items-center gap-2 mb-4">
           <DollarSign className="h-5 w-5 text-primary" />
@@ -69,23 +56,6 @@ export function StrategiesSection({ strategies }: StrategiesSectionProps) {
           <EmptyState message="No economy data available" />
         ) : (
           <EconomyTable patterns={economy_patterns} />
-        )}
-      </div>
-
-      {/* Site Preferences - Grouped by map */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Target className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold">Site Attack Preferences</h3>
-        </div>
-        {Object.keys(sitesByMap).length === 0 ? (
-          <EmptyState message="No site preference data available" />
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {Object.entries(sitesByMap).map(([mapName, prefs]) => (
-              <MapSiteCard key={mapName} mapName={mapName} sitePrefs={prefs} />
-            ))}
-          </div>
         )}
       </div>
     </div>
@@ -188,62 +158,6 @@ function EconomyTable({ patterns }: { patterns: EconomyPattern[] }) {
             </tbody>
           </table>
         </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function MapSiteCard({ mapName, sitePrefs }: { mapName: string; sitePrefs: SitePreference[] }) {
-  // Sort by preference percentage descending
-  const sorted = [...sitePrefs].sort((a, b) => (b.preference_pct ?? 0) - (a.preference_pct ?? 0));
-  const totalAttacks = sorted.reduce((sum, s) => sum + (s.attacks ?? 0), 0);
-
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base capitalize">{mapName}</CardTitle>
-        <p className="text-xs text-muted-foreground">{totalAttacks} total attacks</p>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {sorted.map((pref) => {
-          const prefPct = pref.preference_pct ?? 0;
-          const winRate = pref.win_rate ?? 0;
-          const isHighWinRate = winRate >= 55;
-          const isLowWinRate = winRate < 40;
-
-          return (
-            <div key={pref.site} className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium capitalize">{pref.site} Site</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">{prefPct}%</span>
-                  <Badge
-                    variant={isHighWinRate ? 'default' : isLowWinRate ? 'destructive' : 'secondary'}
-                    className="text-xs"
-                  >
-                    {winRate}% WR
-                  </Badge>
-                </div>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${prefPct}%`,
-                    background: isHighWinRate
-                      ? 'hsl(142, 76%, 36%)'
-                      : isLowWinRate
-                      ? 'hsl(0, 84%, 60%)'
-                      : 'hsl(var(--primary))'
-                  }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {pref.attacks} attacks
-              </p>
-            </div>
-          );
-        })}
       </CardContent>
     </Card>
   );
