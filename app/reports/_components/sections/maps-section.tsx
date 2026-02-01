@@ -26,20 +26,27 @@ export function MapsSection({ maps }: MapsSectionProps) {
   const strengths = sortedMaps.filter((m) => (m.win_rate ?? 0) >= 60);
   const weaknesses = sortedMaps.filter((m) => (m.win_rate ?? 0) < 40);
 
+  // Helper to get games played - fallback to wins + losses if games_played is 0
+  const getGamesPlayed = (m: MapWinRate) => {
+    const gp = m.games_played ?? 0;
+    if (gp > 0) return gp;
+    return (m.wins ?? 0) + (m.losses ?? 0);
+  };
+
   // Overall stats with comprehensive null checks
-  const totalGames = maps.reduce((sum, m) => sum + (m.games_played ?? 0), 0);
+  const totalGames = maps.reduce((sum, m) => sum + getGamesPlayed(m), 0);
   const totalWins = maps.reduce((sum, m) => sum + (m.wins ?? 0), 0);
   const avgRoundsWon = totalGames > 0
-    ? maps.reduce((sum, m) => sum + (m.avg_rounds_won ?? 0) * (m.games_played ?? 0), 0) / totalGames
+    ? maps.reduce((sum, m) => sum + (m.avg_rounds_won ?? 0) * getGamesPlayed(m), 0) / totalGames
     : 0;
   const avgRoundsLost = totalGames > 0
-    ? maps.reduce((sum, m) => sum + (m.avg_rounds_lost ?? 0) * (m.games_played ?? 0), 0) / totalGames
+    ? maps.reduce((sum, m) => sum + (m.avg_rounds_lost ?? 0) * getGamesPlayed(m), 0) / totalGames
     : 0;
 
   return (
     <div className="space-y-8">
       {/* Overview Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className={`grid gap-4 ${avgRoundsWon > 0 ? 'md:grid-cols-4' : 'md:grid-cols-2'}`}>
         <StatCard
           title="Maps Played"
           value={maps.length}
@@ -50,16 +57,20 @@ export function MapsSection({ maps }: MapsSectionProps) {
           value={totalGames}
           description={`${totalWins}W - ${totalGames - totalWins}L`}
         />
-        <StatCard
-          title="Avg Rounds Won"
-          value={avgRoundsWon.toFixed(1)}
-          description="Per game"
-        />
-        <StatCard
-          title="Avg Rounds Lost"
-          value={avgRoundsLost.toFixed(1)}
-          description="Per game"
-        />
+        {avgRoundsWon > 0 && (
+          <StatCard
+            title="Avg Rounds Won"
+            value={avgRoundsWon.toFixed(1)}
+            description="Per game"
+          />
+        )}
+        {avgRoundsLost > 0 && (
+          <StatCard
+            title="Avg Rounds Lost"
+            value={avgRoundsLost.toFixed(1)}
+            description="Per game"
+          />
+        )}
       </div>
 
       {/* Win Rate Chart */}
@@ -151,18 +162,16 @@ function MapStrengthRow({
 
 function MapDetailCard({ map }: { map: MapWinRate }) {
   const winRate = map.win_rate ?? 0;
-  const winRateColor =
-    winRate >= 60
-      ? 'text-green-600'
-      : winRate < 40
-      ? 'text-red-500'
-      : '';
+  const wins = map.wins ?? 0;
+  const losses = map.losses ?? 0;
+  // Calculate games from wins + losses if games_played is 0
+  const gamesPlayed = (map.games_played ?? 0) > 0 ? map.games_played : wins + losses;
 
   return (
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">{map.map_name}</CardTitle>
+          <CardTitle className="text-base capitalize">{map.map_name}</CardTitle>
           <Badge
             variant={
               winRate >= 60
@@ -181,21 +190,25 @@ function MapDetailCard({ map }: { map: MapWinRate }) {
           <div>
             <div className="text-muted-foreground">Record</div>
             <div className="font-semibold">
-              {map.wins ?? 0}W - {map.losses ?? 0}L
+              {wins}W - {losses}L
             </div>
           </div>
           <div>
             <div className="text-muted-foreground">Games</div>
-            <div className="font-semibold">{map.games_played ?? 0}</div>
+            <div className="font-semibold">{gamesPlayed}</div>
           </div>
-          <div>
-            <div className="text-muted-foreground">Avg Rounds Won</div>
-            <div className="font-semibold">{(map.avg_rounds_won ?? 0).toFixed(1)}</div>
-          </div>
-          <div>
-            <div className="text-muted-foreground">Avg Rounds Lost</div>
-            <div className="font-semibold">{(map.avg_rounds_lost ?? 0).toFixed(1)}</div>
-          </div>
+          {(map.avg_rounds_won ?? 0) > 0 && (
+            <div>
+              <div className="text-muted-foreground">Avg Rounds Won</div>
+              <div className="font-semibold">{(map.avg_rounds_won ?? 0).toFixed(1)}</div>
+            </div>
+          )}
+          {(map.avg_rounds_lost ?? 0) > 0 && (
+            <div>
+              <div className="text-muted-foreground">Avg Rounds Lost</div>
+              <div className="font-semibold">{(map.avg_rounds_lost ?? 0).toFixed(1)}</div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -2,41 +2,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User } from 'lucide-react';
+import { User, Users, Target, Crosshair, Shield } from 'lucide-react';
 import type { TeamPlayerSummary } from '@/app/lib/analytics/types';
-import { TrendChart, TrendSeries } from '../visualizations/trend-chart';
+import { StatCard } from '../visualizations/stat-card';
 
 interface PlayersSectionProps {
   players: TeamPlayerSummary[];
-}
-
-// Generate performance visualization for team
-// Shows current team snapshot - infrastructure ready for time-series when data available
-function generateTeamPerformanceData(players: TeamPlayerSummary[]): TrendSeries[] {
-  if (players.length === 0) return [];
-
-  // Calculate team averages with null checks
-  const avgACS = players.reduce((sum, p) => sum + (p.acs ?? 0), 0) / players.length;
-  const avgKAST = players.reduce((sum, p) => sum + (p.kast_pct ?? 0), 0) / players.length;
-
-  // Create current snapshot point
-  // Future enhancement: Replace with actual time-series data from match history
-  const today = new Date().toISOString().split('T')[0];
-
-  return [
-    {
-      id: 'acs',
-      name: 'Team Avg ACS',
-      data: [{ date: today, value: Math.round(avgACS) }],
-      yAxisId: 'left',
-    },
-    {
-      id: 'kast',
-      name: 'Team Avg KAST %',
-      data: [{ date: today, value: Math.round(avgKAST) }],
-      yAxisId: 'right',
-    },
-  ];
 }
 
 export function PlayersSection({ players }: PlayersSectionProps) {
@@ -139,15 +110,32 @@ export function PlayersSection({ players }: PlayersSectionProps) {
         </div>
       </div>
 
-      {/* Team Performance Overview */}
+      {/* Team Performance Summary */}
       <div className="mt-8">
-        <TrendChart
-          title="Team Performance Overview"
-          description="Current team performance metrics. Time-series trends available when match history data is included in report generation."
-          series={generateTeamPerformanceData(players)}
-          leftAxisLabel="ACS"
-          rightAxisLabel="KAST %"
-        />
+        <div className="flex items-center gap-2 mb-4">
+          <Users className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-semibold">Team Performance Summary</h3>
+        </div>
+        <div className="grid gap-4 md:grid-cols-4">
+          <StatCard
+            title="Team Avg ACS"
+            value={Math.round(avgACS)}
+            description={`Across ${players.length} players`}
+          />
+          <StatCard
+            title="Team Avg K/D"
+            value={avgKD.toFixed(2)}
+          />
+          <StatCard
+            title="Team Avg KAST"
+            value={`${Math.round(avgKAST)}%`}
+          />
+          <StatCard
+            title="Top Performer"
+            value={sortedPlayers[0]?.player_name ?? '-'}
+            description={`${Math.round(sortedPlayers[0]?.acs ?? 0)} ACS`}
+          />
+        </div>
       </div>
     </div>
   );

@@ -66,8 +66,9 @@ export function detectExploitablePatterns(
   }
 
   // Site preferences: Find weak sites (low success rate)
+  // Filter out "unknown" sites which indicate missing data
   for (const site of strategies.site_preferences) {
-    if (site.win_rate < 45 && site.attacks >= 10) {
+    if (site.site && site.site.toLowerCase() !== 'unknown' && site.win_rate < 45 && site.attacks >= 10) {
       patterns.push({
         scenario: `${site.map_name} ${site.site} site attacks`,
         win_rate: site.win_rate,
