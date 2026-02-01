@@ -272,7 +272,8 @@
   }
 
   .stat-hover:hover {
-    @apply bg-gradient-to-br from-valorant-red/10 to-transparent border-valorant-red/50;
+    background: linear-gradient(to bottom right, rgba(255, 70, 85, 0.1), transparent);
+    border-color: rgba(255, 70, 85, 0.5);
     transform: translateY(-2px);
   }
 
