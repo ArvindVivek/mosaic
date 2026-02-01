@@ -18,14 +18,11 @@ export default async function ReportsPage() {
         <div className="flex items-center justify-between gap-4 px-6 py-4">
           <div className="flex-shrink-0">
             <h1 className="text-xl font-bold tracking-tight">
-              VALORANT Scouting Reports
+              Mosaic
             </h1>
             <p className="text-xs text-muted-foreground hidden sm:block">
-              VCT Americas Analytics Dashboard
+              Valorant Scouting Analytics
             </p>
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {teams.length} teams available
           </div>
         </div>
       </div>

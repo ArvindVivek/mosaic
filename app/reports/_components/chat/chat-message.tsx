@@ -46,15 +46,21 @@ type ParsedPart = {
 function parseStructuredBlocks(content: string): ParsedPart[] {
   const parts: ParsedPart[] = []
 
-  // Match both self-closing blocks :::type{props} and blocks with content :::type{props}...:::end
-  const blockRegex = /:::(\w+)\{([^}]*)\}([\s\S]*?)(?::::end|(?=:::|\n\n|$))/g
+  // First, clean up any stray :::end markers and normalize whitespace
+  let cleanedContent = content
+    .replace(/\n?:::end\s*/g, '\n') // Remove :::end markers
+    .replace(/\n{3,}/g, '\n\n') // Normalize multiple newlines
+    .trim()
+
+  // Match blocks: :::type{props} with optional content until next block or end
+  const blockRegex = /:::(\w+)\{([^}]*)\}([\s\S]*?)(?=:::|\n\n|$)/g
   let lastIndex = 0
   let match
 
-  while ((match = blockRegex.exec(content)) !== null) {
+  while ((match = blockRegex.exec(cleanedContent)) !== null) {
     // Add text before this block
     if (match.index > lastIndex) {
-      const textBefore = content.slice(lastIndex, match.index).trim()
+      const textBefore = cleanedContent.slice(lastIndex, match.index).trim()
       if (textBefore) {
         parts.push({ type: 'text', content: textBefore })
       }
@@ -76,9 +82,9 @@ function parseStructuredBlocks(content: string): ParsedPart[] {
     lastIndex = match.index + match[0].length
   }
 
-  // Add remaining text
-  if (lastIndex < content.length) {
-    const remaining = content.slice(lastIndex).trim()
+  // Add remaining text (also clean any stray :::end)
+  if (lastIndex < cleanedContent.length) {
+    const remaining = cleanedContent.slice(lastIndex).replace(/:::end/g, '').trim()
     if (remaining) {
       parts.push({ type: 'text', content: remaining })
     }
