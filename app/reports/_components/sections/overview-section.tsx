@@ -2,10 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, TrendingUp, Target, Trophy, Crosshair } from 'lucide-react';
+import { AlertCircle, TrendingUp, Target, Trophy, Crosshair, Zap } from 'lucide-react';
 import { StatCard } from '../visualizations/stat-card';
 import { DataFreshness } from '../visualizations/data-freshness';
 import type { ScoutingReport } from '@/app/lib/orchestration/types';
+import { formatMapName, formatAgentName, formatEconomyType, formatPistolPattern } from '@/lib/format';
 
 interface OverviewSectionProps {
   report: ScoutingReport;
@@ -68,10 +69,13 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
   const insights = generateInsights(report);
 
   return (
-    <div className="space-y-6">
-      {/* Overview Header */}
+    <div className="space-y-8">
+      {/* Overview Header with Valorant styling */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Overview</h2>
+        <div className="space-y-1">
+          <h2 className="text-3xl font-bold tracking-tight text-gradient-valorant">Team Overview</h2>
+          <p className="text-sm text-muted-foreground">Competitive intelligence and performance metrics</p>
+        </div>
         {metadata && (
           <DataFreshness
             matchCount={metadata.seriesCount}
@@ -80,12 +84,15 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
         )}
       </div>
 
-      {/* Key Performance Metrics */}
+      {/* Key Performance Metrics - Gaming Style */}
       <div className="animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'backwards' }}>
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-primary" />
-          Team Performance Metrics
-        </h3>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-1 w-12 bg-gradient-to-r from-valorant-red to-valorant-gold rounded-full"></div>
+          <h3 className="text-xl font-bold flex items-center gap-2">
+            <Trophy className="h-6 w-6 text-valorant-red" />
+            Performance Metrics
+          </h3>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Team Avg ACS"
@@ -108,21 +115,25 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
         </div>
       </div>
 
-      {/* Key Highlights Grid */}
+      {/* Key Highlights Grid - Enhanced Gaming Aesthetic */}
       <div className="grid gap-4 md:grid-cols-3 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'backwards' }}>
         {/* Best Map */}
         {bestMap && (
-          <Card className="border-l-4 border-l-green-500 card-hover">
+          <Card className="border-l-4 border-l-valorant-red card-hover relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-valorant-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-4 w-4 text-valorant-red" />
                 Strongest Map
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{bestMap.map_name}</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                {bestMap.win_rate}% win rate ({bestMap.wins}W-{bestMap.losses}L)
+              <div className="text-2xl font-bold text-valorant-red">{formatMapName(bestMap.map_name)}</div>
+              <div className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                <Badge variant="outline" className="border-valorant-red/30 text-valorant-red">
+                  {bestMap.win_rate}% WR
+                </Badge>
+                <span>{bestMap.wins}W-{bestMap.losses}L</span>
               </div>
             </CardContent>
           </Card>
@@ -130,15 +141,16 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
 
         {/* Top Player */}
         {topPlayer && (
-          <Card className="border-l-4 border-l-blue-500 card-hover">
+          <Card className="border-l-4 border-l-valorant-gold card-hover relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-valorant-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Crosshair className="h-4 w-4" />
+                <Crosshair className="h-4 w-4 text-valorant-gold" />
                 Top Performer
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{topPlayer.player_name}</div>
+              <div className="text-2xl font-bold text-valorant-gold">{topPlayer.player_name}</div>
               <div className="text-sm text-muted-foreground mt-1">
                 {Math.round(topPlayer.acs)} ACS • {topPlayer.kd_ratio.toFixed(2)} K/D
               </div>
@@ -148,16 +160,26 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
 
         {/* Preferred Composition */}
         {mostUsedComp && (
-          <Card className="border-l-4 border-l-purple-500 card-hover">
+          <Card className="border-l-4 border-l-purple-500 card-hover relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Target className="h-4 w-4" />
+                <Target className="h-4 w-4 text-purple-500" />
                 Signature Comp
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-sm font-bold mb-1">
-                {mostUsedComp.composition?.join(', ') ?? 'Unknown'}
+              <div className="flex flex-wrap gap-1 mb-2">
+                {mostUsedComp.composition?.slice(0, 3).map((agent, idx) => (
+                  <Badge key={idx} variant="secondary" className="text-xs">
+                    {formatAgentName(agent)}
+                  </Badge>
+                ))}
+                {(mostUsedComp.composition?.length ?? 0) > 3 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{(mostUsedComp.composition?.length ?? 0) - 3}
+                  </Badge>
+                )}
               </div>
               <div className="text-xs text-muted-foreground">
                 Used {mostUsedComp.games_played ?? 0}x • {Math.round(mostUsedComp.win_rate ?? 0)}% WR
@@ -167,52 +189,58 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
         )}
       </div>
 
-      {/* Top Actionable Insights */}
+      {/* Top Actionable Insights - Enhanced */}
       {insights.length > 0 && (
         <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            Top Actionable Insights
-          </h3>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-1 w-12 bg-gradient-to-r from-valorant-gold to-valorant-red rounded-full"></div>
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <Zap className="h-6 w-6 text-valorant-gold" />
+              Key Insights
+            </h3>
+          </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {insights.slice(0, 6).map((insight, i) => (
-              <InsightCard key={i} insight={insight} />
+              <InsightCard key={i} insight={insight} delay={i * 0.05} />
             ))}
           </div>
         </div>
       )}
 
-      {/* Quick Stats Summary */}
+      {/* Quick Stats Summary - Refined */}
       <div className="grid gap-4 md:grid-cols-2 animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'backwards' }}>
         {/* Strategy Summary */}
         {strategies && (
-          <Card className="card-hover">
+          <Card className="card-hover border-valorant-red/20">
             <CardHeader>
-              <CardTitle className="text-base">Strategic Tendencies</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <div className="h-8 w-1 bg-gradient-to-b from-valorant-red to-valorant-gold rounded-full"></div>
+                Strategic Tendencies
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {strategies.site_preferences && strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown').length > 0 && (
-                <div className="flex justify-between items-center pb-2 border-b">
+                <div className="flex justify-between items-center pb-2 border-b border-border/50">
                   <span className="text-sm text-muted-foreground">Top Site Preference</span>
                   <span className="text-sm font-medium">
-                    {strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown')[0].site} on {strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown')[0].map_name}
+                    {strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown')[0].site} on {formatMapName(strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown')[0].map_name)}
                   </span>
                 </div>
               )}
               {strategies.economy_patterns && strategies.economy_patterns.length > 0 && (
-                <div className="flex justify-between items-center pb-2 border-b">
+                <div className="flex justify-between items-center pb-2 border-b border-border/50">
                   <span className="text-sm text-muted-foreground">Best Economy Type</span>
-                  <span className="text-sm font-medium">
-                    {strategies.economy_patterns.sort((a, b) => b.win_rate - a.win_rate)[0].economy_type}
-                  </span>
+                  <Badge variant="outline" className="text-sm">
+                    {formatEconomyType(strategies.economy_patterns.sort((a, b) => b.win_rate - a.win_rate)[0].economy_type)}
+                  </Badge>
                 </div>
               )}
               {strategies.pistol_patterns && strategies.pistol_patterns.length > 0 && (
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Best Pistol Pattern</span>
-                  <span className="text-sm font-medium">
-                    {strategies.pistol_patterns.sort((a, b) => b.win_rate - a.win_rate)[0].pattern_type}
-                  </span>
+                  <Badge variant="outline" className="text-sm">
+                    {formatPistolPattern(strategies.pistol_patterns.sort((a, b) => b.win_rate - a.win_rate)[0].pattern_type)}
+                  </Badge>
                 </div>
               )}
             </CardContent>
@@ -221,17 +249,23 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
 
         {/* Player Summary */}
         {players.length > 0 && (
-          <Card className="card-hover">
+          <Card className="card-hover border-valorant-gold/20">
             <CardHeader>
-              <CardTitle className="text-base">Player Roster</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <div className="h-8 w-1 bg-gradient-to-b from-valorant-gold to-valorant-red rounded-full"></div>
+                Player Roster
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {players.slice(0, 5).map((player, i) => (
-                <div key={i} className="flex justify-between items-center text-sm transition-colors duration-150 hover:text-primary">
-                  <span className="font-medium">{player.player_name}</span>
-                  <div className="flex gap-3 text-muted-foreground">
-                    <span>{Math.round(player.acs)} ACS</span>
-                    <span>{player.kd_ratio.toFixed(2)} K/D</span>
+                <div
+                  key={i}
+                  className="flex justify-between items-center text-sm p-2 rounded-md transition-all duration-200 hover:bg-valorant-red/5 hover:border-l-2 hover:border-l-valorant-red group"
+                >
+                  <span className="font-medium group-hover:text-valorant-red transition-colors">{player.player_name}</span>
+                  <div className="flex gap-3 text-muted-foreground text-xs">
+                    <span className="font-mono">{Math.round(player.acs)} ACS</span>
+                    <span className="font-mono">{player.kd_ratio.toFixed(2)} K/D</span>
                   </div>
                 </div>
               ))}
@@ -243,20 +277,35 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
   );
 }
 
-function InsightCard({ insight }: { insight: Insight }) {
+function InsightCard({ insight, delay }: { insight: Insight; delay: number }) {
   const getIcon = () => {
     switch (insight.icon) {
       case 'alert':
         return <AlertCircle className="h-5 w-5 text-amber-500" />;
       case 'trend':
-        return <TrendingUp className="h-5 w-5 text-green-500" />;
+        return <TrendingUp className="h-5 w-5 text-valorant-red" />;
       case 'target':
-        return <Target className="h-5 w-5 text-blue-500" />;
+        return <Target className="h-5 w-5 text-valorant-gold" />;
+    }
+  };
+
+  const getBorderColor = () => {
+    switch (insight.significance) {
+      case 'high':
+        return 'border-l-4 border-l-valorant-red';
+      case 'medium':
+        return 'border-l-4 border-l-valorant-gold';
+      default:
+        return 'border-l-2 border-l-border';
     }
   };
 
   return (
-    <Card className="card-hover scale-in">
+    <Card
+      className={`card-hover scale-in ${getBorderColor()} relative overflow-hidden group`}
+      style={{ animationDelay: `${delay}s`, animationFillMode: 'backwards' }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-valorant-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex gap-2 items-start">
@@ -271,7 +320,7 @@ function InsightCard({ insight }: { insight: Insight }) {
                 ? 'secondary'
                 : 'outline'
             }
-            className="text-xs"
+            className={`text-xs ${insight.significance === 'high' ? 'bg-valorant-red text-white' : ''}`}
           >
             {insight.significance}
           </Badge>
@@ -279,7 +328,10 @@ function InsightCard({ insight }: { insight: Insight }) {
       </CardHeader>
       <CardContent className="space-y-2">
         <p className="text-sm">{insight.description}</p>
-        <p className="text-xs text-muted-foreground">{insight.data_backing}</p>
+        <p className="text-xs text-muted-foreground flex items-center gap-1">
+          <div className="h-1 w-1 rounded-full bg-valorant-red"></div>
+          {insight.data_backing}
+        </p>
       </CardContent>
     </Card>
   );
@@ -299,9 +351,9 @@ function generateInsights(report: ScoutingReport): Insight[] {
 
     if (bestMap.win_rate >= 60) {
       insights.push({
-        title: `Strong on ${bestMap.map_name}`,
-        description: `Team has ${bestMap.win_rate}% win rate on ${bestMap.map_name}, their strongest map.`,
-        data_backing: `Based on ${bestMap.games_played} games (${bestMap.wins}W-${bestMap.losses}L)`,
+        title: `Dominant on ${formatMapName(bestMap.map_name)}`,
+        description: `Team excels on ${formatMapName(bestMap.map_name)} with ${bestMap.win_rate}% win rate.`,
+        data_backing: `${bestMap.games_played} games played (${bestMap.wins}W-${bestMap.losses}L)`,
         significance: bestMap.win_rate >= 70 ? 'high' : 'medium',
         icon: 'trend',
       });
@@ -309,9 +361,9 @@ function generateInsights(report: ScoutingReport): Insight[] {
 
     if (worstMap.win_rate < 40 && worstMap.games_played >= 3) {
       insights.push({
-        title: `Weak on ${worstMap.map_name}`,
-        description: `Team struggles on ${worstMap.map_name} with only ${worstMap.win_rate}% win rate.`,
-        data_backing: `Based on ${worstMap.games_played} games (${worstMap.wins}W-${worstMap.losses}L)`,
+        title: `Weak on ${formatMapName(worstMap.map_name)}`,
+        description: `Team struggles on ${formatMapName(worstMap.map_name)} with only ${worstMap.win_rate}% win rate.`,
+        data_backing: `${worstMap.games_played} games analyzed (${worstMap.wins}W-${worstMap.losses}L)`,
         significance: worstMap.win_rate < 30 ? 'high' : 'medium',
         icon: 'alert',
       });
@@ -325,8 +377,8 @@ function generateInsights(report: ScoutingReport): Insight[] {
       const topSite = prefs.reduce((max, p) => (p.preference_pct > max.preference_pct ? p : max));
       if (topSite.preference_pct >= 60) {
         insights.push({
-          title: `Prefers ${topSite.map_name} ${topSite.site} site`,
-          description: `Team attacks ${topSite.site} site ${topSite.preference_pct}% of the time on ${topSite.map_name}.`,
+          title: `Favors ${formatMapName(topSite.map_name)} ${topSite.site} Site`,
+          description: `Team attacks ${topSite.site} site ${topSite.preference_pct}% of the time on ${formatMapName(topSite.map_name)}.`,
           data_backing: `${topSite.attacks} attacks with ${topSite.win_rate}% success rate`,
           significance: topSite.preference_pct >= 70 ? 'high' : 'medium',
           icon: 'target',
@@ -342,7 +394,7 @@ function generateInsights(report: ScoutingReport): Insight[] {
 
     if (forcePattern && forcePattern.win_rate >= 45) {
       insights.push({
-        title: 'Strong force buy success',
+        title: 'Strong Force Buy Execution',
         description: `Team wins ${forcePattern.win_rate}% of force buy rounds, above typical rates.`,
         data_backing: `${forcePattern.occurrences} force buy rounds analyzed`,
         significance: forcePattern.win_rate >= 50 ? 'high' : 'medium',
@@ -352,8 +404,8 @@ function generateInsights(report: ScoutingReport): Insight[] {
 
     if (ecoPattern && ecoPattern.win_rate >= 20) {
       insights.push({
-        title: 'Eco round specialists',
-        description: `Team wins ${ecoPattern.win_rate}% of eco rounds, showing scrappy play.`,
+        title: 'Eco Round Specialists',
+        description: `Team wins ${ecoPattern.win_rate}% of eco rounds, showing resourceful play.`,
         data_backing: `${ecoPattern.occurrences} eco rounds analyzed`,
         significance: ecoPattern.win_rate >= 25 ? 'high' : 'medium',
         icon: 'trend',
@@ -369,7 +421,7 @@ function generateInsights(report: ScoutingReport): Insight[] {
 
     if (aboveAvgPct >= 15) {
       insights.push({
-        title: `${topPlayer.player_name} is the star`,
+        title: `${topPlayer.player_name} Leads the Charge`,
         description: `${topPlayer.player_name} leads with ${Math.round(topPlayer.acs)} ACS, ${Math.round(aboveAvgPct)}% above team average.`,
         data_backing: `K/D: ${topPlayer.kd_ratio.toFixed(2)}, KAST: ${Math.round(topPlayer.kast_pct)}%`,
         significance: aboveAvgPct >= 25 ? 'high' : 'medium',

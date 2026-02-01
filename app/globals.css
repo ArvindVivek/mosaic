@@ -47,72 +47,95 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --radius: 0.5rem;
+
+  /* Valorant-themed light mode (keeping clean look for light mode) */
+  --background: oklch(0.98 0.002 264);
+  --foreground: oklch(0.15 0.01 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.15 0.01 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.15 0.01 264);
+  --primary: oklch(0.45 0.18 15); /* Valorant red */
+  --primary-foreground: oklch(0.98 0.002 264);
+  --secondary: oklch(0.92 0.01 264);
+  --secondary-foreground: oklch(0.15 0.01 264);
+  --muted: oklch(0.95 0.005 264);
+  --muted-foreground: oklch(0.50 0.01 264);
+  --accent: oklch(0.85 0.15 85); /* Valorant gold */
+  --accent-foreground: oklch(0.15 0.01 264);
+  --destructive: oklch(0.55 0.22 20);
+  --border: oklch(0.88 0.005 264);
+  --input: oklch(0.88 0.005 264);
+  --ring: oklch(0.45 0.18 15);
+  --chart-1: oklch(0.45 0.18 15); /* Valorant red */
+  --chart-2: oklch(0.85 0.15 85); /* Gold */
+  --chart-3: oklch(0.50 0.15 200); /* Blue */
+  --chart-4: oklch(0.55 0.12 280); /* Purple */
+  --chart-5: oklch(0.60 0.18 160); /* Green */
+  --sidebar: oklch(0.98 0.002 264);
+  --sidebar-foreground: oklch(0.15 0.01 264);
+  --sidebar-primary: oklch(0.45 0.18 15);
+  --sidebar-primary-foreground: oklch(0.98 0.002 264);
+  --sidebar-accent: oklch(0.95 0.005 264);
+  --sidebar-accent-foreground: oklch(0.15 0.01 264);
+  --sidebar-border: oklch(0.88 0.005 264);
+  --sidebar-ring: oklch(0.45 0.18 15);
+
+  /* Valorant custom colors */
+  --valorant-red: oklch(0.45 0.18 15);
+  --valorant-red-light: oklch(0.55 0.16 15);
+  --valorant-red-dark: oklch(0.35 0.20 15);
+  --valorant-gold: oklch(0.85 0.15 85);
+  --valorant-gold-dark: oklch(0.75 0.15 85);
+  --valorant-dark: oklch(0.12 0.015 264);
+  --valorant-darker: oklch(0.08 0.015 264);
+  --valorant-accent: oklch(0.50 0.15 200);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Valorant-themed dark mode - true gaming aesthetic */
+  --background: oklch(0.10 0.015 264); /* Dark blue-black background */
+  --foreground: oklch(0.95 0.01 264);
+  --card: oklch(0.15 0.02 264); /* Slightly lighter than background */
+  --card-foreground: oklch(0.95 0.01 264);
+  --popover: oklch(0.15 0.02 264);
+  --popover-foreground: oklch(0.95 0.01 264);
+  --primary: oklch(0.55 0.20 15); /* Bright Valorant red */
+  --primary-foreground: oklch(0.98 0.002 264);
+  --secondary: oklch(0.20 0.02 264);
+  --secondary-foreground: oklch(0.95 0.01 264);
+  --muted: oklch(0.18 0.02 264);
+  --muted-foreground: oklch(0.60 0.01 264);
+  --accent: oklch(0.75 0.18 85); /* Bright gold accent */
+  --accent-foreground: oklch(0.10 0.015 264);
+  --destructive: oklch(0.60 0.22 20);
+  --border: oklch(0.25 0.03 264); /* Subtle borders */
+  --input: oklch(0.20 0.03 264);
+  --ring: oklch(0.55 0.20 15); /* Red focus rings */
+  --chart-1: oklch(0.55 0.20 15); /* Valorant red */
+  --chart-2: oklch(0.75 0.18 85); /* Gold */
+  --chart-3: oklch(0.60 0.18 200); /* Blue */
+  --chart-4: oklch(0.65 0.15 280); /* Purple */
+  --chart-5: oklch(0.70 0.20 160); /* Green */
+  --sidebar: oklch(0.12 0.015 264);
+  --sidebar-foreground: oklch(0.95 0.01 264);
+  --sidebar-primary: oklch(0.55 0.20 15);
+  --sidebar-primary-foreground: oklch(0.98 0.002 264);
+  --sidebar-accent: oklch(0.18 0.02 264);
+  --sidebar-accent-foreground: oklch(0.95 0.01 264);
+  --sidebar-border: oklch(0.25 0.03 264);
+  --sidebar-ring: oklch(0.55 0.20 15);
+
+  /* Valorant custom colors for dark mode */
+  --valorant-red: oklch(0.55 0.20 15);
+  --valorant-red-light: oklch(0.65 0.18 15);
+  --valorant-red-dark: oklch(0.45 0.22 15);
+  --valorant-gold: oklch(0.75 0.18 85);
+  --valorant-gold-dark: oklch(0.65 0.18 85);
+  --valorant-dark: oklch(0.12 0.015 264);
+  --valorant-darker: oklch(0.08 0.015 264);
+  --valorant-accent: oklch(0.60 0.18 200);
 }
 
 @layer base {
@@ -125,6 +148,39 @@
 }
 
 @layer utilities {
+  /* Valorant-themed custom colors */
+  .text-valorant-red {
+    color: var(--valorant-red);
+  }
+
+  .bg-valorant-red {
+    background-color: var(--valorant-red);
+  }
+
+  .border-valorant-red {
+    border-color: var(--valorant-red);
+  }
+
+  .text-valorant-gold {
+    color: var(--valorant-gold);
+  }
+
+  .bg-valorant-gold {
+    background-color: var(--valorant-gold);
+  }
+
+  .border-valorant-gold {
+    border-color: var(--valorant-gold);
+  }
+
+  .bg-valorant-dark {
+    background-color: var(--valorant-dark);
+  }
+
+  .bg-valorant-darker {
+    background-color: var(--valorant-darker);
+  }
+
   /* Smooth fade-in animation */
   @keyframes fadeIn {
     from {
@@ -138,14 +194,14 @@
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Staggered animation for grid items */
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(16px);
     }
     to {
       opacity: 1;
@@ -154,16 +210,95 @@
   }
 
   .animate-slide-up {
-    animation: slideUp 0.4s ease-out;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Hover effect enhancements */
+  /* Gaming-style slide from left */
+  @keyframes slideFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slide-left {
+    animation: slideFromLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Pulse animation for important elements */
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 5px var(--valorant-red), 0 0 10px var(--valorant-red);
+    }
+    50% {
+      box-shadow: 0 0 10px var(--valorant-red), 0 0 20px var(--valorant-red);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  /* Hover effect enhancements - gaming style */
   .card-hover {
-    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-300 hover:shadow-2xl hover:shadow-valorant-red/20 hover:-translate-y-1;
   }
 
   /* Smooth scale animation */
   .scale-in {
-    @apply transition-transform duration-200 hover:scale-[1.02];
+    @apply transition-transform duration-300 hover:scale-[1.03];
+  }
+
+  /* Gaming border glow effect */
+  .border-glow {
+    @apply border-2 transition-all duration-300;
+  }
+
+  .border-glow:hover {
+    box-shadow: 0 0 15px var(--valorant-red);
+  }
+
+  /* Stat card gaming hover */
+  .stat-hover {
+    @apply transition-all duration-300 cursor-pointer;
+  }
+
+  .stat-hover:hover {
+    @apply bg-gradient-to-br from-valorant-red/10 to-transparent border-valorant-red/50;
+    transform: translateY(-2px);
+  }
+
+  /* Gradient text effect */
+  .text-gradient-valorant {
+    background: linear-gradient(135deg, var(--valorant-red) 0%, var(--valorant-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gaming backdrop blur */
+  .gaming-blur {
+    backdrop-filter: blur(12px) saturate(180%);
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Shimmer effect for loading */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(to right, transparent 0%, var(--valorant-red) 50%, transparent 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
   }
 }
