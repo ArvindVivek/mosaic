@@ -229,4 +229,123 @@ export const analyticsTools: ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: 'function',
+    function: {
+      name: 'get_recent_matches',
+      description: 'Get recent match history for a team with opponent names, scores, and map results. Perfect for questions about recent performance, win streaks, or last N games.',
+      parameters: {
+        type: 'object',
+        properties: {
+          teamId: {
+            type: 'string',
+            description: 'Team UUID',
+          },
+          limit: {
+            type: 'number',
+            description: 'Number of recent matches to return (default 10, max 50)',
+          },
+        },
+        required: ['teamId'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_series_by_map',
+      description: 'Get series IDs that include a specific map. Use this to filter other analytics queries by map. For example, to analyze performance only on Ascent, first get series IDs for Ascent, then pass those IDs to other tools.',
+      parameters: {
+        type: 'object',
+        properties: {
+          teamId: {
+            type: 'string',
+            description: 'Team UUID',
+          },
+          mapName: {
+            type: 'string',
+            description: 'Map name (e.g., "Ascent", "Haven", "Split", "Bind", "Icebox", "Breeze", "Fracture", "Pearl", "Lotus", "Sunset", "Abyss")',
+          },
+        },
+        required: ['teamId', 'mapName'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_first_blood_stats',
+      description: 'Get first blood (first kill/first death) statistics for all players on a team. Shows FK rate, FD rate, and FK-FD differential. Essential for identifying aggressive entry players or players who die first often.',
+      parameters: {
+        type: 'object',
+        properties: {
+          teamId: {
+            type: 'string',
+            description: 'Team UUID',
+          },
+          seriesIds: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Optional array of series UUIDs to filter by. Use get_series_by_map or get_recent_matches to get specific series.',
+          },
+        },
+        required: ['teamId'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_clutch_stats',
+      description: 'Get clutch performance statistics for all players on a team. Shows clutch situations encountered, clutch wins, and clutch win rate. Identifies players who perform under pressure.',
+      parameters: {
+        type: 'object',
+        properties: {
+          teamId: {
+            type: 'string',
+            description: 'Team UUID',
+          },
+          seriesIds: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Optional array of series UUIDs to filter by',
+          },
+        },
+        required: ['teamId'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_tournaments',
+      description: 'Get list of all tournaments in the database with their dates. Use this to understand what tournaments a team has played in.',
+      parameters: {
+        type: 'object',
+        properties: {},
+        required: [],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'get_head_to_head',
+      description: 'Get head-to-head record between two teams including series wins/losses and map-by-map breakdown.',
+      parameters: {
+        type: 'object',
+        properties: {
+          teamId: {
+            type: 'string',
+            description: 'First team UUID (typically the team being scouted)',
+          },
+          opponentId: {
+            type: 'string',
+            description: 'Opponent team UUID',
+          },
+        },
+        required: ['teamId', 'opponentId'],
+      },
+    },
+  },
 ]
