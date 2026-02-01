@@ -34,9 +34,10 @@ export function ExecutiveSummary({ report }: ExecutiveSummaryProps) {
     ? Math.round(players.reduce((sum, p) => sum + p.kast_pct, 0) / players.length)
     : 0;
 
-  // Map performance
-  const totalGames = maps.reduce((sum, m) => sum + m.games_played, 0);
-  const totalWins = maps.reduce((sum, m) => sum + m.wins, 0);
+  // Map performance - use actual wins/losses fields
+  const totalWins = maps.reduce((sum, m) => sum + (m.wins ?? 0), 0);
+  const totalLosses = maps.reduce((sum, m) => sum + (m.losses ?? 0), 0);
+  const totalGames = totalWins + totalLosses;
   const overallWinRate = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0;
 
   // Generate insights from data
@@ -64,7 +65,7 @@ export function ExecutiveSummary({ report }: ExecutiveSummaryProps) {
           <StatCard
             title="Overall Win Rate"
             value={`${overallWinRate}%`}
-            description={`${totalWins}W - ${totalGames - totalWins}L (${totalGames} games)`}
+            description={`${totalWins}W - ${totalLosses}L (${totalGames} games)`}
           />
         </div>
       </div>
@@ -158,18 +159,20 @@ function generateInsights(report: ScoutingReport): Insight[] {
     }
   }
 
-  // Insight 2: Site preference patterns
+  // Insight 2: Site preference patterns (filter out "unknown" sites)
   if (strategies?.site_preferences && strategies.site_preferences.length > 0) {
-    const prefs = strategies.site_preferences;
-    const topSite = prefs.reduce((max, p) => (p.preference_pct > max.preference_pct ? p : max));
-    if (topSite.preference_pct >= 60) {
-      insights.push({
-        title: `Prefers ${topSite.map_name} ${topSite.site} site`,
-        description: `Team attacks ${topSite.site} site ${topSite.preference_pct}% of the time on ${topSite.map_name}.`,
-        data_backing: `${topSite.attacks} attacks with ${topSite.win_rate}% success rate`,
-        significance: topSite.preference_pct >= 70 ? 'high' : 'medium',
-        icon: 'target',
-      });
+    const prefs = strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown');
+    if (prefs.length > 0) {
+      const topSite = prefs.reduce((max, p) => (p.preference_pct > max.preference_pct ? p : max));
+      if (topSite.preference_pct >= 60) {
+        insights.push({
+          title: `Prefers ${topSite.map_name} ${topSite.site} site`,
+          description: `Team attacks ${topSite.site} site ${topSite.preference_pct}% of the time on ${topSite.map_name}.`,
+          data_backing: `${topSite.attacks} attacks with ${topSite.win_rate}% success rate`,
+          significance: topSite.preference_pct >= 70 ? 'high' : 'medium',
+          icon: 'target',
+        });
+      }
     }
   }
 

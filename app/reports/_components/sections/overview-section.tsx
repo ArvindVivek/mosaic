@@ -41,10 +41,10 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
     ? Math.round(players.reduce((sum, p) => sum + p.kast_pct, 0) / players.length)
     : 0;
 
-  // Map performance - with null checks
-  const totalGames = maps.reduce((sum, m) => sum + (m.games_played ?? 0), 0);
+  // Map performance - use actual wins/losses fields
   const totalWins = maps.reduce((sum, m) => sum + (m.wins ?? 0), 0);
-  const totalLosses = totalGames - totalWins;
+  const totalLosses = maps.reduce((sum, m) => sum + (m.losses ?? 0), 0);
+  const totalGames = totalWins + totalLosses;
   const overallWinRate = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0;
 
   // Best map - filter out invalid data
@@ -191,11 +191,11 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
               <CardTitle className="text-base">Strategic Tendencies</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {strategies.site_preferences && strategies.site_preferences.length > 0 && (
+              {strategies.site_preferences && strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown').length > 0 && (
                 <div className="flex justify-between items-center pb-2 border-b">
                   <span className="text-sm text-muted-foreground">Top Site Preference</span>
                   <span className="text-sm font-medium">
-                    {strategies.site_preferences[0].site} on {strategies.site_preferences[0].map_name}
+                    {strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown')[0].site} on {strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown')[0].map_name}
                   </span>
                 </div>
               )}
@@ -318,18 +318,20 @@ function generateInsights(report: ScoutingReport): Insight[] {
     }
   }
 
-  // Insight 2: Site preference patterns
+  // Insight 2: Site preference patterns (filter out "unknown" sites)
   if (strategies?.site_preferences && strategies.site_preferences.length > 0) {
-    const prefs = strategies.site_preferences;
-    const topSite = prefs.reduce((max, p) => (p.preference_pct > max.preference_pct ? p : max));
-    if (topSite.preference_pct >= 60) {
-      insights.push({
-        title: `Prefers ${topSite.map_name} ${topSite.site} site`,
-        description: `Team attacks ${topSite.site} site ${topSite.preference_pct}% of the time on ${topSite.map_name}.`,
-        data_backing: `${topSite.attacks} attacks with ${topSite.win_rate}% success rate`,
-        significance: topSite.preference_pct >= 70 ? 'high' : 'medium',
-        icon: 'target',
-      });
+    const prefs = strategies.site_preferences.filter(s => s.site && s.site.toLowerCase() !== 'unknown');
+    if (prefs.length > 0) {
+      const topSite = prefs.reduce((max, p) => (p.preference_pct > max.preference_pct ? p : max));
+      if (topSite.preference_pct >= 60) {
+        insights.push({
+          title: `Prefers ${topSite.map_name} ${topSite.site} site`,
+          description: `Team attacks ${topSite.site} site ${topSite.preference_pct}% of the time on ${topSite.map_name}.`,
+          data_backing: `${topSite.attacks} attacks with ${topSite.win_rate}% success rate`,
+          significance: topSite.preference_pct >= 70 ? 'high' : 'medium',
+          icon: 'target',
+        });
+      }
     }
   }
 
