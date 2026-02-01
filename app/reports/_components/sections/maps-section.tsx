@@ -50,13 +50,11 @@ export function MapsSection({ maps }: MapsSectionProps) {
   return (
     <div className="space-y-8">
       {/* Section Header */}
-      <div className="flex items-center gap-3">
-        <div className="h-1 w-12 bg-gradient-to-r from-valorant-red to-valorant-gold rounded-full"></div>
-        <h3 className="text-xl font-bold flex items-center gap-2">
-          <MapIcon className="h-6 w-6 text-valorant-red" />
-          Map Pool Analysis
-        </h3>
-      </div>
+      <h3 className="text-xl font-bold flex items-center gap-2">
+        <MapIcon className="h-6 w-6 text-valorant-red" />
+        Map Pool Analysis
+        <div className="h-0.5 flex-1 bg-gradient-to-r from-valorant-red/50 to-transparent rounded-full ml-2"></div>
+      </h3>
 
       {/* Overview Stats */}
       <div className={`grid gap-4 ${avgRoundsWon > 0 ? 'md:grid-cols-4' : 'md:grid-cols-2'} animate-fade-in`}>

@@ -87,13 +87,11 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
 
       {/* Key Performance Metrics - Gaming Style */}
       <div className="animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'backwards' }}>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-1 w-12 bg-gradient-to-r from-valorant-red to-valorant-gold rounded-full"></div>
-          <h3 className="text-xl font-bold flex items-center gap-2">
-            <Trophy className="h-6 w-6 text-valorant-red" />
-            Performance Metrics
-          </h3>
-        </div>
+        <h3 className="text-xl font-bold flex items-center gap-2 mb-6">
+          <Trophy className="h-6 w-6 text-valorant-red" />
+          Performance Metrics
+          <div className="h-0.5 flex-1 bg-gradient-to-r from-valorant-red/50 to-transparent rounded-full ml-2"></div>
+        </h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Team Avg ACS"
@@ -173,8 +171,10 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
               <AgentGrid
                 agents={mostUsedComp.composition ?? []}
                 maxDisplay={5}
-                size="md"
+                size="sm"
                 showGlow
+                showNames={true}
+                showRoleBadges={false}
               />
               <div className="text-xs text-muted-foreground mt-3">
                 Used {mostUsedComp.games_played ?? 0}x • {Math.round(mostUsedComp.win_rate ?? 0)}% WR
@@ -187,13 +187,11 @@ export function OverviewSection({ report, metadata }: OverviewSectionProps) {
       {/* Top Actionable Insights - Enhanced */}
       {insights.length > 0 && (
         <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-1 w-12 bg-gradient-to-r from-valorant-gold to-valorant-red rounded-full"></div>
-            <h3 className="text-xl font-bold flex items-center gap-2">
-              <Zap className="h-6 w-6 text-valorant-gold" />
-              Key Insights
-            </h3>
-          </div>
+          <h3 className="text-xl font-bold flex items-center gap-2 mb-6">
+            <Zap className="h-6 w-6 text-valorant-gold" />
+            Key Insights
+            <div className="h-0.5 flex-1 bg-gradient-to-r from-valorant-gold/50 to-transparent rounded-full ml-2"></div>
+          </h3>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {insights.slice(0, 6).map((insight, i) => (
               <InsightCard key={i} insight={insight} delay={i * 0.05} />

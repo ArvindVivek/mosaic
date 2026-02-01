@@ -153,7 +153,7 @@ function CompositionCard({ comp, tier }: CompositionCardProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Agent Icons Grid */}
-        <AgentGrid agents={composition} maxDisplay={5} size="sm" showGlow />
+        <AgentGrid agents={composition} maxDisplay={5} size="sm" showGlow showNames={true} showRoleBadges={false} />
 
         {/* Stats Row */}
         <div className="flex items-center justify-between text-sm">

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { User, Users, Target, Crosshair, Shield } from 'lucide-react';
 import type { TeamPlayerSummary } from '@/app/lib/analytics/types';
 import { StatCard } from '../visualizations/stat-card';
+import { AgentIcon, AgentGrid } from '../agent-icon';
 
 interface PlayersSectionProps {
   players: TeamPlayerSummary[];
@@ -79,13 +80,13 @@ export function PlayersSection({ players }: PlayersSectionProps) {
                     />
                   </td>
                   <td className="py-3 px-4">
-                    <div className="flex gap-1 flex-wrap">
-                      {(player.top_agents ?? []).slice(0, 3).map((agent) => (
-                        <Badge key={agent} variant="outline" className="text-xs">
-                          {agent}
-                        </Badge>
-                      ))}
-                    </div>
+                    <AgentGrid
+                      agents={player.top_agents ?? []}
+                      maxDisplay={3}
+                      size="sm"
+                      showNames={true}
+                      showRoleBadges={false}
+                    />
                   </td>
                 </tr>
               ))}
@@ -190,17 +191,13 @@ function PlayerCard({ player, avgACS, avgKD, avgKAST }: PlayerCardProps) {
         {/* Agent Pool */}
         <div>
           <div className="text-xs text-muted-foreground mb-2">Agent Pool</div>
-          <div className="flex gap-1 flex-wrap">
-            {(player.top_agents ?? []).map((agent, index) => (
-              <Badge
-                key={agent}
-                variant={index === 0 ? 'default' : 'outline'}
-                className="text-xs"
-              >
-                {agent}
-              </Badge>
-            ))}
-          </div>
+          <AgentGrid
+            agents={player.top_agents ?? []}
+            maxDisplay={5}
+            size="sm"
+            showNames={true}
+            showRoleBadges={false}
+          />
         </div>
       </CardContent>
     </Card>

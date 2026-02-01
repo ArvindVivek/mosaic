@@ -1,10 +1,15 @@
 'use client'
 
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { AgentIcon } from '../agent-icon'
+import { hasAgentIcon } from '@/lib/valorant-assets'
+import { hasMapImage, getMapImage } from '@/lib/valorant-assets'
+import Image from 'next/image'
+import { formatAgentName, formatMapName } from '@/lib/format'
 import {
   Bot,
   User,
@@ -24,6 +29,149 @@ import {
   Info,
   ArrowRight,
 } from 'lucide-react'
+
+// List of all Valorant agents (lowercase for matching)
+const ALL_AGENTS = [
+  'jett', 'reyna', 'raze', 'phoenix', 'yoru', 'neon', 'iso',
+  'sova', 'breach', 'skye', 'fade', 'gekko', 'kayo', 'kay/o', 'tejo',
+  'omen', 'brimstone', 'viper', 'astra', 'harbor', 'clove',
+  'sage', 'cypher', 'killjoy', 'chamber', 'deadlock', 'vyse',
+  'veto', 'waylay'
+]
+
+// List of all Valorant maps (lowercase for matching)
+const ALL_MAPS = [
+  'ascent', 'bind', 'haven', 'split', 'icebox',
+  'breeze', 'fracture', 'pearl', 'lotus', 'sunset',
+  'abyss', 'corrode'
+]
+
+// Inline badge for agents mentioned in text - uses only span/img for valid HTML nesting
+function AgentMention({ name }: { name: string }) {
+  const agentIcon = hasAgentIcon(name) ? `/valorant/agents/${name.toLowerCase().replace(/\s+/g, '').replace(/\//g, '')}.png` : null
+
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-md border border-red-500/20 mx-1 align-middle">
+      {agentIcon && (
+        <Image
+          src={agentIcon}
+          alt={name}
+          width={18}
+          height={18}
+          className="rounded-sm object-cover"
+        />
+      )}
+      <span className="text-xs font-semibold text-red-600">{formatAgentName(name)}</span>
+    </span>
+  )
+}
+
+// Inline badge for maps mentioned in text - mini card style (uses only span/img for valid HTML nesting)
+function MapMention({ name }: { name: string }) {
+  const mapImage = getMapImage(name)
+  const hasImage = hasMapImage(name)
+  return (
+    <span className="inline-flex items-center gap-1.5 pl-1 pr-2 py-1 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-md border border-blue-500/20 mx-1 align-middle">
+      {hasImage && mapImage ? (
+        <Image
+          src={mapImage}
+          alt={name}
+          width={32}
+          height={20}
+          className="rounded overflow-hidden border border-blue-500/30 object-cover"
+        />
+      ) : (
+        <Map className="h-4 w-4 text-blue-500 flex-shrink-0" />
+      )}
+      <span className="text-xs font-semibold text-blue-600">{formatMapName(name)}</span>
+    </span>
+  )
+}
+
+// Helper to parse text and replace agent/map names with components
+function parseTextForMentions(text: string): React.ReactNode[] {
+  if (!text) return [text]
+
+  const parts: React.ReactNode[] = []
+
+  // Create word-by-word matching to avoid regex issues
+  // Split by word boundaries but preserve separators
+  const tokens = text.split(/(\s+|[,.:;!?()[\]{}])/g).filter(Boolean)
+
+  let keyCounter = 0
+  for (const token of tokens) {
+    const lowerToken = token.toLowerCase().trim()
+
+    // Check if this token is an agent
+    if (ALL_AGENTS.includes(lowerToken) || (lowerToken && hasAgentIcon(lowerToken))) {
+      parts.push(<AgentMention key={`agent-${keyCounter++}`} name={lowerToken} />)
+    }
+    // Check if this token is a map
+    else if (ALL_MAPS.includes(lowerToken) || (lowerToken && hasMapImage(lowerToken))) {
+      parts.push(<MapMention key={`map-${keyCounter++}`} name={lowerToken} />)
+    }
+    // Otherwise keep as text
+    else {
+      // Merge consecutive text parts
+      const lastPart = parts[parts.length - 1]
+      if (typeof lastPart === 'string') {
+        parts[parts.length - 1] = lastPart + token
+      } else {
+        parts.push(token)
+      }
+    }
+  }
+
+  return parts.length > 0 ? parts : [text]
+}
+
+// Process React children recursively to find and replace agent/map mentions
+function processChildren(children: React.ReactNode): React.ReactNode {
+  if (typeof children === 'string') {
+    const parts = parseTextForMentions(children)
+    return parts.length === 1 && typeof parts[0] === 'string' ? parts[0] : <>{parts}</>
+  }
+
+  if (Array.isArray(children)) {
+    return children.map((child, i) => (
+      <React.Fragment key={i}>{processChildren(child)}</React.Fragment>
+    ))
+  }
+
+  return children
+}
+
+// Rich markdown renderer that replaces agent/map names with visual badges
+function RichMarkdown({ content, inline = false }: { content: string; inline?: boolean }) {
+  return (
+    <ReactMarkdown
+      components={{
+        p: ({ children }) => {
+          const processed = processChildren(children)
+          return inline ? <>{processed}</> : <p className="my-1.5 text-gray-700">{processed}</p>
+        },
+        strong: ({ children }) => {
+          // Check if the bold text is an agent or map name
+          const text = String(children).toLowerCase().trim()
+          if (ALL_AGENTS.includes(text) || hasAgentIcon(text)) {
+            return <AgentMention name={text} />
+          }
+          if (ALL_MAPS.includes(text) || hasMapImage(text)) {
+            return <MapMention name={text} />
+          }
+          return <strong className="text-gray-800 font-semibold">{processChildren(children)}</strong>
+        },
+        em: ({ children }) => <em className="text-gray-600">{processChildren(children)}</em>,
+        li: ({ children }) => <li className="my-1">{processChildren(children)}</li>,
+        ul: ({ children }) => <ul className="space-y-1 my-2">{children}</ul>,
+        ol: ({ children }) => <ol className="space-y-1 my-2">{children}</ol>,
+        text: ({ children }) => <>{processChildren(children)}</>,
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  )
+}
 
 interface Message {
   role: 'user' | 'assistant'
@@ -176,7 +324,9 @@ function InsightCard({ type, title, priority, innerContent }: Record<string, str
               )}
             </div>
             {innerContent && (
-              <p className="text-sm text-gray-600 leading-relaxed">{innerContent}</p>
+              <div className="text-sm text-gray-600 leading-relaxed">
+                <RichMarkdown content={innerContent} />
+              </div>
             )}
           </div>
         </div>
@@ -187,6 +337,8 @@ function InsightCard({ type, title, priority, innerContent }: Record<string, str
 
 // Player card component
 function PlayerCard({ name, role, acs, kd, agents }: Record<string, string>) {
+  const agentList = agents?.split(',').map(a => a.trim()).filter(Boolean) || []
+
   return (
     <Card className="my-2 bg-gradient-to-r from-blue-50 to-indigo-50/50 border-blue-200 overflow-hidden">
       <CardContent className="p-3">
@@ -215,12 +367,10 @@ function PlayerCard({ name, role, acs, kd, agents }: Record<string, string>) {
             )}
           </div>
         </div>
-        {agents && (
-          <div className="mt-2 flex flex-wrap gap-1">
-            {agents.split(',').map((agent) => (
-              <Badge key={agent} variant="secondary" className="text-[10px] bg-blue-100/50 text-blue-700 hover:bg-blue-100">
-                {agent.trim()}
-              </Badge>
+        {agentList.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {agentList.map((agent) => (
+              <AgentIcon key={agent} agentName={agent} size="sm" showName={true} showRoleBadge={false} />
             ))}
           </div>
         )}
@@ -255,7 +405,9 @@ function CounterCard({ confidence, title, innerContent }: Record<string, string>
               )}
             </div>
             {innerContent && (
-              <p className="text-sm text-gray-600 leading-relaxed">{innerContent}</p>
+              <div className="text-sm text-gray-600 leading-relaxed">
+                <RichMarkdown content={innerContent} />
+              </div>
             )}
           </div>
         </div>
@@ -294,7 +446,9 @@ function RecommendationCard({ priority, category, innerContent }: Record<string,
               )}
             </div>
             {innerContent && (
-              <p className="text-sm text-gray-700 leading-relaxed font-medium">{innerContent}</p>
+              <div className="text-sm text-gray-700 leading-relaxed font-medium">
+                <RichMarkdown content={innerContent} />
+              </div>
             )}
           </div>
         </div>
@@ -327,14 +481,7 @@ function ListBlock({ title, type, innerContent }: Record<string, string>) {
             <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
               <ArrowRight className="h-3 w-3 mt-1 text-gray-400 flex-shrink-0" />
               <span className="leading-relaxed">
-                <ReactMarkdown
-                  components={{
-                    p: ({ children }) => <>{children}</>,
-                    strong: ({ children }) => <strong className="text-gray-800">{children}</strong>,
-                  }}
-                >
-                  {item.replace(/^[-*]\s*/, '')}
-                </ReactMarkdown>
+                <RichMarkdown content={item.replace(/^[-*]\s*/, '')} inline />
               </span>
             </li>
           ))}
@@ -357,9 +504,137 @@ function StrategyCard({ type, title, description }: Record<string, string>) {
           )}
           <span className="font-semibold text-sm">{title}</span>
         </div>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <div className="text-sm text-muted-foreground">
+          <RichMarkdown content={description || ''} />
+        </div>
       </CardContent>
     </Card>
+  )
+}
+
+// Agents Grid Block - displays agents in a nice grid with icons
+function AgentsGridBlock({ title, agents }: Record<string, string>) {
+  const agentList = agents?.split(',').map(a => a.trim()).filter(Boolean) || []
+
+  return (
+    <Card className="my-2 bg-gradient-to-r from-red-50/50 to-orange-50/50 border-red-200/50 overflow-hidden">
+      <CardContent className="p-3">
+        {title && (
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-4 w-4 text-red-500" />
+            <span className="font-semibold text-sm text-gray-800">{title}</span>
+          </div>
+        )}
+        <div className="flex flex-wrap gap-3">
+          {agentList.map((agent, i) => (
+            <div key={i} className="flex flex-col items-center gap-1.5">
+              <div className="h-10 w-10 rounded-lg overflow-hidden border border-red-200 bg-gradient-to-br from-red-500/10 to-orange-500/10">
+                <AgentIcon agentName={agent} size="sm" showName={false} showRoleBadge={false} className="!h-10 !w-10 !gap-0" />
+              </div>
+              <span className="text-[10px] font-medium text-gray-700">{formatAgentName(agent)}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Map Card Block - displays a map with immersive mini card style
+function MapCardBlock({ name, winrate, wins, losses, games, stats }: Record<string, string>) {
+  const mapImage = getMapImage(name)
+  const hasImage = hasMapImage(name)
+  const winRate = parseInt(winrate || '0')
+
+  return (
+    <Card className="my-2 overflow-hidden border-2 border-blue-200/50">
+      <div className="relative h-20 w-full overflow-hidden">
+        {hasImage && mapImage ? (
+          <>
+            <Image src={mapImage} alt={formatMapName(name)} fill className="object-cover" sizes="300px" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600"></div>
+        )}
+        <div className="absolute inset-0 flex flex-col justify-between p-2">
+          <div className="flex justify-between items-start">
+            {games && (
+              <Badge variant="outline" className="bg-black/60 border-white/20 text-white text-[10px] px-1.5 py-0">
+                {games} games
+              </Badge>
+            )}
+            {winrate && (
+              <Badge className={cn(
+                'text-white font-bold text-xs px-2',
+                winRate >= 60 ? 'bg-green-500' : winRate < 40 ? 'bg-red-500' : 'bg-yellow-500'
+              )}>
+                {winrate}%
+              </Badge>
+            )}
+          </div>
+          <div>
+            <h4 className="text-lg font-bold text-white drop-shadow-md">{formatMapName(name)}</h4>
+            {(wins || losses) && (
+              <div className="flex items-center gap-1 text-xs">
+                <span className="text-green-400 font-semibold">{wins || 0}W</span>
+                <span className="text-white/50">-</span>
+                <span className="text-red-400 font-semibold">{losses || 0}L</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      {stats && (
+        <div className="px-2 py-1.5 text-xs text-gray-600 bg-gray-50 border-t border-gray-100">
+          {stats}
+        </div>
+      )}
+    </Card>
+  )
+}
+
+// Maps Grid Block - displays multiple maps in a grid
+function MapsGridBlock({ title, innerContent }: Record<string, string>) {
+  // Parse maps from inner content - format: "mapname: stats" per line
+  const mapLines = innerContent?.split('\n').filter(line => line.trim()) || []
+
+  return (
+    <div className="my-2">
+      {title && (
+        <div className="flex items-center gap-2 mb-2">
+          <Map className="h-4 w-4 text-blue-500" />
+          <span className="font-semibold text-sm text-gray-800">{title}</span>
+        </div>
+      )}
+      <div className="grid grid-cols-2 gap-2">
+        {mapLines.map((line, i) => {
+          // Try to parse "**MapName**: stats" or "MapName: stats"
+          const match = line.match(/\*?\*?([^*:]+)\*?\*?:\s*(.*)/)
+          if (match) {
+            const mapName = match[1].trim().toLowerCase()
+            const stats = match[2].trim()
+            // Extract win rate if present
+            const winRateMatch = stats.match(/(\d+(?:\.\d+)?)\s*%/)
+            const wlMatch = stats.match(/(\d+)W[^\d]*(\d+)L/)
+            const gamesMatch = stats.match(/(\d+)\s*(?:games?|matches?)/)
+
+            return (
+              <MapCardBlock
+                key={i}
+                name={mapName}
+                winrate={winRateMatch ? winRateMatch[1] : ''}
+                wins={wlMatch ? wlMatch[1] : ''}
+                losses={wlMatch ? wlMatch[2] : ''}
+                games={gamesMatch ? gamesMatch[1] : ''}
+                stats=""
+              />
+            )
+          }
+          return null
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -387,7 +662,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           if (part.type === 'text' && part.content.trim()) {
             return (
               <div key={i} className="prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-2 prose-li:my-0.5 prose-p:text-gray-700">
-                <ReactMarkdown>{part.content}</ReactMarkdown>
+                <RichMarkdown content={part.content} />
               </div>
             )
           }
@@ -412,6 +687,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
                 return <ListBlock key={i} {...propsWithContent} />
               case 'strategy':
                 return <StrategyCard key={i} {...part.props} />
+              case 'agents':
+                return <AgentsGridBlock key={i} {...part.props} />
+              case 'mapcard':
+                return <MapCardBlock key={i} {...part.props} />
+              case 'maps':
+                return <MapsGridBlock key={i} {...propsWithContent} />
               default:
                 return null
             }
