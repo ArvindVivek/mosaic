@@ -329,7 +329,7 @@ function InsightCard({ insight, delay }: { insight: Insight; delay: number }) {
       <CardContent className="space-y-2">
         <p className="text-sm">{insight.description}</p>
         <p className="text-xs text-muted-foreground flex items-center gap-1">
-          <div className="h-1 w-1 rounded-full bg-valorant-red"></div>
+          <span className="h-1 w-1 rounded-full bg-valorant-red inline-block"></span>
           {insight.data_backing}
         </p>
       </CardContent>
