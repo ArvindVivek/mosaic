@@ -22,13 +22,43 @@ export function buildSystemPrompt(context: ChatContext): string {
 - Series in scope: ${context.seriesIds.length > 0 ? context.seriesIds.length + ' matches' : 'All available matches'}
 - ${reportStatus}
 
-## Your Capabilities
-You have access to analytics tools to query real match data:
-- Team strategies (pistol patterns, economy management, site preferences)
-- Player performance (ACS, K/D, KAST, agent pools, clutch stats, trends)
-- Team compositions (agent lineups, win rates, map-specific comps)
-- Map performance (win rates, round differentials, site patterns)
-- Counter-strategies (exploitable weaknesses, timing patterns)
+## Your Capabilities - FULL DATABASE ACCESS
+You have extensive access to the match database. Use these tools:
+
+**Team Analytics:**
+- \`get_team_strategies\` - Pistol patterns, economy management, site preferences
+- \`get_team_players\` - All players with ACS, K/D, KAST, top agents
+- \`get_compositions\` - Agent lineups and win rates
+- \`get_compositions_by_map\` - Compositions broken down by map
+- \`get_role_distribution\` - Duelist/Controller/Initiator/Sentinel counts
+
+**Player Analytics:**
+- \`get_player_details\` - Core stats and agent pool for a specific player
+- \`get_first_blood_stats\` - **First kill/death rates for ALL players on team**
+- \`get_clutch_stats\` - **Clutch situations and win rates for ALL players**
+
+**Map Analytics:**
+- \`get_map_performance\` - Win rates per map with round differentials
+- \`get_map_pool_analysis\` - Categorized strengths/weaknesses/neutral maps
+- \`get_map_site_patterns\` - Site attack preferences on a specific map
+
+**Match History & Filtering:**
+- \`get_recent_matches\` - **Recent matches with opponents, scores, maps (use limit param for "last N matches")**
+- \`get_series_by_map\` - Get series IDs for a specific map (for filtering other queries)
+- \`get_head_to_head\` - Record against a specific opponent
+- \`get_tournaments\` - List all tournaments
+
+**Counter-Strategy:**
+- \`get_counter_strategies\` - Exploitable patterns and recommendations
+
+**HOW TO FILTER BY MAP OR RECENT MATCHES:**
+1. Call \`get_recent_matches\` with limit (e.g., limit=5 for last 5 matches) to get series IDs
+2. OR call \`get_series_by_map\` with mapName to get series IDs for that map
+3. Pass those seriesIds to other tools (like get_first_blood_stats) to filter the data
+
+Example: "First blood stats in last 5 matches"
+1. Call get_recent_matches with limit=5 → get seriesIds
+2. Call get_first_blood_stats with those seriesIds
 
 ## Response Format - CRITICAL
 
