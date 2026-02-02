@@ -133,7 +133,7 @@ function processChildren(children: React.ReactNode): React.ReactNode {
   }
 
   if (Array.isArray(children)) {
-    return children.map((child, i) => (
+    return children.map((child: any, i: number) => (
       <React.Fragment key={i}>{processChildren(child)}</React.Fragment>
     ))
   }
@@ -186,7 +186,7 @@ type ParsedPart = {
   type: 'text' | 'block'
   content: string
   blockType?: string
-  props?: Record<string, string>
+  props?: Record<string, any>
   innerContent?: string
 }
 
@@ -218,7 +218,7 @@ function parseStructuredBlocks(content: string): ParsedPart[] {
     const blockType = match[1]
     const propsStr = match[2]
     const innerContent = match[3]?.trim() || ''
-    const props: Record<string, string> = {}
+    const props: Record<string, any> = {}
 
     // Match key="value" pairs
     const propMatches = propsStr.matchAll(/(\w+)="([^"]+)"/g)
@@ -253,7 +253,7 @@ const sectionIcons: Record<string, React.ReactNode> = {
 }
 
 // Section Header Component
-function SectionBlock({ title, icon }: Record<string, string>) {
+function SectionBlock({ title, icon }: Record<string, any>) {
   return (
     <div className="flex items-center gap-2 py-2 border-b border-gray-100 mb-2">
       <div className="w-6 h-6 rounded-md bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white">
@@ -265,7 +265,7 @@ function SectionBlock({ title, icon }: Record<string, string>) {
 }
 
 // Stat block component
-function StatBlock({ label, value, confidence, trend }: Record<string, string>) {
+function StatBlock({ label, value, confidence, trend }: Record<string, any>) {
   return (
     <div className="inline-flex items-center gap-3 bg-gradient-to-r from-gray-50 to-gray-100/50 border border-gray-200 rounded-lg px-4 py-2.5 my-1.5 shadow-sm">
       <div className="flex flex-col">
@@ -300,7 +300,7 @@ function StatBlock({ label, value, confidence, trend }: Record<string, string>) 
 }
 
 // Insight Card Component
-function InsightCard({ type, title, priority, innerContent }: Record<string, string>) {
+function InsightCard({ type, title, priority, innerContent }: Record<string, any>) {
   const configs = {
     weakness: { bg: 'bg-red-50', border: 'border-l-red-500', icon: <AlertTriangle className="h-4 w-4 text-red-500" />, badge: 'bg-red-100 text-red-700' },
     strength: { bg: 'bg-green-50', border: 'border-l-green-500', icon: <Shield className="h-4 w-4 text-green-500" />, badge: 'bg-green-100 text-green-700' },
@@ -336,8 +336,8 @@ function InsightCard({ type, title, priority, innerContent }: Record<string, str
 }
 
 // Player card component
-function PlayerCard({ name, role, acs, kd, agents }: Record<string, string>) {
-  const agentList = agents?.split(',').map(a => a.trim()).filter(Boolean) || []
+function PlayerCard({ name, role, acs, kd, agents }: Record<string, any>) {
+  const agentList = agents?.split(',').map((a: string) => a.trim()).filter(Boolean) || []
 
   return (
     <Card className="my-2 bg-gradient-to-r from-blue-50 to-indigo-50/50 border-blue-200 overflow-hidden">
@@ -369,7 +369,7 @@ function PlayerCard({ name, role, acs, kd, agents }: Record<string, string>) {
         </div>
         {agentList.length > 0 && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            {agentList.map((agent) => (
+            {agentList.map((agent: string) => (
               <AgentIcon key={agent} agentName={agent} size="sm" showName={true} showRoleBadge={false} />
             ))}
           </div>
@@ -380,7 +380,7 @@ function PlayerCard({ name, role, acs, kd, agents }: Record<string, string>) {
 }
 
 // Counter strategy card component
-function CounterCard({ confidence, title, innerContent }: Record<string, string>) {
+function CounterCard({ confidence, title, innerContent }: Record<string, any>) {
   return (
     <Card className="my-2 border-l-4 border-l-orange-500 bg-gradient-to-r from-orange-50 to-amber-50/30 overflow-hidden">
       <CardContent className="p-3">
@@ -417,7 +417,7 @@ function CounterCard({ confidence, title, innerContent }: Record<string, string>
 }
 
 // Recommendation Card Component
-function RecommendationCard({ priority, category, innerContent }: Record<string, string>) {
+function RecommendationCard({ priority, category, innerContent }: Record<string, any>) {
   return (
     <Card className="my-2 bg-gradient-to-r from-purple-50 to-violet-50/50 border-purple-200 overflow-hidden">
       <CardContent className="p-3">
@@ -458,7 +458,7 @@ function RecommendationCard({ priority, category, innerContent }: Record<string,
 }
 
 // List Block Component
-function ListBlock({ title, type, innerContent }: Record<string, string>) {
+function ListBlock({ title, type, innerContent }: Record<string, any>) {
   const configs = {
     warning: { bg: 'bg-amber-50', border: 'border-amber-200', icon: <AlertTriangle className="h-4 w-4 text-amber-500" /> },
     success: { bg: 'bg-green-50', border: 'border-green-200', icon: <CheckCircle2 className="h-4 w-4 text-green-500" /> },
@@ -467,7 +467,7 @@ function ListBlock({ title, type, innerContent }: Record<string, string>) {
   const config = configs[type as keyof typeof configs] || configs.info
 
   // Parse the inner content as markdown list items
-  const items = innerContent?.split('\n').filter(line => line.trim().startsWith('-') || line.trim().startsWith('*')) || []
+  const items = innerContent?.split('\n').filter((line: string) => line.trim().startsWith('-') || line.trim().startsWith('*')) || []
 
   return (
     <Card className={cn('my-2', config.bg, config.border)}>
@@ -477,7 +477,7 @@ function ListBlock({ title, type, innerContent }: Record<string, string>) {
           <span className="font-semibold text-sm text-gray-800">{title}</span>
         </div>
         <ul className="space-y-1.5">
-          {items.map((item, i) => (
+          {items.map((item: string, i: number) => (
             <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
               <ArrowRight className="h-3 w-3 mt-1 text-gray-400 flex-shrink-0" />
               <span className="leading-relaxed">
@@ -492,7 +492,7 @@ function ListBlock({ title, type, innerContent }: Record<string, string>) {
 }
 
 // Strategy insight card component (legacy support)
-function StrategyCard({ type, title, description }: Record<string, string>) {
+function StrategyCard({ type, title, description }: Record<string, any>) {
   return (
     <Card className="my-2 border-l-4 border-l-purple-500 bg-purple-50/50">
       <CardContent className="p-3">
@@ -513,8 +513,8 @@ function StrategyCard({ type, title, description }: Record<string, string>) {
 }
 
 // Agents Grid Block - displays agents in a nice grid with icons
-function AgentsGridBlock({ title, agents }: Record<string, string>) {
-  const agentList = agents?.split(',').map(a => a.trim()).filter(Boolean) || []
+function AgentsGridBlock({ title, agents }: Record<string, any>) {
+  const agentList = agents?.split(',').map((a: string) => a.trim()).filter(Boolean) || []
 
   return (
     <Card className="my-2 bg-gradient-to-r from-red-50/50 to-orange-50/50 border-red-200/50 overflow-hidden">
@@ -526,7 +526,7 @@ function AgentsGridBlock({ title, agents }: Record<string, string>) {
           </div>
         )}
         <div className="flex flex-wrap gap-3">
-          {agentList.map((agent, i) => (
+          {agentList.map((agent: string, i: number) => (
             <div key={i} className="flex flex-col items-center gap-1.5">
               <div className="h-10 w-10 rounded-lg overflow-hidden border border-red-200 bg-gradient-to-br from-red-500/10 to-orange-500/10">
                 <AgentIcon agentName={agent} size="sm" showName={false} showRoleBadge={false} className="!h-10 !w-10 !gap-0" />
@@ -541,7 +541,7 @@ function AgentsGridBlock({ title, agents }: Record<string, string>) {
 }
 
 // Map Card Block - displays a map with immersive mini card style
-function MapCardBlock({ name, winrate, wins, losses, games, stats }: Record<string, string>) {
+function MapCardBlock({ name, winrate, wins, losses, games, stats }: { name: string; winrate: string; wins: string; losses: string; games: string; stats: string }) {
   const mapImage = getMapImage(name)
   const hasImage = hasMapImage(name)
   const winRate = parseInt(winrate || '0')
@@ -595,9 +595,9 @@ function MapCardBlock({ name, winrate, wins, losses, games, stats }: Record<stri
 }
 
 // Maps Grid Block - displays multiple maps in a grid
-function MapsGridBlock({ title, innerContent }: Record<string, string>) {
+function MapsGridBlock({ title, innerContent }: Record<string, any>) {
   // Parse maps from inner content - format: "mapname: stats" per line
-  const mapLines = innerContent?.split('\n').filter(line => line.trim()) || []
+  const mapLines = innerContent?.split('\n').filter((line: string) => line.trim()) || []
 
   return (
     <div className="my-2">
@@ -608,7 +608,7 @@ function MapsGridBlock({ title, innerContent }: Record<string, string>) {
         </div>
       )}
       <div className="grid grid-cols-2 gap-2">
-        {mapLines.map((line, i) => {
+        {mapLines.map((line: string, i: number) => {
           // Try to parse "**MapName**: stats" or "MapName: stats"
           const match = line.match(/\*?\*?([^*:]+)\*?\*?:\s*(.*)/)
           if (match) {
@@ -658,7 +658,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 overflow-hidden">
-        {parts.map((part, i) => {
+        {parts.map((part: any, i: number) => {
           if (part.type === 'text' && part.content.trim()) {
             return (
               <div key={i} className="prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-2 prose-li:my-0.5 prose-p:text-gray-700">
