@@ -123,9 +123,9 @@ export async function executeTool(
         .select('series_id')
         .eq('map_name', mapName)
 
-      if (!games) return []
+      if (!games || games.length === 0) return []
 
-      const seriesIdsForMap = [...new Set(games.map(g => g.series_id).filter(Boolean))]
+      const seriesIdsForMap = [...new Set(games.map((g: any) => g.series_id).filter(Boolean))]
 
       // Filter to only series involving this team
       const teamSeries = await getSeriesForTeam(teamId, 100)
@@ -162,8 +162,8 @@ export async function executeTool(
             }
           }
 
-          const firstKills = data.filter(r => r.first_kill).length
-          const firstDeaths = data.filter(r => r.first_death).length
+          const firstKills = data.filter((r: any) => r.first_kill).length
+          const firstDeaths = data.filter((r: any) => r.first_death).length
           const totalRounds = data.length
 
           return {
@@ -206,8 +206,8 @@ export async function executeTool(
             }
           }
 
-          const clutchSituations = data.filter(r => r.clutch_situation).length
-          const clutchWins = data.filter(r => r.clutch_won).length
+          const clutchSituations = data.filter((r: any) => r.clutch_situation).length
+          const clutchWins = data.filter((r: any) => r.clutch_won).length
 
           return {
             playerName: player.player_name,
@@ -239,12 +239,12 @@ export async function executeTool(
 
       if (!series) return { wins: 0, losses: 0, mapRecord: [] }
 
-      const wins = series.filter(s => s.winner_id === teamId).length
-      const losses = series.filter(s => s.winner_id === opponentId).length
+      const wins = series.filter((s: any) => s.winner_id === teamId).length
+      const losses = series.filter((s: any) => s.winner_id === opponentId).length
 
       // Get map-level breakdown
       const mapRecord: Record<string, { wins: number; losses: number }> = {}
-      for (const s of series) {
+      for (const s of series as any[]) {
         const games = await getGamesForSeries(s.id)
         for (const g of games) {
           if (!g.mapName) continue

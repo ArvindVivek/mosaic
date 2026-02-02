@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
 
               // Execute each tool call
               for (const toolCall of message.tool_calls) {
+                if (toolCall.type !== 'function') continue
                 const functionName = toolCall.function.name
                 const functionArgs = JSON.parse(toolCall.function.arguments)
 
