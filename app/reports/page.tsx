@@ -3,6 +3,9 @@ import { getTeams } from '@/app/lib/data/teams'
 import { FilterBar } from './_components/filter-bar'
 import { ReportFiltersSkeleton } from './_components/report-skeleton'
 
+// Force dynamic rendering to avoid build-time data fetching
+export const dynamic = 'force-dynamic'
+
 export default async function ReportsPage() {
   const teams = await getTeams()
 
