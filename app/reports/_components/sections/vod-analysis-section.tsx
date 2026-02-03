@@ -25,16 +25,16 @@ const MOCK_ANALYSIS = {
     'Early round information gathering needs work',
   ],
   keyMoments: [
-    { time: 45, title: 'Ace - Cryo', type: 'ace', description: '1v3 clutch on A-site' },
-    { time: 182, title: 'Perfect Execute', type: 'strategic', description: 'Flawless B-site take with util' },
-    { time: 298, title: 'Eco Win', type: 'eco', description: 'Sheriff rush success' },
-    { time: 445, title: 'Retake Success', type: 'tactical', description: '3v5 retake executed perfectly' },
+    { time: 3, title: 'Round Start', type: 'strategic', description: 'Initial positioning' },
+    { time: 6, title: 'First Contact', type: 'ace', description: 'Entry frag secured' },
+    { time: 10, title: 'Site Execute', type: 'strategic', description: 'A-site take initiated' },
+    { time: 13, title: 'Round Win', type: 'tactical', description: 'Successful plant defense' },
   ],
   stats: {
-    avgRoundTime: '52s',
-    siteSuccessRate: 'A: 68% | B: 74%',
-    firstBloodRate: '58%',
-    clutchWinRate: '45%',
+    avgRoundTime: '14s',
+    siteSuccessRate: 'A: 100%',
+    firstBloodRate: '100%',
+    clutchWinRate: '100%',
   }
 };
 
