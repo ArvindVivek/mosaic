@@ -2,10 +2,15 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Users, Target, Crosshair, Shield } from 'lucide-react';
+import { User, Users, Target, Crosshair, Shield, Info } from 'lucide-react';
 import type { TeamPlayerSummary } from '@/app/lib/analytics/types';
 import { StatCard } from '../visualizations/stat-card';
 import { AgentIcon, AgentGrid } from '../agent-icon';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 interface PlayersSectionProps {
   players: TeamPlayerSummary[];
@@ -38,7 +43,35 @@ export function PlayersSection({ players }: PlayersSectionProps) {
             <thead>
               <tr className="border-b">
                 <th className="text-left py-3 px-4 font-medium">Player</th>
-                <th className="text-right py-3 px-4 font-medium">MCS</th>
+                <th className="text-right py-3 px-4 font-medium">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <span>Mosaic ACS</span>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="inline-flex items-center justify-center h-4 w-4 rounded-full hover:bg-muted/50 transition-colors">
+                          <Info className="h-3 w-3 text-muted-foreground" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 text-sm" side="top">
+                        <div className="space-y-2">
+                          <h4 className="font-semibold">Mosaic ACS Calculation</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Average Combat Score per round, calculated as:
+                          </p>
+                          <div className="text-xs space-y-1 bg-muted/50 p-2 rounded font-mono">
+                            <div><strong>Damage:</strong> 1 point per damage dealt</div>
+                            <div><strong>Kills:</strong> 150/130/110/90/70 points (based on enemies alive)</div>
+                            <div><strong>Multi-kills:</strong> +50 points per additional kill in round</div>
+                            <div><strong>Assists:</strong> +25 points (non-damaging)</div>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Formula: (Total Combat Score) ÷ (Total Rounds)
+                          </p>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </th>
                 <th className="text-right py-3 px-4 font-medium">K/D</th>
                 <th className="text-right py-3 px-4 font-medium">KAST</th>
                 <th className="text-left py-3 px-4 font-medium">Top Agents</th>
@@ -119,10 +152,10 @@ export function PlayersSection({ players }: PlayersSectionProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-4">
           <StatCard
-            title="Team Avg MCS"
+            title="Team Avg Mosaic ACS"
             value={Math.round(avgACS)}
             description={`Across ${players.length} players`}
-            tooltip="Mosaic Combat Score (MCS) measures player impact per round. Formula: (Damage + Kill Points + Multikill Bonuses + Assists×25) ÷ Rounds. Kill points vary by enemies alive when kill happens (150/130/110/90/70)."
+            tooltip="Mosaic Average Combat Score measures player impact per round. Formula: (Damage + Kill Points + Multikill Bonuses + Assists×25) ÷ Rounds. Kill points vary by enemies alive when kill happens (150/130/110/90/70)."
           />
           <StatCard
             title="Team Avg K/D"
@@ -135,7 +168,7 @@ export function PlayersSection({ players }: PlayersSectionProps) {
           <StatCard
             title="Top Performer"
             value={sortedPlayers[0]?.player_name ?? '-'}
-            description={`${Math.round(sortedPlayers[0]?.acs ?? 0)} MCS`}
+            description={`${Math.round(sortedPlayers[0]?.acs ?? 0)} Mosaic ACS`}
           />
         </div>
       </div>
@@ -174,7 +207,7 @@ function PlayerCard({ player, avgACS, avgKD, avgKAST }: PlayerCardProps) {
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <div className="text-2xl font-bold">{Math.round(acs)}</div>
-            <div className="text-xs text-muted-foreground">MCS</div>
+            <div className="text-xs text-muted-foreground">Mosaic ACS</div>
             <ComparisonBadge value={acsComparison} />
           </div>
           <div>

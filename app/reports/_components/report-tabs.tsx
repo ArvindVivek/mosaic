@@ -1,11 +1,11 @@
 'use client';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, Users, Layers, Map, Target, LayoutDashboard } from 'lucide-react';
+import { BarChart3, Users, Layers, Map, Target, LayoutDashboard, Film } from 'lucide-react';
 import type { ScoutingReport } from '@/app/lib/orchestration/types';
 
 // Define tab values with overview as first tab
-const TAB_VALUES = ['overview', 'strategies', 'players', 'compositions', 'maps', 'counters'] as const;
+const TAB_VALUES = ['overview', 'strategies', 'players', 'compositions', 'maps', 'counters', 'vod'] as const;
 type TabValue = typeof TAB_VALUES[number];
 
 interface ReportTabsProps {
@@ -22,6 +22,7 @@ const TAB_CONFIG = [
   { value: 'compositions', label: 'Compositions', icon: Layers },
   { value: 'maps', label: 'Maps', icon: Map },
   { value: 'counters', label: 'Counter-Strategies', icon: Target },
+  { value: 'vod', label: 'VOD Analysis', icon: Film },
 ] as const;
 
 export function ReportTabs({ report, loading = false, tab, onTabChange }: ReportTabsProps) {

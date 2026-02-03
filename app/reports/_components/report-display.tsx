@@ -8,11 +8,12 @@ import { PlayersSection } from './sections/players-section';
 import { CompositionsSection } from './sections/compositions-section';
 import { MapsSection } from './sections/maps-section';
 import { CounterStrategiesSection } from './sections/counter-strategies-section';
+import { VODAnalysisSection } from './sections/vod-analysis-section';
 import { DataFreshness } from './visualizations/data-freshness';
 import { ShareButton } from './share-button';
 import { OverviewSection } from './sections/overview-section';
 
-type TabValue = 'overview' | 'strategies' | 'players' | 'compositions' | 'maps' | 'counters';
+type TabValue = 'overview' | 'strategies' | 'players' | 'compositions' | 'maps' | 'counters' | 'vod';
 
 interface ReportDisplayProps {
   report: ScoutingReport | null;
@@ -114,6 +115,18 @@ export function ReportDisplay({ report, metadata, seriesIds, isSnapshot, tab }: 
               <h2 className="text-2xl font-bold">Counter-Strategies</h2>
             </div>
             <CounterStrategiesSection report={report} />
+          </div>
+        )}
+
+        {currentTab === 'vod' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">VOD Analysis</h2>
+            </div>
+            <VODAnalysisSection
+              teamId={report.teamId}
+              teamName={report.teamName}
+            />
           </div>
         )}
 
