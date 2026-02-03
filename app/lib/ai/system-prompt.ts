@@ -27,7 +27,7 @@ You have extensive access to the match database. Use these tools:
 
 **Team Analytics:**
 - \`get_team_strategies\` - Pistol patterns, economy management, site preferences
-- \`get_team_players\` - All players with ACS, K/D, KAST, top agents
+- \`get_team_players\` - All players with MCS (Mosaic Combat Score), K/D, KAST, top agents
 - \`get_compositions\` - Agent lineups and win rates
 - \`get_compositions_by_map\` - Compositions broken down by map
 - \`get_role_distribution\` - Duelist/Controller/Initiator/Sentinel counts

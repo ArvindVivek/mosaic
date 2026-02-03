@@ -38,7 +38,7 @@ export function PlayersSection({ players }: PlayersSectionProps) {
             <thead>
               <tr className="border-b">
                 <th className="text-left py-3 px-4 font-medium">Player</th>
-                <th className="text-right py-3 px-4 font-medium">ACS</th>
+                <th className="text-right py-3 px-4 font-medium">MCS</th>
                 <th className="text-right py-3 px-4 font-medium">K/D</th>
                 <th className="text-right py-3 px-4 font-medium">KAST</th>
                 <th className="text-left py-3 px-4 font-medium">Top Agents</th>
@@ -119,9 +119,10 @@ export function PlayersSection({ players }: PlayersSectionProps) {
         </div>
         <div className="grid gap-4 md:grid-cols-4">
           <StatCard
-            title="Team Avg ACS"
+            title="Team Avg MCS"
             value={Math.round(avgACS)}
             description={`Across ${players.length} players`}
+            tooltip="Mosaic Combat Score (MCS) measures player impact per round. Formula: (Damage + Kill Points + Multikill Bonuses + Assists×25) ÷ Rounds. Kill points vary by enemies alive when kill happens (150/130/110/90/70)."
           />
           <StatCard
             title="Team Avg K/D"
@@ -134,7 +135,7 @@ export function PlayersSection({ players }: PlayersSectionProps) {
           <StatCard
             title="Top Performer"
             value={sortedPlayers[0]?.player_name ?? '-'}
-            description={`${Math.round(sortedPlayers[0]?.acs ?? 0)} ACS`}
+            description={`${Math.round(sortedPlayers[0]?.acs ?? 0)} MCS`}
           />
         </div>
       </div>
@@ -173,7 +174,7 @@ function PlayerCard({ player, avgACS, avgKD, avgKAST }: PlayerCardProps) {
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <div className="text-2xl font-bold">{Math.round(acs)}</div>
-            <div className="text-xs text-muted-foreground">ACS</div>
+            <div className="text-xs text-muted-foreground">MCS</div>
             <ComparisonBadge value={acsComparison} />
           </div>
           <div>

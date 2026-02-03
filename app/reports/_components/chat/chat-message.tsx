@@ -355,7 +355,7 @@ function PlayerCard({ name, role, acs, kd, agents }: Record<string, any>) {
           <div className="flex gap-4 text-sm">
             {acs && (
               <div className="text-center">
-                <div className="text-[10px] uppercase text-gray-400 font-medium">ACS</div>
+                <div className="text-[10px] uppercase text-gray-400 font-medium">MCS</div>
                 <div className="font-bold text-blue-600">{acs}</div>
               </div>
             )}

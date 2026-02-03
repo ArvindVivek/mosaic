@@ -50,9 +50,10 @@ export function ExecutiveSummary({ report }: ExecutiveSummaryProps) {
         <h2 className="text-xl font-bold mb-4">Team Overview</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            title="Team Avg ACS"
+            title="Team Avg MCS"
             value={avgACS}
             description={`${players.length} players analyzed`}
+            tooltip="Mosaic Combat Score (MCS) measures player impact per round. Formula: (Damage + Kill Points + Multikill Bonuses + Assists×25) ÷ Rounds. Kill points vary by enemies alive when kill happens (150/130/110/90/70)."
           />
           <StatCard
             title="Team Avg K/D"
@@ -211,7 +212,7 @@ function generateInsights(report: ScoutingReport): Insight[] {
     if (aboveAvgPct >= 15) {
       insights.push({
         title: `${topPlayer.player_name} is the star`,
-        description: `${topPlayer.player_name} leads with ${Math.round(topPlayer.acs)} ACS, ${Math.round(aboveAvgPct)}% above team average.`,
+        description: `${topPlayer.player_name} leads with ${Math.round(topPlayer.acs)} MCS, ${Math.round(aboveAvgPct)}% above team average.`,
         data_backing: `K/D: ${topPlayer.kd_ratio.toFixed(2)}, KAST: ${Math.round(topPlayer.kast_pct)}%`,
         significance: aboveAvgPct >= 25 ? 'high' : 'medium',
         icon: 'trend',

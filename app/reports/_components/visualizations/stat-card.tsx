@@ -2,8 +2,14 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Minus, Zap, Shield, Target, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Zap, Shield, Target, Activity, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface StatCardProps {
   title: string;
@@ -17,6 +23,7 @@ interface StatCardProps {
   variant?: 'default' | 'duelist' | 'controller' | 'initiator' | 'sentinel';
   highlight?: boolean; // Add spotlight effect for important stats
   icon?: 'zap' | 'shield' | 'target' | 'activity';
+  tooltip?: string; // Tooltip text explaining the metric
 }
 
 export function StatCard({
@@ -27,7 +34,8 @@ export function StatCard({
   invertTrend = false,
   variant = 'default',
   highlight = false,
-  icon
+  icon,
+  tooltip
 }: StatCardProps) {
   const getTrendIcon = () => {
     if (!comparison) return null;
@@ -138,6 +146,18 @@ export function StatCard({
           )}>
             {title}
           </CardTitle>
+          {tooltip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="text-xs">{tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
         {comparison && (
           <Badge
