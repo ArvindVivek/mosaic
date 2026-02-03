@@ -4,12 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Minus, Zap, Shield, Target, Activity, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface StatCardProps {
   title: string;
@@ -147,16 +142,16 @@ export function StatCard({
             {title}
           </CardTitle>
           {tooltip && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p className="text-xs">{tooltip}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="inline-flex items-center justify-center">
+                  <Info className="h-3 w-3 text-muted-foreground cursor-help hover:text-foreground transition-colors" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="max-w-xs text-sm" side="top">
+                {tooltip}
+              </PopoverContent>
+            </Popover>
           )}
         </div>
         {comparison && (

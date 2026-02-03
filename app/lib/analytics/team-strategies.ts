@@ -74,6 +74,11 @@ export async function getTeamSitePreferences(
   });
 
   if (error) {
+    // If function doesn't exist, return empty array instead of throwing
+    if (error.code === '42883' || error.message?.includes('does not exist')) {
+      console.warn('get_team_site_preferences function not available, returning empty array');
+      return [];
+    }
     throw new Error(`Failed to fetch site preferences: ${error.message}`);
   }
 
@@ -90,15 +95,17 @@ export async function getTeamSitePreferences(
 export async function getTeamStrategiesSummary(
   filters: Pick<AnalyticsFilters, 'teamId' | 'seriesIds'>
 ): Promise<TeamStrategiesSummary> {
-  const supabase = createServiceClient();
-  const { data, error } = await (supabase.rpc as any)('get_team_strategies_summary', {
-    p_team_id: filters.teamId,
-    p_series_ids: filters.seriesIds,
-  });
+  // Call individual functions and combine results
+  // This is a workaround for the broken get_team_strategies_summary function
+  const [pistolPatterns, economyPatterns, sitePreferences] = await Promise.all([
+    getTeamAttackPistolPatterns(filters),
+    getTeamEconomyPatterns(filters),
+    getTeamSitePreferences({ ...filters, mapName: undefined }),
+  ]);
 
-  if (error) {
-    throw new Error(`Failed to fetch strategies summary: ${error.message}`);
-  }
-
-  return data as TeamStrategiesSummary;
+  return {
+    pistol_patterns: pistolPatterns,
+    economy_patterns: economyPatterns,
+    site_preferences: sitePreferences,
+  };
 }
