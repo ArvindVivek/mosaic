@@ -98,6 +98,8 @@ export function formatAgentName(agentName: string): string {
  * Format economy types with proper display names
  */
 export function formatEconomyType(economyType: string): string {
+  if (!economyType) return '';
+
   const economyLabels: Record<string, string> = {
     'eco': 'Eco',
     'half_buy': 'Half Buy',
@@ -112,6 +114,8 @@ export function formatEconomyType(economyType: string): string {
  * Format pistol pattern types with proper display names
  */
 export function formatPistolPattern(patternType: string): string {
+  if (!patternType) return '';
+
   const pistolLabels: Record<string, string> = {
     'fast_execute': 'Fast Execute',
     'default': 'Default Setup',
@@ -147,6 +151,8 @@ export function formatSiteName(site: string): string {
  * Format round types
  */
 export function formatRoundType(roundType: string): string {
+  if (!roundType) return '';
+
   const roundLabels: Record<string, string> = {
     'pistol': 'Pistol Round',
     'eco': 'Eco Round',
