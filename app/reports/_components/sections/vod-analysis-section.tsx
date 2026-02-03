@@ -122,7 +122,7 @@ export function VODAnalysisSection({ teamId, teamName }: VODAnalysisSectionProps
                     ref={videoRef}
                     className="w-full h-full"
                     controls
-                    src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    src="https://fbloukfgdjvwzdgrcnzt.supabase.co/storage/v1/object/public/videos/Hackathon-detected-1.mp4"
                   />
                 </div>
 
