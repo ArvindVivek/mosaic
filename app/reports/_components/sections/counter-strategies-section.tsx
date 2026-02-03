@@ -194,8 +194,8 @@ function ConfidenceBadge({ confidence }: { confidence: ConfidenceLevel }) {
 
 function LowConfidenceWarning({ sampleSize }: { sampleSize: number }) {
   return (
-    <Alert variant="default" className="py-2">
-      <AlertCircle className="h-3 w-3" />
+    <Alert variant="default" className="py-2 flex items-center gap-2">
+      <AlertCircle className="h-3 w-3 shrink-0" />
       <AlertDescription className="text-xs">
         Sample size: {sampleSize} - insufficient for reliable pattern
       </AlertDescription>
