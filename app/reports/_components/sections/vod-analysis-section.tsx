@@ -11,30 +11,54 @@ interface VODAnalysisSectionProps {
   teamName: string;
 }
 
-// Mock AI analysis data
+// Mock AI analysis data based on 4v2 post-plant scenario
 const MOCK_ANALYSIS = {
   strengths: [
-    'Excellent site execution on Haven A-site',
-    'Strong post-plant positioning and utility usage',
-    'Effective map control in mid rounds',
-    'Good trade discipline in contested areas',
+    'Effective flash coordination between Omen and Breach to secure Gekko kill',
+    'Good use of info from Neon trade to make aggressive teleport play on box',
+    'Strong crosshair discipline moving right to dodge Neon\'s shots after teleport',
+    'Used Fade haunt info and teammate comms to locate Reyna from waterfall',
+    'Confident 1v1 clutch with teleport play to catch Reyna off-guard',
   ],
   improvements: [
-    'Rotate speed could be faster on B-hits',
-    'Occasional overpeeks in advantage situations',
-    'Early round information gathering needs work',
+    'Missed opportunity to pinch Neon with Breach - could have used teammate\'s utility (flash/stun) for guaranteed trade instead of solo TP',
+    'Risky aggressive plays in 3v1 advantage - should play for numbers advantage',
+    'In 1v1 clutch, passive option available: smoke bomb + reposition to Bend instead of aggressive swing',
+    'Breach was positioned close right - coordination for pinch would reduce risk of losing 4v2',
   ],
   keyMoments: [
-    { time: 3, title: 'Round Start', type: 'strategic', description: 'Initial positioning' },
-    { time: 6, title: 'First Contact', type: 'ace', description: 'Entry frag secured' },
-    { time: 10, title: 'Site Execute', type: 'strategic', description: 'A-site take initiated' },
-    { time: 13, title: 'Round Win', type: 'tactical', description: 'Successful plant defense' },
+    { time: 2, title: '4v2 Post-Plant', type: 'strategic', description: 'Spike dropped main, team has numbers advantage' },
+    { time: 5, title: 'Breach Flash Kill', type: 'ace', description: 'Breach flashes close right, secures Gekko kill' },
+    { time: 7, title: 'Neon Trades Deadlock', type: 'tactical', description: 'Neon kills Deadlock but location revealed' },
+    { time: 10, title: 'Omen Box TP', type: 'strategic', description: 'Aggressive teleport on box, eliminates Neon with movement' },
+    { time: 14, title: 'Reyna 2K Waterfall', type: 'ace', description: 'Reyna gets timing from waterfall, takes out 2 teammates' },
+    { time: 18, title: '1v1 Clutch', type: 'strategic', description: 'Omen teleports behind Reyna for clutch win' },
   ],
   stats: {
-    avgRoundTime: '14s',
-    siteSuccessRate: 'A: 100%',
-    firstBloodRate: '100%',
-    clutchWinRate: '100%',
+    avgRoundTime: '45s',
+    siteSuccessRate: 'Main: 100%',
+    firstBloodRate: 'Breach: 100%',
+    clutchWinRate: 'Omen 1v1: 100%',
+  },
+  tacticalSuggestions: {
+    passive: [
+      'Smoke bomb to cut off Reyna\'s vision',
+      'Play around your smoke for control',
+      'Reposition to Bend instead of holding last known position',
+      'Force Reyna to make first move with time pressure',
+    ],
+    aggressive: [
+      'Teleport behind Reyna using waterfall sound cues',
+      'Swing wide angle on timing after hearing footsteps',
+      'Use paranoia before peek to blind if she\'s holding angle',
+      'Risk: Both plays not guaranteed - rely on mechanics and surprise',
+    ],
+    teamPlay: [
+      'Breach should have flashed/stunned Neon for coordinated pinch',
+      'Play with Breach instead of solo TP - guarantees trade if you die',
+      'In 3v1, hold crossfire positions instead of hunting',
+      'Use Fade haunt earlier to track Reyna location before she gets 2k',
+    ]
   }
 };
 
@@ -213,6 +237,56 @@ export function VODAnalysisSection({ teamId, teamName }: VODAnalysisSectionProps
                     </li>
                   ))}
                 </ul>
+              </CardContent>
+            </Card>
+
+            {/* Tactical Suggestions - Playstyle Adaptive */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2 text-blue-500">
+                  <Zap className="h-4 w-4" />
+                  Tactical Suggestions (1v1 Clutch)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Passive Option */}
+                <div>
+                  <h4 className="text-xs font-semibold text-blue-400 mb-2">Passive Playstyle:</h4>
+                  <ul className="space-y-1">
+                    {MOCK_ANALYSIS.tacticalSuggestions.passive.map((tip, i) => (
+                      <li key={i} className="text-xs flex items-start gap-2">
+                        <span className="text-blue-400">•</span>
+                        <span className="text-muted-foreground">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Aggressive Option */}
+                <div>
+                  <h4 className="text-xs font-semibold text-red-400 mb-2">Aggressive Playstyle:</h4>
+                  <ul className="space-y-1">
+                    {MOCK_ANALYSIS.tacticalSuggestions.aggressive.map((tip, i) => (
+                      <li key={i} className="text-xs flex items-start gap-2">
+                        <span className="text-red-400">•</span>
+                        <span className="text-muted-foreground">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Team Play */}
+                <div>
+                  <h4 className="text-xs font-semibold text-green-400 mb-2">Team Coordination:</h4>
+                  <ul className="space-y-1">
+                    {MOCK_ANALYSIS.tacticalSuggestions.teamPlay.map((tip, i) => (
+                      <li key={i} className="text-xs flex items-start gap-2">
+                        <span className="text-green-400">•</span>
+                        <span className="text-muted-foreground">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </CardContent>
             </Card>
           </div>
