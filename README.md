@@ -50,7 +50,7 @@ Mosaic is a specialized VALORANT analytics platform built for deep strategic ana
 - **Materialized Views**: 50+ optimized analytics views
 - **API Routes**: Next.js API routes
 - **AI Integration**: Claude Sonnet 4 via Anthropic SDK
-- **Data Source**: Rib.gg API
+- **Data Source**: Grid.gg API
 
 ### Infrastructure
 - **Hosting**: Vercel Edge Network
@@ -477,7 +477,7 @@ psql $DATABASE_URL -c "SELECT refresh_all_views();"
 
 ### Data Import
 ```bash
-# Import match data from Rib.gg
+# Import match data from Grid.gg
 npm run import:matches
 
 # Refresh materialized views
@@ -546,7 +546,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Rib.gg** for VALORANT esports data API
+- **Grid.gg** for VALORANT esports data API
 - **Riot Games** for VALORANT
 - **Anthropic** for Claude Sonnet 4
 - **Vercel** for hosting
