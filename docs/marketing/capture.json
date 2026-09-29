@@ -2,26 +2,52 @@
   "app": "mosaic",
   "baseUrl": "https://mosaic-plum.vercel.app",
   "out": "web",
-  "themes": ["light", "dark"],
+  "themes": [
+    "light",
+    "dark"
+  ],
   "themeStrategy": "media",
-  "viewports": ["desktop", "phone"],
+  "viewports": [
+    "desktop",
+    "phone"
+  ],
   "shots": [
-    { "name": "01-pick-team", "path": "/reports", "waitFor": "text=Scout any VCT Americas team", "settle": 600 },
-    { "name": "02-overview", "path": "/reports?team=79", "waitFor": "text=How to beat them", "settle": 600 },
-    { "name": "03-strategy", "path": "/reports?team=79&tab=strategies", "waitFor": "text=Pistol rounds", "settle": 600 },
-    { "name": "04-players", "path": "/reports?team=79&tab=players", "waitFor": "text=KAST", "settle": 600 },
-    { "name": "05-maps", "path": "/reports?team=79&tab=maps", "waitFor": "text=Map pool", "settle": 600 },
-    { "name": "06-counters", "path": "/reports?team=1079&tab=counters", "waitFor": "text=Based on", "settle": 600 },
     {
-      "name": "07-analyst",
+      "name": "01-pick-team",
+      "path": "/reports",
+      "waitFor": "text=Scout any VCT Americas team",
+      "settle": 600
+    },
+    {
+      "name": "02-overview",
       "path": "/reports?team=79",
-      "steps": [
-        { "click": "text=Ask the analyst" },
-        { "fill": ["#analyst-question", "How are their pistol rounds?"] },
-        { "click": "[aria-label=\"Send question\"]" },
-        { "waitFor": "text=Pistols won" },
-        { "wait": 500 }
-      ]
+      "waitFor": "text=How to beat them",
+      "settle": 600
+    },
+    {
+      "name": "03-strategy",
+      "path": "/reports?team=79&tab=strategies",
+      "waitFor": "text=Pistol rounds",
+      "settle": 600
+    },
+    {
+      "name": "04-players",
+      "path": "/reports?team=79&tab=players",
+      "waitFor": "text=KAST",
+      "settle": 600
+    },
+    {
+      "name": "05-maps",
+      "path": "/reports?team=79&tab=maps",
+      "waitFor": "text=Map pool",
+      "settle": 600
+    },
+    {
+      "name": "06-counters",
+      "path": "/reports?team=1079&tab=counters",
+      "waitFor": "text=Based on",
+      "settle": 600
     }
-  ]
+  ],
+  "_ai": "The chat shot is not in the default capture: it would call the live AI route (owner rule 2026-09-29: no real AI calls). The committed web/*/07-analyst.png shows the no-AI fallback; re-add the shot after the key has credits."
 }

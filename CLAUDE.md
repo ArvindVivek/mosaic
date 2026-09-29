@@ -18,6 +18,7 @@ shape. Web release standard: `kitchenlabs-kit/docs/standards/web-release-standar
   no OpenAI key so only fallbacks run).
 - `npm run screenshots` (marketing capture against production).
 - Heavy commands through `kitchenlabs-kit/scripts/kl-slot.sh`.
+- Live AI check (opt-in, spends tokens): `E2E_LIVE_AI=1 npx playwright test e2e/live-ai.spec.ts --project=desktop`. Nothing else may call OpenAI (owner rule 2026-09-29).
 
 ## Map
 

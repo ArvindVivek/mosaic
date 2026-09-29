@@ -26,3 +26,13 @@ answer logs `[ai] provider: openai label=chat in=… out=…`.
 The org key is out of credits (`429 insufficient_quota`), so production serves the fallback. The
 live AI check is **pending**: the request shape is unit-tested against a mocked OpenAI response
 (`app/api/chat/route.test.ts`), but no real call is recorded yet.
+
+## Testing without spending (owner rule, 2026-09-29)
+
+- `npm run gate` and `npx playwright test` never call OpenAI. Unit tests run with a fetch guard
+  (`vitest.setup.ts`) that fails any request a test didn't stub. The e2e server starts with an
+  empty `OPENAI_API_KEY` and is never reused, so every AI surface exercises its fallback.
+- The real check is opt-in, run once after the key has credits:
+  `npm run build && E2E_LIVE_AI=1 npx playwright test e2e/live-ai.spec.ts --project=desktop`
+  (`e2e/live-ai.spec.ts` asserts `source: "ai"`).
+- The marketing capture has no AI shot for the same reason (see `docs/marketing/capture.json`).
