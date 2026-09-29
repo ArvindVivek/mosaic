@@ -23,3 +23,10 @@ describe("analyst facts", () => {
     expect(scoutFallback("Cloud9", lines, "hello")).toBe(`The AI analyst can't answer right now, so here are the numbers for Cloud9. ${lines[0]}`)
   })
 })
+
+describe("fallback topics", () => {
+  it("doesn't pull the counters into a question that merely starts with 'how'", () => {
+    const answer = scoutFallback("Cloud9", lines, "How are their pistol rounds?")
+    expect(answer).not.toContain("Counter:")
+  })
+})

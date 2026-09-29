@@ -33,7 +33,7 @@ const TOPICS: [RegExp, string][] = [
   [/map|pick|ban|veto/i, "maps"],
   [/player|who|star|duel|k\/?d/i, "players"],
   [/comp|agent|lineup/i, "composition"],
-  [/beat|counter|weak|exploit|how/i, "counter"],
+  [/beat|counter|weak|exploit/i, "counter"],
   [/open|first (kill|blood)/i, "opening kills"],
 ]
 
