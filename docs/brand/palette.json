@@ -1,0 +1,19 @@
+{
+  "app": "mosaic",
+  "displayName": "Mosaic",
+  "appearance": "adaptive",
+  "accent": "#0F766E",
+  "accentStrong": "#0F766E",
+  "accentDeep": "#0B4F4A",
+  "accentSoft": "#DDECEB",
+  "accentSoftDark": "#142E37",
+  "onAccent": "#FFFFFF",
+  "accentText": "#0F746C",
+  "accentTextDark": "#15A69A",
+  "secondary": null,
+  "gradient": [
+    "#14B8A6",
+    "#0B4F4A"
+  ],
+  "night": null
+}

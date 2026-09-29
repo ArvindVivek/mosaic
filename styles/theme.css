@@ -1,5 +1,5 @@
 /* Mosaic's accent: deep teal (#0F766E). Derived with the script in kitchenlabs-kit/docs/brand/palettes.md;
-   the palette.json block is in docs/DESIGN.md until the kit registers brand/mosaic. Every text pair
+   docs/brand/palette.json holds the full palette until the kit registers brand/mosaic. Every text pair
    is measured in lib/tokens.test.ts. */
 
 :root {
