@@ -1,0 +1,17 @@
+/* Mosaic's accent: deep teal (#0F766E). Derived with the script in kitchenlabs-kit/docs/brand/palettes.md;
+   the palette.json block is in docs/DESIGN.md until the kit registers brand/mosaic. Every text pair
+   is measured in lib/tokens.test.ts. */
+
+:root {
+  --accent: #0f766e;
+  --accent-strong: #0f766e;
+  --accent-deep: #0b4f4a;
+  --accent-text: #0f746c;
+  --accent-soft: #ddeceb;
+  --on-accent: #ffffff;
+}
+
+[data-theme="dark"] {
+  --accent-text: #15a69a;
+  --accent-soft: #142e37;
+}

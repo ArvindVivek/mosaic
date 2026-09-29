@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Tab icon: assets/icon-source.svg on a rounded tile, simplified to read at 16px. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#0B4F4A"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#g)"/>
+  <circle cx="14" cy="14" r="7.6" fill="none" stroke="#FFFFFF" stroke-width="2.6"/>
+  <line x1="19.6" y1="19.6" x2="25.4" y2="25.4" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round"/>
+  <rect x="10.6" y="10.6" width="3" height="3" rx="0.6" fill="#FFFFFF"/>
+  <rect x="14.4" y="14.4" width="3" height="3" rx="0.6" fill="#FFFFFF"/>
+</svg>

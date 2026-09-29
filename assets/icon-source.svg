@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Mosaic: a scouting lens over the tiles of a team's pattern. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#0B4F4A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <circle cx="450" cy="450" r="250" fill="none" stroke="#FFFFFF" stroke-width="68"/>
+  <line x1="636" y1="636" x2="820" y2="820" stroke="#FFFFFF" stroke-width="84" stroke-linecap="round"/>
+  <rect x="352" y="352" width="84" height="84" rx="14" fill="#FFFFFF"/>
+  <rect x="464" y="352" width="84" height="84" rx="14" fill="#FFFFFF" opacity="0.55"/>
+  <rect x="352" y="464" width="84" height="84" rx="14" fill="#FFFFFF" opacity="0.55"/>
+  <rect x="464" y="464" width="84" height="84" rx="14" fill="#FFFFFF"/>
+</svg>

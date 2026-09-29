@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import "../styles/kl-tokens.css";
+@import "../styles/theme.css";
+
+/* Mosaic's own tokens on top of KL Web. Attack and defense get their own colours because a
+   round always has one of each; both text colours are measured in lib/tokens.test.ts. */
+:root {
+  --attack: #e8590c;
+  --attack-text: #b54509;
+  --attack-soft: #fce8dd;
+  --defense: #1c7ed6;
+  --defense-text: #186bb6;
+  --defense-soft: #dfedf9;
+}
+
+[data-theme="dark"] {
+  --attack-text: #f4722b;
+  --attack-soft: #432822;
+  --defense-text: #4a9de7;
+  --defense-soft: #17304e;
+}
+
+@theme inline {
+  --color-attack: var(--attack);
+  --color-attack-text: var(--attack-text);
+  --color-attack-soft: var(--attack-soft);
+  --color-defense: var(--defense);
+  --color-defense-text: var(--defense-text);
+  --color-defense-soft: var(--defense-soft);
+}
