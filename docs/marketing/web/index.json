@@ -1,0 +1,231 @@
+{
+  "app": "mosaic",
+  "baseUrl": "https://mosaic-plum.vercel.app",
+  "captured": "2026-09-29T16:32:11.981Z",
+  "shots": [
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "01-pick-team",
+      "file": "desktop-light/01-pick-team.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "02-overview",
+      "file": "desktop-light/02-overview.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "03-strategy",
+      "file": "desktop-light/03-strategy.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "04-players",
+      "file": "desktop-light/04-players.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "05-maps",
+      "file": "desktop-light/05-maps.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "06-counters",
+      "file": "desktop-light/06-counters.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "light",
+      "name": "07-analyst",
+      "file": "desktop-light/07-analyst.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "01-pick-team",
+      "file": "desktop-dark/01-pick-team.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "02-overview",
+      "file": "desktop-dark/02-overview.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "03-strategy",
+      "file": "desktop-dark/03-strategy.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "04-players",
+      "file": "desktop-dark/04-players.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "05-maps",
+      "file": "desktop-dark/05-maps.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "06-counters",
+      "file": "desktop-dark/06-counters.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "desktop",
+      "theme": "dark",
+      "name": "07-analyst",
+      "file": "desktop-dark/07-analyst.png",
+      "px": "2880x1800",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "01-pick-team",
+      "file": "phone-light/01-pick-team.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "02-overview",
+      "file": "phone-light/02-overview.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "03-strategy",
+      "file": "phone-light/03-strategy.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "04-players",
+      "file": "phone-light/04-players.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "05-maps",
+      "file": "phone-light/05-maps.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "06-counters",
+      "file": "phone-light/06-counters.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "light",
+      "name": "07-analyst",
+      "file": "phone-light/07-analyst.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "01-pick-team",
+      "file": "phone-dark/01-pick-team.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "02-overview",
+      "file": "phone-dark/02-overview.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "03-strategy",
+      "file": "phone-dark/03-strategy.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "04-players",
+      "file": "phone-dark/04-players.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "05-maps",
+      "file": "phone-dark/05-maps.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "06-counters",
+      "file": "phone-dark/06-counters.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    },
+    {
+      "viewport": "phone",
+      "theme": "dark",
+      "name": "07-analyst",
+      "file": "phone-dark/07-analyst.png",
+      "px": "1290x2796",
+      "consoleErrors": 0
+    }
+  ]
+}
