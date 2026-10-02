@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { ReactNode } from "react"
-import { privacyUrl, supportUrl, ThemeToggle } from "@/components/kl"
+import { COPYRIGHT, privacyUrl, supportUrl, ThemeToggle } from "@/components/kl"
 import { RIOT_DISCLAIMER, site } from "@/lib/site"
 
 /** Mosaic's frame: a slim header, the page, and the studio footer with Riot's fan-project notice. */
@@ -31,9 +31,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
       <footer className="pb-[max(6rem,calc(env(safe-area-inset-bottom)+5rem))]">
         <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
           <div className="flex flex-col items-center gap-1 border-t border-line pt-5 text-sm text-ink-2 sm:flex-row sm:justify-between">
-            <p>
-              Made by <span className="font-bold text-ink">Kitchen Labs</span>
-            </p>
+            <p>{COPYRIGHT}</p>
             <nav aria-label="About this app" className="flex flex-wrap items-center justify-center">
               <a href={privacyUrl(site.slug)} className={link}>Privacy</a>
               <a href={supportUrl(site.slug)} className={link}>Support</a>

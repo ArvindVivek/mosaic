@@ -34,4 +34,4 @@ Docs: `CLAUDE.md`, `docs/AI.md`, `docs/DESIGN.md`, `docs/CREDITS.md`, `docs/PRIV
 Mosaic was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games.
 Riot Games does not endorse or sponsor this project.
 
-MIT licence (see `LICENSE`). Made by Kitchen Labs.
+MIT licence (see `LICENSE`). © 2026 Kitchen Labs.

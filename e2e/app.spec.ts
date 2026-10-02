@@ -30,6 +30,7 @@ for (const [path, heading] of PAGES) {
     expect(res?.status()).toBe(200)
     await expect(page.getByRole("heading", { level: 1 })).toContainText(heading)
     await expect(page.getByText(/Legal Jibber Jabber/)).toBeVisible()
+    await expect(page.getByText(/© \d{4} Kitchen Labs/)).toBeVisible()
     await page.waitForLoadState("networkidle")
     expect(errors).toEqual([])
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
