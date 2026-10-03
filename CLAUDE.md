@@ -45,9 +45,9 @@ shape. Web release standard: `kitchenlabs-kit/docs/standards/web-release-standar
 
 ## Vercel env
 
-`OPENAI_API_KEY` (server-only). Dead, safe for the owner to delete: `NEXT_PUBLIC_SUPABASE_URL`,
-`NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `GRID_API_KEY` (and
-`OPENAI_MODEL` if present).
+`OPENAI_API_KEY` (server-only, production + preview) is the only variable. The dead hackathon
+ones (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+`DATABASE_URL`, `GRID_API_KEY`) were removed from Vercel on 2026-10-02 (`OPENAI_MODEL` was not set).
 
 ## Owner sweep (2026-10-02)
 - KL Web 1.0.3. The studio credit is "© 2026 Kitchen Labs" (`COPYRIGHT`), never "Made by"; e2e
