@@ -11,6 +11,9 @@ function watchErrors(page: Page) {
   return errors
 }
 
+/** Owner rule 2026-10-02: users see "AI", never the vendor or model (scripts/leak-check.mjs checks the build). */
+const VENDOR = /openai|gpt-/i
+
 const PAGES: [string, RegExp][] = [
   ["/reports", /Scout any VCT Americas team/],
   [`/reports?team=${C9}`, /Cloud9/],
@@ -28,6 +31,7 @@ for (const [path, heading] of PAGES) {
     const errors = watchErrors(page)
     const res = await page.goto(path)
     expect(res?.status()).toBe(200)
+    expect(await res!.text()).not.toMatch(VENDOR)
     await expect(page.getByRole("heading", { level: 1 })).toContainText(heading)
     await expect(page.getByText(/Legal Jibber Jabber/)).toBeVisible()
     await expect(page.getByText(/© \d{4} Kitchen Labs/)).toBeVisible()
@@ -70,6 +74,7 @@ test("the API routes answer", async ({ request }) => {
   expect(await stream.text()).toContain('"stage":"complete"')
   const chat = await request.post("/api/chat", { data: { messages: [{ role: "user", content: "How do we beat them?" }], teamId: C9 } })
   expect(chat.status()).toBe(200)
+  expect(await chat.text()).not.toMatch(VENDOR)
   expect((await chat.json()).source).toBe("fallback")
   expect((await request.post("/api/chat", { data: { teamId: C9 } })).status()).toBe(400)
 })

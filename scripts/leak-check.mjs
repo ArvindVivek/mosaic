@@ -3,6 +3,9 @@
 // 1. Key-shaped strings: OpenAI (sk-…), Supabase secret, service_role, GitHub tokens, AWS keys.
 // 2. The real values of this app's server secrets (read from .env.local / the environment),
 //    so even an oddly shaped key is caught. Values are never printed.
+// Plus the AI vendor rule (owner rule 2026-10-02): users only ever see "AI", so neither the client
+// chunks nor the prerendered pages (.next/server/app/**/*.html) may say "openai" or "gpt-". The
+// rest of .next/server is server code that legitimately calls OpenAI, so it isn't scanned.
 // Usage: node scripts/leak-check.mjs [dir]   (default .next/static)
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -42,6 +45,9 @@ function* files(dir) {
   }
 }
 
+const VENDOR = /openai|gpt-/i;
+const PAGES = ".next/server/app";
+
 let scanned = 0;
 const problems = [];
 for (const file of files(root)) {
@@ -49,10 +55,25 @@ for (const file of files(root)) {
   const text = readFileSync(file, "utf8");
   for (const [label, re] of PATTERNS) if (re.test(text)) problems.push(`${file}: looks like a ${label}`);
   for (const [name, value] of secrets) if (text.includes(value)) problems.push(`${file}: contains the value of ${name}`);
+  if (VENDOR.test(text)) problems.push(`${file}: names the AI vendor or model (${text.match(VENDOR)[0]})`);
 }
+
+let pages = 0;
+if (existsSync(PAGES)) {
+  for (const file of files(PAGES)) {
+    if (!file.endsWith(".html")) continue;
+    pages++;
+    const text = readFileSync(file, "utf8");
+    if (VENDOR.test(text)) problems.push(`${file}: names the AI vendor or model (${text.match(VENDOR)[0]})`);
+  }
+}
+if (pages === 0) problems.push(`no prerendered pages found in ${PAGES}: run npm run build first`);
 
 if (problems.length) {
   console.error(`leak-check: FAILED\n${problems.join("\n")}`);
   process.exit(1);
 }
-console.log(`leak-check: ${scanned} files in ${root}, ${PATTERNS.length} key patterns and ${secrets.size} real secret values checked, nothing found.`);
+console.log(
+  `leak-check: ${scanned} files in ${root}, ${PATTERNS.length} key patterns and ${secrets.size} real secret values checked, ` +
+    `plus the AI vendor name in those files and ${pages} prerendered pages: nothing found.`,
+);
