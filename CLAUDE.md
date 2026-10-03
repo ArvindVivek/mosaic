@@ -55,3 +55,7 @@ ones (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SER
   or its docs: `docs/PRIVACY.md` and `docs/SUPPORT.md` link https://kitchenlabs-one.vercel.app/contact.
 - Scroll audit at 1280x800, 1440x900, 430x932: the team picker and a report's headline numbers are
   in view at load. `app-frame.tsx` shows `COPYRIGHT` above Riot's notice. No layout change.
+- AI vendor rule: users see "AI", never "OpenAI"/"GPT"/a model id (privacy says "a third-party AI
+  service"). `npm run leak-check` fails if `.next/static` or the prerendered HTML says
+  `/openai|gpt-/i`; e2e checks the dynamic `/reports` HTML and the `/api/chat` JSON the same way.
+  Internal docs (`docs/AI.md`, `docs/CREDITS.md`, which the app never links) may name the vendor.
