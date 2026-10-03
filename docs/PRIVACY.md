@@ -1,6 +1,6 @@
 # Mosaic Privacy Policy
 
-_Last updated: 29 September 2026_
+_Last updated: 2 October 2026_
 
 Mosaic is made by Kitchen Labs. It's a free website that writes scouting reports on professional
 VALORANT teams. This page says, in plain English, what happens to your information.
@@ -10,16 +10,16 @@ VALORANT teams. This page says, in plain English, what happens to your informati
 - There are no accounts, no ads and no tracking.
 - The match data is bundled with the site. Nothing you do in Mosaic is saved by Kitchen Labs.
 - If you ask the AI analyst a question or press **Write the AI brief**, the question and a few lines
-  of match numbers are sent to OpenAI to write the answer, then thrown away.
+  of match numbers are sent to a third-party AI service to write the answer, then thrown away.
 
 ## What we handle, and why
 
 **Questions to the AI analyst (only when you ask one).** When you press send in **Ask the analyst**,
 or **Write the AI brief**, your browser sends to Mosaic's server (hosted by Vercel): your question,
 the team and filters you picked, and your last few messages in the chat. The server adds a short summary of the match
-numbers and passes it to OpenAI's AI service to write the answer. Kitchen Labs does not store your
-questions or the answers. OpenAI processes them under its API terms, which say API data isn't used
-to train its models and may be kept for up to 30 days for abuse monitoring.
+numbers and passes it to a third-party AI service to write the answer. Kitchen Labs does not store
+your questions or the answers. Our AI provider does not use them to train its models, and may keep
+them for up to 30 days for abuse monitoring.
 
 Please don't type personal details into your questions.
 
