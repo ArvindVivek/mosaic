@@ -12,7 +12,7 @@ function watchErrors(page: Page) {
 }
 
 /** Owner rule 2026-10-02: users see "AI", never the vendor or model (scripts/leak-check.mjs checks the build). */
-const VENDOR = /openai|gpt-/i
+const VENDOR = /openai|gpt-|anthropic|claude/i
 
 const PAGES: [string, RegExp][] = [
   ["/reports", /Scout any VCT Americas team/],

@@ -30,7 +30,7 @@ export default defineConfig({
     // model; it checks the written fallbacks). e2e/live-ai.spec.ts is the opt-in real check.
     command: process.env.E2E_LIVE_AI === "1"
       ? `TZ=UTC npm run start -- --port ${PORT}`
-      : `TZ=UTC OPENAI_API_KEY= npm run start -- --port ${PORT}`,
+      : `TZ=UTC ANTHROPIC_API_KEY= OPENAI_API_KEY= npm run start -- --port ${PORT}`,
     url: `http://127.0.0.1:${PORT}`,
     // Never reuse a running server: a dev server started with the key would make the suite spend.
     reuseExistingServer: false,

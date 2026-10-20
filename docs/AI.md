@@ -6,7 +6,8 @@ works with no AI. No cron, background job or page load calls the model.
 
 ## Token plan
 
-- **Model:** `gpt-5.4-mini` via `lib/kl/ai.ts` (KL Web), `reasoning_effort: "low"`, strict schema
+- **Model:** Claude (`claude-haiku-5-5`) first, then OpenAI (`gpt-5.4-mini`, `reasoning_effort: "low"`) as
+  the fallback, via `lib/kl/ai.ts` (KL Web 1.1.6), strict schema
   `CHAT_SCHEMA` (`lib/llm/scout-facts.ts`, pinned by `lib/llm/scout-facts.test.ts`).
 - **Input:** about a dozen computed lines for the team and filters in view (`scoutFacts`), roughly
   300-450 tokens, plus a ~60-token system prompt and the last 4 chat turns (400 characters each).
@@ -19,7 +20,7 @@ works with no AI. No cron, background job or page load calls the model.
 
 `scoutFallback` answers with the fact lines that match the question's topic (pistols, economy,
 maps, players...). The UI labels it and the server logs `[ai] fallback label=chat code=…`; a real
-answer logs `[ai] provider: openai label=chat in=… out=…`.
+answer logs `[ai] provider: anthropic label=chat in=… out=…` (or `openai` when the fallback answered).
 
 ## Status (2026-09-29)
 
@@ -29,9 +30,10 @@ live AI check is **pending**: the request shape is unit-tested against a mocked 
 
 ## Testing without spending (owner rule, 2026-09-29)
 
-- `npm run gate` and `npx playwright test` never call OpenAI. Unit tests run with a fetch guard
-  (`vitest.setup.ts`) that fails any request a test didn't stub. The e2e server starts with an
-  empty `OPENAI_API_KEY` and is never reused, so every AI surface exercises its fallback.
+- `npm run gate` and `npx playwright test` never call a model. Unit tests run with a fetch guard
+  (`vitest.setup.ts`) that fails any request a test didn't stub. The e2e server starts with empty
+  `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` and is never reused, so every AI surface exercises its
+  fallback.
 - The real check is opt-in, run once after the key has credits:
   `npm run build && E2E_LIVE_AI=1 npx playwright test e2e/live-ai.spec.ts --project=desktop`
   (`e2e/live-ai.spec.ts` asserts `source: "ai"`).

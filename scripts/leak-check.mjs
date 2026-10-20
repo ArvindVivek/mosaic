@@ -1,11 +1,11 @@
 // Fails when anything secret-looking ships to the browser (web release standard: grep the built
 // .next/static output before every deploy). Two checks:
-// 1. Key-shaped strings: OpenAI (sk-…), Supabase secret, service_role, GitHub tokens, AWS keys.
+// 1. Key-shaped strings: OpenAI and Anthropic (sk-…), Supabase secret, service_role, GitHub tokens, AWS keys.
 // 2. The real values of this app's server secrets (read from .env.local / the environment),
 //    so even an oddly shaped key is caught. Values are never printed.
 // Plus the AI vendor rule (owner rule 2026-10-02): users only ever see "AI", so neither the client
-// chunks nor the prerendered pages (.next/server/app/**/*.html) may say "openai" or "gpt-". The
-// rest of .next/server is server code that legitimately calls OpenAI, so it isn't scanned.
+// chunks nor the prerendered pages (.next/server/app/**/*.html) may say "openai", "gpt-", "anthropic"
+// or "claude". The rest of .next/server is server code that legitimately calls the AI APIs, so it isn't scanned.
 // Usage: node scripts/leak-check.mjs [dir]   (default .next/static)
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -26,7 +26,7 @@ const PATTERNS = [
 ];
 
 // Add any other server-only env var this app uses.
-const SECRET_NAMES = ["OPENAI_API_KEY", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY", "GITHUB_TOKEN"];
+const SECRET_NAMES = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY", "GITHUB_TOKEN"];
 const secrets = new Map();
 for (const file of [".env.local", ".env", ".env.production.local"]) {
   if (!existsSync(file)) continue;
@@ -45,7 +45,7 @@ function* files(dir) {
   }
 }
 
-const VENDOR = /openai|gpt-/i;
+const VENDOR = /openai|gpt-|anthropic|claude/i;
 const PAGES = ".next/server/app";
 
 let scanned = 0;

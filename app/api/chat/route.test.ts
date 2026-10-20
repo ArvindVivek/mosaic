@@ -10,6 +10,8 @@ const q = (content: string, extra = {}) => ({ messages: [{ role: "user", content
 
 describe("POST /api/chat", () => {
   beforeEach(() => {
+    // No Claude key, so the helper goes straight to the mocked OpenAI reply.
+    process.env.ANTHROPIC_API_KEY = ""
     process.env.OPENAI_API_KEY = "sk-test"
   })
   afterEach(() => {

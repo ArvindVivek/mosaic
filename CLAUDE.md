@@ -15,10 +15,10 @@ shape. Web release standard: `kitchenlabs-kit/docs/standards/web-release-standar
 
 - `npm run gate` (kit check, typecheck, eslint 0 warnings, vitest, build, leak check).
 - `npm run build && npm run e2e` (port 3562, phone + desktop, server TZ=UTC, browser Los Angeles,
-  no OpenAI key so only fallbacks run).
+  no AI keys so only fallbacks run).
 - `npm run screenshots` (marketing capture against production).
 - Heavy commands through `kitchenlabs-kit/scripts/kl-slot.sh`.
-- Live AI check (opt-in, spends tokens): `E2E_LIVE_AI=1 npx playwright test e2e/live-ai.spec.ts --project=desktop`. Nothing else may call OpenAI (owner rule 2026-09-29).
+- Live AI check (opt-in, spends tokens): `E2E_LIVE_AI=1 npx playwright test e2e/live-ai.spec.ts --project=desktop`. Nothing else may call a model (owner rule 2026-09-29).
 
 ## Map
 
@@ -45,7 +45,8 @@ shape. Web release standard: `kitchenlabs-kit/docs/standards/web-release-standar
 
 ## Vercel env
 
-`OPENAI_API_KEY` (server-only, production + preview) is the only variable. The dead hackathon
+`ANTHROPIC_API_KEY` (Claude, tried first) and `OPENAI_API_KEY` (fallback), server-only, production +
+preview, are the only variables. The dead hackathon
 ones (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
 `DATABASE_URL`, `GRID_API_KEY`) were removed from Vercel on 2026-10-02 (`OPENAI_MODEL` was not set).
 
@@ -55,7 +56,7 @@ ones (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SER
   or its docs: `docs/PRIVACY.md` and `docs/SUPPORT.md` link https://kitchenlabs-one.vercel.app/contact.
 - Scroll audit at 1280x800, 1440x900, 430x932: the team picker and a report's headline numbers are
   in view at load. `app-frame.tsx` shows `COPYRIGHT` above Riot's notice. No layout change.
-- AI vendor rule: users see "AI", never "OpenAI"/"GPT"/a model id (privacy says "a third-party AI
+- AI vendor rule: users see "AI", never "OpenAI"/"GPT"/"Claude"/a model id (privacy says "a third-party AI
   service"). `npm run leak-check` fails if `.next/static` or the prerendered HTML says
-  `/openai|gpt-/i`; e2e checks the dynamic `/reports` HTML and the `/api/chat` JSON the same way.
+  `/openai|gpt-|anthropic|claude/i`; e2e checks the dynamic `/reports` HTML and the `/api/chat` JSON the same way.
   Internal docs (`docs/AI.md`, `docs/CREDITS.md`, which the app never links) may name the vendor.
