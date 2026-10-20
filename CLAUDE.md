@@ -1,15 +1,15 @@
 # Mosaic: operating manual
 
-VALORANT scouting reports + AI analyst. Next.js 16.3, React 19, Tailwind 4, KL Web 1.0.3 (vendored).
+VALORANT scouting reports + AI analyst. Next.js 16.3, React 19, Tailwind 4, KL Web 1.1.6 (vendored).
 https://mosaic-plum.vercel.app (Vercel project `mosaic`, repo ArvindVivek/mosaic, deploys from
 `main`). Separate app from Lumina on purpose; they share only the fixture and the data layer's
 shape. Web release standard: `kitchenlabs-kit/docs/standards/web-release-standard.md`.
 
-## Status (2026-09-29)
+## Status (2026-10-20)
 
 - Released on the bundled fixture. `/` redirects to `/reports`; `/api/chat`, `/api/reports/stream`.
-- AI: org key set on Vercel but **out of credits**; production serves the numbers-only fallback.
-  Live AI check pending (`docs/AI.md`).
+- AI: live, Claude first (`claude-haiku-5-5`), OpenAI fallback, numbers-only fallback last (KL Web
+  1.1.6). A real production chat call was answered by Claude on 2026-10-20 (`docs/AI.md`).
 
 ## Commands
 

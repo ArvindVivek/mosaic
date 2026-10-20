@@ -22,11 +22,13 @@ works with no AI. No cron, background job or page load calls the model.
 maps, players...). The UI labels it and the server logs `[ai] fallback label=chat code=…`; a real
 answer logs `[ai] provider: anthropic label=chat in=… out=…` (or `openai` when the fallback answered).
 
-## Status (2026-09-29)
+## Status (2026-10-20)
 
-The org key is out of credits (`429 insufficient_quota`), so production serves the fallback. The
-live AI check is **pending**: the request shape is unit-tested against a mocked OpenAI response
-(`app/api/chat/route.test.ts`), but no real call is recorded yet.
+Live AI is on, Claude first. One real call on production (KL Web 1.1.6, deploy
+`dpl_CG4eLKy6YXz9QtgFXP1SFGddzfzJ`): `POST /api/chat` (team 79, "How are their pistol rounds?")
+returned 200 with a grounded answer, log
+`[ai] provider: anthropic label=chat model=claude-haiku-5-5 in=952 out=180 ms=1797`. The OpenAI
+fallback's request shape is unit-tested against a mocked response (`app/api/chat/route.test.ts`).
 
 ## Testing without spending (owner rule, 2026-09-29)
 
