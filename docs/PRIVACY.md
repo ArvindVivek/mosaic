@@ -10,15 +10,15 @@ VALORANT teams. This page says, in plain English, what happens to your informati
 - There are no accounts, no ads and no tracking.
 - The match data is bundled with the site. Nothing you do in Mosaic is saved by Kitchen Labs.
 - If you ask the AI analyst a question or press **Write the AI brief**, the question and a few lines
-  of match numbers are sent to a third-party AI service to write the answer, then thrown away.
+  of match numbers are sent to a third-party AI service (or, if that one is unavailable, a second one) to write the answer, then thrown away.
 
 ## What we handle, and why
 
 **Questions to the AI analyst (only when you ask one).** When you press send in **Ask the analyst**,
 or **Write the AI brief**, your browser sends to Mosaic's server (hosted by Vercel): your question,
 the team and filters you picked, and your last few messages in the chat. The server adds a short summary of the match
-numbers and passes it to a third-party AI service to write the answer. Kitchen Labs does not store
-your questions or the answers. Our AI provider does not use them to train its models, and may keep
+numbers and passes it to a third-party AI service (or, if that one is unavailable, a second one) to write the answer. Kitchen Labs does not store
+your questions or the answers. Our AI providers do not use them to train their models, and may keep
 them for up to 30 days for abuse monitoring.
 
 Please don't type personal details into your questions.
